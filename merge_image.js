@@ -9,8 +9,13 @@ function merge_image(merge_image_arr,callback){
 		
 		for(var i in merge_image_arr){
 			var item=merge_image_arr[i];
-		
-			c.drawImage(item.image_object,item.x,item.y,item.w,item.h);
+			var tt=document.createElement('canvas')
+			tt.width=item.w;
+			tt.height=item.h;
+			var tt=tt.getContext("2d");
+			tt.drawImage(item.image_object,0,0,item.w,item.h);
+			c.drawImage(tt.canvas,item.x,item.y,item.w,item.h);
+			// c.drawImage(item.image_object,item.x,item.y,item.w,item.h);
 		}
 		
 		callback && callback(c.canvas.toDataURL())
@@ -27,6 +32,8 @@ function merge_image(merge_image_arr,callback){
 		var item=merge_image_arr[i];
 		image_onload(item.image_src,function(item,check_object,img){
 			item.image_object=img;
+			item.w=img.width/3;
+			item.h=img.height/3;
 			check_object.finish_count++
 			if(merge_image_arr.length<=check_object.finish_count){
 				merge_image();
