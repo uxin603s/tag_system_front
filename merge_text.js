@@ -13,9 +13,10 @@ function area_scale_w_h(item){
 		h=w;
 		w=tmp;
 	}
-	item.text_size*=(item.w/w);//計算需要縮放比例
+	item.text_size=Math.floor(item.text_size*(item.w/w));//計算需要縮放比例
+	
 }
-function get_ok_width_string(item,result_arr){
+function get_ok_width_string(item,c,result_arr){
 	if(!result_arr){
 		var result_arr=[];
 	}
@@ -30,11 +31,7 @@ function get_ok_width_string(item,result_arr){
 		}
 		type=2;
 	}
-	// console.log(type,item.text_content);
-	var c=init_canvas(item.w,item.h);	
-	c.fillStyle=item.text_color;
-	c.font=item.text_size+"px 微軟正黑體";
-	c.textBaseline="middle";
+	
 	var tmp_arr=[];
 	while(true){
 		if(type==1){
@@ -81,7 +78,7 @@ function get_ok_width_string(item,result_arr){
 		item.text_content=item.text_content.join(" ")
 	}
 	
-	return get_ok_width_string(item,result_arr);
+	return get_ok_width_string(item,c,result_arr);
 }
 function make_text(text,item,w,h,resize){		
 	var c=init_canvas(w,h);	
@@ -116,24 +113,23 @@ function make_text(text,item,w,h,resize){
 function merge_text(item){	
 	area_scale_w_h(item);
 	var c=init_canvas(item.w,item.h);
+	c.fillStyle=item.text_color;
+	c.font=item.text_size+"px 微軟正黑體";
+	c.textBaseline="middle";
+	// c.fillStyle="#aaaaaa";
+	// c.fillRect(0,0,item.w,item.h);
+	
 	while(true){
 		var tmp_text_content=item.text_content;
-		var result_arr=get_ok_width_string(item);
-		
+		var result_arr=get_ok_width_string(item,c);
 		if(result_arr.length*item.text_size*1.2>item.h){
-			item.text_size--;
-			item.text_content=tmp_text_content
+			c.font=--item.text_size+"px 微軟正黑體";
+			item.text_content=tmp_text_content;
 		}else{
 			break;
 		}
-	}
-	console.log(result_arr)
-	var y=0;
-	c.fillStyle="#aaaaaa";
-	c.fillRect(0,0,item.w,item.h);
-	
-	c.font=item.text_size+"px 微軟正黑體";
-	
+	}	
+	var y=0;	
 	for(var i in result_arr){
 		var text=result_arr[i];
 		var w=c.measureText(text).width;
@@ -149,4 +145,8 @@ function merge_text(item){
 		y+=text_img.height;
 	}
 	return c.canvas;
+}
+CanvasRenderingContext2D.prototype.set_font_size=function(size,family){
+	console.log(size,family)
+	this.font=size+"px "+family;
 }
