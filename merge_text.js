@@ -14,11 +14,13 @@ function area_scale_w_h(item){
 		w=tmp;
 	}
 	item.text_size=Math.floor(item.text_size*(item.w/w));//計算需要縮放比例
-	
 }
-function get_ok_width_string(item,c,result_arr){
+function get_ok_width_string(item,c,result_arr,break_time){
 	if(!result_arr){
-		var result_arr=[];
+		var result_arr=[];		
+	}
+	if(!break_time){
+		var break_time=Date.now();
 	}
 	var type=0;
 	if(item.text_content.indexOf(" ")==-1){
@@ -44,6 +46,7 @@ function get_ok_width_string(item,c,result_arr){
 			if(width>item.w){
 				tmp_line_limit_count--;
 			}else{
+				item.text_content=item.text_content.substr(text.length,item.text_content.length-text.length);
 				break;
 			}
 		}else{
@@ -59,26 +62,31 @@ function get_ok_width_string(item,c,result_arr){
 	
 	if(text.indexOf("\n")!=-1){
 		var arr=text.split("\n");			
-		var text=arr.shift()+"\n";			
-		if(type==2){
+		var text=arr.shift()+"\n";		
+		if(type==1){
+			item.text_content=arr.join("\n")+item.text_content;
+		}else{
 			item.text_content.unshift(arr.join("\n"));
 		}
 	}
 	
 	result_arr.push(text.trim());
 	
-	if(type==1){
-		item.text_content=item.text_content.substr(text.length,item.text_content.length-text.length);
-	}
+	
 	if(type==1){
 		if(item.text_content==""){
+			// console.log("順利執行"+((Date.now()-break_time)/1000)+"s");
 			return result_arr;
 		}
 	}else{
 		item.text_content=item.text_content.join(" ")
 	}
+	if((Date.now()-break_time)>1000*2){
+		console.log('卡迴圈，強制中斷');
+		return result_arr;
+	}
 	
-	return get_ok_width_string(item,c,result_arr);
+	return get_ok_width_string(item,c,result_arr,break_time);
 }
 function make_text(text,item,w,h,resize){		
 	var c=init_canvas(w,h);	
