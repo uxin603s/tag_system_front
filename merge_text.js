@@ -24,7 +24,7 @@ function get_ok_width_string(item,c,result_arr,break_time){
 	}
 	var type=0;
 	if(item.text_content.indexOf(" ")==-1){
-		var line_limit_count=Math.floor(item.w/item.text_size*2);
+		var line_limit_count=Math.floor(item.w/item.text_size*1.5);
 		type=1;
 		var tmp_line_limit_count=line_limit_count;
 	}else{
@@ -69,10 +69,8 @@ function get_ok_width_string(item,c,result_arr,break_time){
 			item.text_content.unshift(arr.join("\n"));
 		}
 	}
-	
+	if(text.trim()!=="")
 	result_arr.push(text.trim());
-	
-	
 	if(type==1){
 		if(item.text_content==""){
 			// console.log("順利執行"+((Date.now()-break_time)/1000)+"s");
@@ -88,34 +86,42 @@ function get_ok_width_string(item,c,result_arr,break_time){
 	
 	return get_ok_width_string(item,c,result_arr,break_time);
 }
-function make_text(text,item,w,h,resize){		
+function make_text(text,item,c){
+	var w=c.measureText(text).width;
+	var h=item.text_size*1.2;
+	if(item.useFontBg && item.FontBgSize){
+		h+=item.FontBgSize;
+	}
+	
 	var c=init_canvas(w,h);	
 	c.fillStyle=item.text_color;
 	c.font=item.text_size+"px 微軟正黑體";
 	c.textBaseline="middle";
 	
-	if(resize){
-		var width=c.measureText(text).width;
-		var scale=1;
-		if(width>w){
-			scale=w/width;
-			item.text_size=item.text_size*scale;
-			c.font=item.text_size+"px 微軟正黑體";
-		}
-		var height=item.text_size;//*1.2;
-		if(height>h){
-			scale=h/height;
-			item.text_size=item.text_size*scale;
-			c.font=item.text_size+"px 微軟正黑體";
-		}
+	var y=item.text_size/2;	
+	if(item.useFontBg && item.FontBgSize){
+		y+=item.FontBgSize/2;
+		c.lineWidth = item.FontBgSize;
+		c.strokeStyle = item.FontBgColor;		
+		c.strokeText(text,0,y);	
 	}
-	
-	var width=c.measureText(text).width;
-	var height=item.text_size;
-	
-	var x=0;	
-	var y=item.text_size/2;
-	c.fillText(text,x,y);			
+	c.fillText(text,0,y);	
+	if(item.useLine){
+		var line_y=1;
+		if(item.useLine==1){
+			line_y=.9;
+		}else{
+			line_y=.5;
+		}
+		c.strokeStyle = item.text_color;
+		c.lineWidth = Math.floor(item.text_size/10);
+		
+		var x=w;
+		var y=h*line_y-c.lineWidth/2
+		c.moveTo(0,y);
+		c.lineTo(x,y);
+		c.stroke();
+	}		
 	return c.canvas;	
 }
 function merge_text(item){	
@@ -124,37 +130,64 @@ function merge_text(item){
 	c.fillStyle=item.text_color;
 	c.font=item.text_size+"px 微軟正黑體";
 	c.textBaseline="middle";
-	// c.fillStyle="#aaaaaa";
-	// c.fillRect(0,0,item.w,item.h);
-	
+	c.fillStyle="#aaaaaa";
+	c.fillRect(0,0,item.w,item.h);
+	if(item.useFontBg && item.FontBgSize){
+		c.lineWidth = item.FontBgSize;
+		c.strokeStyle = item.FontBgColor;
+		c.strokeText(text,x,y);	
+	}
+	if(item.text_type==2){
+		item.text_content=item.text_content.split("").join("\n")
+	}
+	var text_scale=item.FontBgSize/item.text_size;
 	while(true){
 		var tmp_text_content=item.text_content;
-		var result_arr=get_ok_width_string(item,c);
-		if(result_arr.length*item.text_size*1.2>item.h){
+		var break_flag=false;
+		if(item.text_type==1){
+			var result_arr=[tmp_text_content];
+			var w=c.measureText(tmp_text_content).width;
+			break_flag=break_flag || w >item.w;
+		}else{
+			var result_arr=get_ok_width_string(item,c);
+		}
+		if(item.useFontBg && item.FontBgSize){
+			var text_size=(item.text_size+item.FontBgSize);
+		}else{
+			var text_size=item.text_size;
+		}
+		var total_height=result_arr.length*text_size*1.2;
+		break_flag=break_flag || total_height>item.h
+		if(break_flag){
 			c.font=--item.text_size+"px 微軟正黑體";
+			item.FontBgSize=text_scale*item.text_size;
 			item.text_content=tmp_text_content;
 		}else{
 			break;
 		}
 	}	
+	
 	var y=0;	
+	if(item.text_vAlign==1){
+		y=(item.h-total_height)/2;
+	}else if(item.text_vAlign==2){
+		y=(item.h-total_height);
+	}
+	
 	for(var i in result_arr){
 		var text=result_arr[i];
-		var w=c.measureText(text).width;
-		var text_img=make_text(text,item,w,item.text_size*1.2);
+		var text_img=make_text(text,item,c);
 		var x=0;	
 		if(item.text_hAlign==1){
 			x=(item.w-text_img.width)/2;
 		}else if(item.text_hAlign==2){
 			x=(item.w-text_img.width);
 		}
-		
 		c.drawImage(text_img,x,y);
 		y+=text_img.height;
 	}
 	return c.canvas;
 }
 CanvasRenderingContext2D.prototype.set_font_size=function(size,family){
-	console.log(size,family)
 	this.font=size+"px "+family;
 }

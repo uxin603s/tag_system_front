@@ -22,18 +22,23 @@
 					zIndex:1,x:0,y:0,w:500,h:200,
 					type:1,
 					text_hAlign:1,
-					text_vAlign:0,
+					text_vAlign:1,
 					text_size:500,
 					text_color:"#FF0000",
-					text_content:"我今天心情不錯ggg"
+					text_content:"我今天心情不錯ggg",
+					useFontBg:1,
+					FontBgSize:10,
+					FontBgColor:"#00FF00",
+					useLine:1,
+					text_type:1,
 				},
 			];
 			
 			var start_time_int=Date.now();
-			// merge_image(merge_image_arr,function(src){
-				// $("img").attr("src",src)
-				// console.log((Date.now()-start_time_int)/1000)
-			// })
+			merge_image(merge_image_arr,function(src){
+				$("img").attr("src",src)
+				console.log((Date.now()-start_time_int)/1000)
+			})
 			var tt="data:image/gif;base64,R0lGODlhCgAKAJEAAP////8AAAAA/wAAACH5BAAAAAAALAAAAAAKAAoAAAIWjC2Zhyoc3DOgAnXslfqo3mCMBJFMAQA7";
 			dataURItoBlob(tt);
 			$(".upload").change(function(e){
