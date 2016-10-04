@@ -167,7 +167,7 @@ function merge_text(item){
 			break;
 		}
 	}	
-	console.log(count)
+	// console.log(count)
 	var y=0;	
 	if(item.text_vAlign==1){
 		y=(item.h-total_height)/2;

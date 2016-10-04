@@ -40,6 +40,8 @@ function merge_image(w,h,merge_image_arr,callback){
 				c.fillRect(cr/2,cr/2,new_w-cr,new_h-cr);
 
 				c.drawImage(img,item.bgPadding,item.bgPadding,item.w,item.h);
+				item.w=new_w;
+				item.h=new_h;
 				img=c.canvas;
 			}
 			callback && callback(img);
@@ -60,10 +62,10 @@ function merge_image(w,h,merge_image_arr,callback){
 		var item=merge_image_arr[i];
 		image_onload(item,function(item,check_object,img){
 			item.image_object=img;
-			if(img){
-				item.w=img.width;
-				item.h=img.height;
-			}
+			// if(img){
+				// item.w=img.width;
+				// item.h=img.height;
+			// }
 			check_object.finish_count++
 			if(merge_image_arr.length<=check_object.finish_count){
 				merge_result();

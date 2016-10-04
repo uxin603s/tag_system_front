@@ -49,18 +49,13 @@
 			// var tt="data:image/gif;base64,R0lGODlhCgAKAJEAAP////8AAAAA/wAAACH5BAAAAAAALAAAAAAKAAoAAAIWjC2Zhyoc3DOgAnXslfqo3mCMBJFMAQA7";
 			// dataURItoBlob(tt);
 			$(".upload").change(function(e){
-				
 				var files=e.target.files;
 				var reader = new FileReader();					
 				reader.onload=function(e){
-					//dataURItoBlob(e.target.result);
-					
 					$("textarea").val(e.target.result)
-					// console.log(e.target.result);
 				};
 				reader.readAsDataURL(files[0]);	
 			})
-			
 		});
 		</script>
 	</head>
@@ -68,6 +63,5 @@
 		<img />
 		<input type="file" class="upload" />
 		<textarea></textarea>
-		
 	</body>
 </html>
