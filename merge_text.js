@@ -24,7 +24,7 @@ function get_ok_width_string(item,c,result_arr,break_time){
 	}
 	var type=0;
 	if(item.text_content.indexOf(" ")==-1){
-		var line_limit_count=Math.floor(item.w/item.text_size*1.5);
+		var line_limit_count=Math.floor(item.w/item.text_size*2);
 		type=1;
 		var tmp_line_limit_count=line_limit_count;
 	}else{
@@ -130,8 +130,7 @@ function merge_text(item){
 	c.fillStyle=item.text_color;
 	c.font=item.text_size+"px 微軟正黑體";
 	c.textBaseline="middle";
-	c.fillStyle="#aaaaaa";
-	c.fillRect(0,0,item.w,item.h);
+	
 	if(item.useFontBg && item.FontBgSize){
 		c.lineWidth = item.FontBgSize;
 		c.strokeStyle = item.FontBgColor;
@@ -141,7 +140,9 @@ function merge_text(item){
 		item.text_content=item.text_content.split("").join("\n")
 	}
 	var text_scale=item.FontBgSize/item.text_size;
+	var count=0;
 	while(true){
+		count++;
 		var tmp_text_content=item.text_content;
 		var break_flag=false;
 		if(item.text_type==1){
@@ -166,7 +167,7 @@ function merge_text(item){
 			break;
 		}
 	}	
-	
+	console.log(count)
 	var y=0;	
 	if(item.text_vAlign==1){
 		y=(item.h-total_height)/2;
