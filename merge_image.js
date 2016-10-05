@@ -1,9 +1,11 @@
 function merge_image(config,merge_image_arr,callback){
 	
 	var merge_image_arr=JSON.parse(JSON.stringify(merge_image_arr));
-	merge_image_arr.sort(function(a,b){
-		return a.zIndex-b.zIndex;
-	});
+	if(!isNaN(merge_image_arr[0].zIndex)){
+		merge_image_arr.sort(function(a,b){
+			return a.zIndex-b.zIndex;
+		});
+	}
 	var rotate_image=function(item){
 		if(item.rotate){
 			//以圖中心旋轉
@@ -29,6 +31,17 @@ function merge_image(config,merge_image_arr,callback){
 	}
 	var merge_result=function(){
 		var c=init_canvas(config.w,config.h);
+		if(config.format){
+			config.format=config.format.toLowerCase();
+			var jpeg_check=false;
+			jpeg_check =jpeg_check || config.format.indexOf("jpeg")!=-1;
+			jpeg_check =jpeg_check || config.format.indexOf("jpg")!=-1;
+			
+			if(jpeg_check){
+				c.fillStyle="#ffffff";
+				c.fillRect(0,0,config.w,config.h);
+			}
+		}
 		for(var i in merge_image_arr){
 			var item=merge_image_arr[i];	
 			if(item.image_object){
@@ -40,28 +53,30 @@ function merge_image(config,merge_image_arr,callback){
 	}
 	var image_onload=function(item,callback){
 		if(item.type==1){
-			
 			var img=merge_text(item);
-			
+			if(item.bgPadding){
+				var bgPadding=item.bgPadding;
+			}else{
+				var bgPadding=0;
+			}
 			if(item.useBg){
-				item.x-=item.bgPadding;
-				item.y-=item.bgPadding;
-				var new_w=item.w+item.bgPadding*2;
-				var new_h=item.h+item.bgPadding*2;
+				item.x-=bgPadding;
+				item.y-=bgPadding;
+				var new_w=item.w+bgPadding*2;
+				var new_h=item.h+bgPadding*2;
 				var c=init_canvas(new_w,new_h);
 				if(item.bgBorderRadius){
 					var cr=item.bgBorderRadius*2;
 					c.lineJoin="round";
 					c.lineWidth=cr;
-					c.strokeStyle =item.bgColor;
+					c.strokeStyle=item.bgColor;
 					c.strokeRect(cr/2,cr/2,new_w-cr,new_h-cr);
 				}else{
 					var cr=0;
 				}
 				c.fillStyle=item.bgColor;
 				c.fillRect(cr/2,cr/2,new_w-cr,new_h-cr);
-
-				c.drawImage(img,item.bgPadding,item.bgPadding,item.w,item.h);
+				c.drawImage(img,bgPadding,bgPadding,item.w,item.h);
 				item.w=new_w;
 				item.h=new_h;
 				img=c.canvas;
