@@ -1,16 +1,35 @@
 function merge_image(w,h,merge_image_arr,callback){
 	var merge_image_arr=JSON.parse(JSON.stringify(merge_image_arr));
+	merge_image_arr.sort(function(a,b){
+		return a.zIndex-b.zIndex;
+	});
+	var rotate_image=function(item){
+		if(item.rotate){
+			var rotate_width=Math.sqrt(item.w*item.w+item.h*item.h);
+			var x=(rotate_width-item.w)/2;
+			var y=(rotate_width-item.h)/2;
+			var c=init_canvas(rotate_width,rotate_width);
+			c.translate(rotate_width/2,rotate_width/2);
+			c.rotate(item.rotate*Math.PI/180);
+			c.translate(-rotate_width/2,-rotate_width/2);
+			c.drawImage(item.image_object,x,y);
+			item.image_object=c.canvas;
+			item.x-=x;
+			item.y-=y;
+			item.w=rotate_width;
+			item.h=rotate_width;
+		}
+	}
 	var merge_result=function(){
 		var c=init_canvas(w,h);
-		merge_image_arr.sort(function(a,b){
-			return a.zIndex-b.zIndex;
-		});
 		for(var i in merge_image_arr){
 			var item=merge_image_arr[i];	
 			if(item.image_object){
+				rotate_image(item);
 				c.drawImage(item.image_object,item.x,item.y,item.w,item.h);
 			}
 		}
+		// console.log(main_c.canvas.toDataURL())
 		callback && callback(c.canvas.toDataURL())
 	}
 	var image_onload=function(item,callback){
@@ -62,10 +81,6 @@ function merge_image(w,h,merge_image_arr,callback){
 		var item=merge_image_arr[i];
 		image_onload(item,function(item,check_object,img){
 			item.image_object=img;
-			// if(img){
-				// item.w=img.width;
-				// item.h=img.height;
-			// }
 			check_object.finish_count++
 			if(merge_image_arr.length<=check_object.finish_count){
 				merge_result();
