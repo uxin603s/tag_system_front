@@ -5,15 +5,11 @@
 		<meta charset="UTF-8" />
 		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 		<script src="dataURItoBlob.js"></script>
+		<script src="init_canvas.js"></script>
 		<script src="merge_image.js"></script>
 		<script src="merge_text.js"></script>		
 		<script>
-		function init_canvas(w,h){
-			var c=document.createElement('canvas')
-			c.width=w;
-			c.height=h;
-			return c.getContext("2d");
-		}
+		
 		$(document).ready(function(){
 			var text_position={
 				zIndex:1,
@@ -45,8 +41,14 @@
 			
 			merge_image_arr.push(JSON.parse(JSON.stringify(text_position)));
 			
+			var config={
+				w:1200,
+				h:630,
+				format:"image/jpeg",
+				compress:0.9,
+			}
 			var start_time_int=Date.now();
-			merge_image(1200,630,merge_image_arr,function(src){
+			merge_image(config,merge_image_arr,function(src){
 				$("img").attr("src",src)
 				console.log((Date.now()-start_time_int)/1000);
 			})

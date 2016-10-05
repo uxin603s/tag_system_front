@@ -191,6 +191,8 @@ function merge_text(item){
 	}
 	return c.canvas;
 }
-CanvasRenderingContext2D.prototype.set_font_size=function(size,family){
-	this.font=size+"px "+family;
+if(window.CanvasRenderingContext2D){
+	CanvasRenderingContext2D.prototype.set_font_size=function(size,family){
+		this.font=size+"px "+family;
+	}
 }

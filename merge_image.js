@@ -1,4 +1,5 @@
-function merge_image(w,h,merge_image_arr,callback){
+function merge_image(config,merge_image_arr,callback){
+	
 	var merge_image_arr=JSON.parse(JSON.stringify(merge_image_arr));
 	merge_image_arr.sort(function(a,b){
 		return a.zIndex-b.zIndex;
@@ -23,8 +24,11 @@ function merge_image(w,h,merge_image_arr,callback){
 			item.h=rotate_width;
 		}
 	}
+	this.error=function(callback){
+		// callback && callback(error_log);
+	}
 	var merge_result=function(){
-		var c=init_canvas(w,h);
+		var c=init_canvas(config.w,config.h);
 		for(var i in merge_image_arr){
 			var item=merge_image_arr[i];	
 			if(item.image_object){
@@ -32,7 +36,7 @@ function merge_image(w,h,merge_image_arr,callback){
 				c.drawImage(item.image_object,item.x,item.y,item.w,item.h);
 			}
 		}
-		callback && callback(c.canvas.toDataURL())
+		callback && callback(c.canvas.toDataURL(config.format,config.compress))
 	}
 	var image_onload=function(item,callback){
 		if(item.type==1){
