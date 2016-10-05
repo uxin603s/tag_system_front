@@ -5,7 +5,10 @@ function merge_image(w,h,merge_image_arr,callback){
 	});
 	var rotate_image=function(item){
 		if(item.rotate){
-			var rotate_width=Math.sqrt(item.w*item.w+item.h*item.h);
+			//以圖中心旋轉
+			var rotate_width=Math.sqrt(item.w*item.w+item.h*item.h);//畢氏定理，正方形邊
+			//取得360度旋轉圖不會切到
+			//將圖定位到中心
 			var x=(rotate_width-item.w)/2;
 			var y=(rotate_width-item.h)/2;
 			var c=init_canvas(rotate_width,rotate_width);
@@ -29,7 +32,6 @@ function merge_image(w,h,merge_image_arr,callback){
 				c.drawImage(item.image_object,item.x,item.y,item.w,item.h);
 			}
 		}
-		// console.log(main_c.canvas.toDataURL())
 		callback && callback(c.canvas.toDataURL())
 	}
 	var image_onload=function(item,callback){
@@ -42,14 +44,11 @@ function merge_image(w,h,merge_image_arr,callback){
 				item.y-=item.bgPadding;
 				var new_w=item.w+item.bgPadding*2;
 				var new_h=item.h+item.bgPadding*2;
-				
 				var c=init_canvas(new_w,new_h);
-				
-				
 				if(item.bgBorderRadius){
 					var cr=item.bgBorderRadius*2;
-					c.lineJoin = "round";
-					c.lineWidth = cr;
+					c.lineJoin="round";
+					c.lineWidth=cr;
 					c.strokeStyle =item.bgColor;
 					c.strokeRect(cr/2,cr/2,new_w-cr,new_h-cr);
 				}else{
@@ -72,9 +71,9 @@ function merge_image(w,h,merge_image_arr,callback){
 			img.src=item.image_src;
 		}
 		else{
+			console.log("有圖片漏掉沒合成");
 			callback && callback(null);
 		}
-		
 	}
 	var check_object={finish_count:0};
 	for(var i in merge_image_arr){
