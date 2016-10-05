@@ -88,6 +88,8 @@ function get_ok_width_string(item,c,result_arr,break_time){
 }
 function make_text(text,item,c){
 	var w=c.measureText(text).width;
+	if(item.useFontBg)
+	w+=item.FontBgSize;
 	var h=item.text_size*1.2;
 	if(item.useFontBg && item.FontBgSize){
 		h+=item.FontBgSize;
