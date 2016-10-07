@@ -4,6 +4,8 @@
 		<title>測試檔</title>
 		<meta charset="UTF-8" />
 		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+		
+		
 		<script src="canvas_merge_image.min.js"></script>
 		<script>
 		$(document).ready(function(){
@@ -11,8 +13,8 @@
 				zIndex:1,
 				x:0,y:0,w:500,h:300,
 				type:1,
-				text_hAlign:1,
-				text_vAlign:0,
+				text_hAlign:2,
+				text_vAlign:1,
 				text_size:500,
 				text_color:"#FF0000",
 				text_content:"煩煩煩煩gggggggg",
@@ -25,7 +27,7 @@
 				useLine:2,
 				
 				useBg:1,
-				bgPadding:20,
+				//bgPadding:20,
 				bgColor:"#0000FF",
 				bgBorderRadius:0,
 				rotate:0,
@@ -43,12 +45,18 @@
 				format:"image/jpg",
 				compress:0.9,
 			}
-			var start_time_int=Date.now();
 			merge_image(config,merge_image_arr,function(src){
 				$("img").attr("src",src)
-				console.log((Date.now()-start_time_int)/1000);
+			},function(message){
+				console.log(message)
+			},function(error){
+				console.log(error)
 			})
-			
+			if(window.CanvasRenderingContext2D){
+				CanvasRenderingContext2D.prototype.set_font_size=function(size,family){
+					this.font=size+"px "+family;
+				}
+			}
 			// var tt="data:image/gif;base64,R0lGODlhCgAKAJEAAP////8AAAAA/wAAACH5BAAAAAAALAAAAAAKAAoAAAIWjC2Zhyoc3DOgAnXslfqo3mCMBJFMAQA7";
 			// dataURItoBlob(tt);
 			
@@ -60,6 +68,14 @@
 				};
 				reader.readAsDataURL(files[0]);	
 			})
+/*
+java -jar ../compiler-latest/closure-compiler-v20160911.jar \
+--js init_canvas.js \
+--js dataURItoBlob.js \
+--js merge_image.js \
+--js merge_text.js \
+--js_output_file canvas_merge_image.min.js
+*/
 		});
 		</script>
 	</head>
