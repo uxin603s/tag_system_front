@@ -15,7 +15,6 @@ function merge_image(config,merge_image_arr,callback,message_callback,error_call
 		var merge_image_arr=JSON.parse(JSON.stringify(merge_image_arr));
 		if(!isNaN(merge_image_arr[0].zIndex)){
 			merge_image_arr.sort(function(a,b){
-				console.log(a,b)
 				return a.zIndex-b.zIndex;
 			});
 		}
