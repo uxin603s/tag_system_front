@@ -66,9 +66,9 @@ function merge_image(config,merge_image_arr,callback,message_callback,error_call
 			timeFlag.set("全部")
 			var arr=timeFlag.get();
 			for(var i in arr){
-				message.push(i+">>"+((arr[i][1]-arr[i][0])/1000)+"秒")
+				arr[i]=(arr[i][1]-arr[i][0])/1000;
 			}
-			message_callback && message_callback(message)
+			message_callback && message_callback(arr,message)
 		}
 		var image_onload=function(item,index,callback){
 			if(item.type==1){
