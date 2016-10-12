@@ -17,7 +17,6 @@ function merge_text(item,index,message){
 			return item.text_content.split("\n");
 		}
 		
-		
 		if(!result_arr){
 			var result_arr=[];		
 		}
@@ -41,7 +40,6 @@ function merge_text(item,index,message){
 			}
 			type=2;
 		}
-		// console.log(item.text_content.indexOf(" "),type)
 		var tmp_arr=[];
 		var start_time=Date.now();
 		while(true){
@@ -124,6 +122,7 @@ function merge_text(item,index,message){
 		}		
 		return c.canvas;	
 	}	
+	item.text_content=item.text_content.trim();
 	if(item.text_size>item.h){
 		item.text_size=item.h;
 	}
@@ -146,7 +145,7 @@ function merge_text(item,index,message){
 	var count=0;
 	while(true){
 		count++;
-		var tmp_text_content=item.text_content.trim();
+		var tmp_text_content=item.text_content;
 		var break_flag=false;
 		if(item.text_type==1){
 			var result_arr=[tmp_text_content];
