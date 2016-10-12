@@ -41,6 +41,9 @@
 			];
 			
 			merge_image_arr.push(JSON.parse(JSON.stringify(text_position)));
+			// merge_image_arr=[{"zIndex":3,"x":645,"y":306,"w":378,"h":231,"type":1,"text_color":"#000000","text_type":0,"text_size":100,"text_vAlign":1,"text_hAlign":1,"text_content":"你的個性很直接，也希望能把感情事件處理得乾脆俐落。\n所以你會希望能夠快點得到答覆，不要拖泥帶水；\n若是談不攏，那就不要再浪費彼此的時間，畢竟這都是個人的選擇，勉強是不會有幸福的。\n\n也就是你這樣直爽的性格，大家合則來，不合則去，\n最後能和你在一起的人，也就是和你志同道合的那一種。 ","lock":1,"rotate":0,"hide":"","scale":"","useBg":"","bgPadding":0,"bgColor":"#000000","bgBorderRadius":0,"useFontBg":"","FontBgColor":"#000000","FontBgSize":1,"useLine":""}]
+			
+			
 			
 			var config={
 				w:1200,
@@ -50,8 +53,8 @@
 			}
 			merge_image(config,merge_image_arr,function(src){
 				$("img").attr("src",src)
-			},function(message){
-				console.log(message)
+			},function(message,message1){
+				console.log(message,message1)
 			},function(error){
 				console.log(error)
 			})

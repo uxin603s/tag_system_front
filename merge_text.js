@@ -13,13 +13,24 @@ function merge_text(item,index,message){
 		item.text_size=Math.floor(item.text_size*scale);//計算需要縮放比例
 	}
 	function get_ok_width_string(item,c,result_arr,break_time){
+		if(item.text_content.indexOf("\n")!=-1){
+			return item.text_content.split("\n");
+		}
+		
+		
 		if(!result_arr){
 			var result_arr=[];		
 		}
+		
 		if(!break_time){
 			var break_time=Date.now();
 		}
+		
+		if(((Date.now()-break_time)/1000)>1){
+			throw "卡迴圈，強制中斷";
+		}
 		var type=0;
+		
 		if(item.text_content.indexOf(" ")==-1){
 			var line_limit_count=Math.floor(item.w/item.text_size*2);
 			type=1;
@@ -30,13 +41,15 @@ function merge_text(item,index,message){
 			}
 			type=2;
 		}
-		
+		// console.log(item.text_content.indexOf(" "),type)
 		var tmp_arr=[];
+		var start_time=Date.now();
 		while(true){
 			if(type==1){
 				var text=item.text_content.substr(0,tmp_line_limit_count);
 			}else{
 				var text=item.text_content.join(" ");
+				
 			}
 			var width=c.measureText(text).width;	
 			
@@ -48,26 +61,22 @@ function merge_text(item,index,message){
 					break;
 				}
 			}else{
-				if(width>item.w){
-					tmp_arr.unshift(item.text_content.pop());			
+				if(width>item.w && item.text_content.length!==1){
+					tmp_arr.unshift(item.text_content.pop());
 				}else{
 					item.text_content=tmp_arr;
 					tmp_arr=[];
 					break;
 				}
 			}
-		}
-		if(text.indexOf("\n")!=-1){
-			var arr=text.split("\n");			
-			var text=arr.shift()+"\n";		
-			if(type==1){
-				item.text_content=arr.join("\n")+item.text_content;
-			}else{
-				item.text_content.unshift(arr.join("\n"));
+			if(((Date.now()-start_time)/1000)>1){
+				throw "卡迴圈，強制中斷";
 			}
 		}
+		
 		if(text.trim()!=="")
 			result_arr.push(text.trim());
+		
 		if(type==1){
 			if(item.text_content==""){
 				return result_arr;
@@ -75,10 +84,7 @@ function merge_text(item,index,message){
 		}else{
 			item.text_content=item.text_content.join(" ")
 		}
-		if((Date.now()-break_time)>1000*2){
-			console.log('卡迴圈，強制中斷');
-			return result_arr;
-		}
+		
 		
 		return get_ok_width_string(item,c,result_arr,break_time);
 	}
@@ -140,7 +146,7 @@ function merge_text(item,index,message){
 	var count=0;
 	while(true){
 		count++;
-		var tmp_text_content=item.text_content;
+		var tmp_text_content=item.text_content.trim();
 		var break_flag=false;
 		if(item.text_type==1){
 			var result_arr=[tmp_text_content];
@@ -148,6 +154,17 @@ function merge_text(item,index,message){
 			break_flag=break_flag || w >item.w;
 		}else{
 			var result_arr=get_ok_width_string(item,c);
+			
+			var w=result_arr.map(function(value){
+				return c.measureText(value).width;
+			}).reduce(function(prev,curr){
+				if(prev>curr){
+					return prev;
+				}
+				return curr;
+			},0)
+			// console.log(result_arr,w)
+			break_flag=break_flag || w >item.w;
 		}
 		if(item.useFontBg && item.FontBgSize){
 			var text_size=item.text_size*1.2+item.FontBgSize;
@@ -160,8 +177,10 @@ function merge_text(item,index,message){
 			c.font=--item.text_size+"px 微軟正黑體";
 			item.text_content=tmp_text_content;
 		}else{
+			// console.log(result_arr)
 			break;
 		}
+		// break;
 	}	
 	
 	var y=0;	
