@@ -190,7 +190,7 @@ function merge_text(item,index,message){
 		y=(item.h-total_height);
 	}
 	for(var i in result_arr){
-		var text=result_arr[i];
+		var text=result_arr[i].replace(/###space###/g," ");
 		var text_img=make_text(text,item,c);
 		var x=0;
 		if(item.text_hAlign==1){
