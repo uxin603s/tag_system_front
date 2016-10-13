@@ -29,7 +29,6 @@ function merge_text(item,index,message){
 			throw "卡迴圈，強制中斷";
 		}
 		var type=0;
-		
 		if(item.text_content.indexOf(" ")==-1){
 			var line_limit_count=Math.floor(item.w/item.text_size*2);
 			type=1;
@@ -146,11 +145,12 @@ function merge_text(item,index,message){
 	while(true){
 		count++;
 		var tmp_text_content=item.text_content;
+		
 		var break_flag=false;
-		if(item.text_type==1){
+		if(item.text_type==1 || !item.text_content.match(/[^a-zA-Z0-9\.]+/)){
 			var result_arr=[tmp_text_content];
 			var w=c.measureText(tmp_text_content).width;
-			break_flag=break_flag || w >item.w;
+			
 		}else{
 			var result_arr=get_ok_width_string(item,c);
 			
@@ -163,8 +163,9 @@ function merge_text(item,index,message){
 				return curr;
 			},0)
 			// console.log(result_arr,w)
-			break_flag=break_flag || w >item.w;
 		}
+		
+		break_flag=break_flag || w >item.w;
 		if(item.useFontBg && item.FontBgSize){
 			var text_size=item.text_size*1.2+item.FontBgSize;
 		}else{
