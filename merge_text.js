@@ -30,16 +30,16 @@ function merge_text(item,index,message){
 		}
 		var type=0;
 		if(item.text_content.indexOf(" ")==-1){
-			var line_limit_count=Math.floor(item.w/item.text_size*2);
+			var tmp_line_limit_count=Math.floor(item.w/item.text_size*2);
 			type=1;
-			var tmp_line_limit_count=line_limit_count;
 		}else{
 			if(typeof(item.text_content)=="string"){
 				item.text_content=item.text_content.split(" ");
 			}
 			type=2;
+			var tmp_arr=[];
 		}
-		var tmp_arr=[];
+		
 		var start_time=Date.now();
 		while(true){
 			if(type==1){
@@ -177,10 +177,8 @@ function merge_text(item,index,message){
 			c.font=--item.text_size+"px 微軟正黑體";
 			item.text_content=tmp_text_content;
 		}else{
-			// console.log(result_arr)
 			break;
 		}
-		// break;
 	}	
 	
 	var y=0;	
@@ -206,4 +204,3 @@ function merge_text(item,index,message){
 	message.push("圖層"+index+"文字合成判斷"+count+"次");
 	return c.canvas;
 }
-
