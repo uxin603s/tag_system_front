@@ -225,14 +225,13 @@ class MergeText{
 				$max_h=$info['textHeight'];
 			}else{
 				$result_arr=self::get_ok_width_string($item,$c);
-				if(count($result_arr)==2){
-					$info=self::measureText($c,$item,$result_arr[0]);
-					$info1=self::measureText($c,$item,$result_arr[1]);
-					if($info['textWidth']/2 > $info1['textWidth']){
-						$item['text_type']=1;
-						continue;
-					}
+				$info=self::measureText($c,$item,$result_arr[count($result_arr)-2]);
+				$info1=self::measureText($c,$item,$result_arr[count($result_arr)-1]);
+				if($info['textWidth']/2 > $info1['textWidth']){
+					--$item["text_size"];
+					continue;
 				}
+				
 				foreach($result_arr as $text){
 					$info=self::measureText($c,$item,$text);
 					if($info['textWidth']>$max_w){
@@ -275,7 +274,8 @@ class MergeText{
 			// $c.drawImage($text_img,$x,$y);// c.fillStyle=["#ff0000","#00ddff","#00ff00"][i];// c.fillRect(x,y,text_img.width,text_img.height);
 			$y+=$max_h;
 		}
-		return "data:image/png;base64,".base64_encode($c);
+		$data="data:image/png;base64,".base64_encode($c);
+		return compact(['data','count']);
 		//.canvas;//$message[]="圖層{$index}文字合成判斷{$count}次";
 	}	
 }

@@ -20,8 +20,8 @@
 				text_vAlign:1,
 				text_size:500,
 				text_color:"#FF0000",
-				// text_content:"Wdfgdfggdfg dfgds fgdgfdg123.",
-				text_content:"我我我我我",
+				text_content:"dsfsdfdfsdfsdfsdfsdf fsdfsdf",
+				// text_content:"我我我我我",
 				text_type:0,
 				
 				useFontBg:1,
@@ -42,9 +42,12 @@
 				arg:text_position,
 			}
 			$.post("ajax.php",post_data,function(res){
-				$("img").eq(0).attr("src",res);
+				$("img").eq(0).attr("src",res.data);
+				console.log(res.count)
 			},"json")
+			var start_time=Date.now();
 			var src=merge_text(text_position).toDataURL();
+			console.log((Date.now()-start_time)/1000);
 			$("img").eq(1).attr("src",src);
 			return ;
 			
