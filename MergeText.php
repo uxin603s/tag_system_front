@@ -20,7 +20,7 @@ class MergeText{
 		$scale=$item['w']/$w;
 		$item['text_size']=floor($item['text_size']*$scale);//計算需要縮放比例
 	}
-	public static function get_ok_width_string($item,$c,$result_arr=null,$break_time=null){
+	public static function get_ok_width_string(&$item,$c,$result_arr=null,$break_time=null){
 		if(is_numeric(strpos($item['text_content'],"\n"))){
 			return explode("\n",$item['text_content']);
 		}
@@ -183,6 +183,42 @@ class MergeText{
 		$draw->destroy();
 		return $info;
 	}
+	public static function break_line(&$item,$c){
+		$max_w=0;
+		$max_h=0;
+		
+		if($item['text_type']==1 || !preg_match("/[^a-zA-Z0-9\.]+/",$item['text_content'])){
+			$result_arr=[$item['text_content']];
+			$info=self::measureText($c,$item,$item['text_content']);
+			$max_w=$info['textWidth'];
+			$max_h=$info['textHeight'];
+		}else{
+			$result_arr=self::get_ok_width_string($item,$c);
+			$info=self::measureText($c,$item,$result_arr[count($result_arr)-2]);
+			$info1=self::measureText($c,$item,$result_arr[count($result_arr)-1]);
+			
+			if($info['textWidth']/2 > $info1['textWidth']){
+				return false;
+			}
+			
+			foreach($result_arr as $text){
+				$info=self::measureText($c,$item,$text);
+				if($info['textWidth']>$max_w){
+					$max_w=$info['textWidth'];
+				}
+				if($info['textHeight']>$max_h){
+					$max_h=$info['textHeight'];
+				}
+			}
+		}
+		
+		$max_h*=1.2;
+		$total_height=count($result_arr)*$max_h;
+		if($total_height<=$item['h'] && $max_w<=$item['w']){
+			return compact(['result_arr','max_w','max_h','total_height']);
+		}
+		return false;
+	}
 	public static function init($item){
 		
 		if(empty($item['font_family'])){
@@ -197,7 +233,6 @@ class MergeText{
 		self::area_scale_w_h($item);
 		
 		$c=self::init_canvas($item['w'],$item['h']);
-		
 		if($item['text_type']==2){
 			$tmp=$item['text_content'];
 			$count=mb_strlen($tmp);
@@ -207,53 +242,52 @@ class MergeText{
 			}
 		}
 		
+		$fast=[
+			"flag"=>false,
+			"max"=>$item["text_size"],
+			"min"=>0,
+		];
+		
+		$fast_func=function($statement,&$item,&$fast){
+			if($statement){
+				$fast['min']=$item["text_size"];
+			}else{
+				$fast['max']=$item["text_size"];
+			}
+			$item["text_size"]=($fast['max']+$fast['min'])/2;
+			$fast['flag']=floor($fast['min'])!=floor($fast['max']);
+		};
 		$count=0;
-		
+		$tt=[];
 		while(true){
-			$max_w=0;
-			$max_h=0;
-			if($count++>999999){
-				var_dump("ggwp");
-				break;
+			if($count>10 && !$fast['flag']){
+				$fast['flag']=true;
 			}
+			$text_content=$item['text_content'];
+			$data=self::break_line($item,$c);
+			$item['text_content']=$text_content;
 			
-			$tmp_text_content=$item['text_content'];
-			if($item['text_type']==1 || !preg_match("/[^a-zA-Z0-9\.]+/",$item['text_content'])){
-				$result_arr=[$tmp_text_content];
-				$info=self::measureText($c,$item,$tmp_text_content);
-				$max_w=$info['textWidth'];
-				$max_h=$info['textHeight'];
+			if($fast['flag']){
+				$fast_func($data,$item,$fast);
+				$tt[]=$fast;
 			}else{
-				$result_arr=self::get_ok_width_string($item,$c);
-				$info=self::measureText($c,$item,$result_arr[count($result_arr)-2]);
-				$info1=self::measureText($c,$item,$result_arr[count($result_arr)-1]);
-				if($info['textWidth']/2 > $info1['textWidth']){
+				if($data){
+					break;
+				}else{
 					--$item["text_size"];
-					continue;
-				}
-				
-				foreach($result_arr as $text){
-					$info=self::measureText($c,$item,$text);
-					if($info['textWidth']>$max_w){
-						$max_w=$info['textWidth'];
-					}
-					if($info['textHeight']>$max_h){
-						$max_h=$info['textHeight'];
-					}
 				}
 			}
-			$max_h*=1.2;
-			$total_height=count($result_arr)*$max_h;
-			if($total_height>$item['h'] || $max_w >$item['w']){
-				--$item["text_size"];
-				$item['text_content']=$tmp_text_content;
-			}else{
-				// echo $count;
-				// echo "\n";
+			if(++$count>50){
+				// var_dump("ggwp");
 				break;
 			}
-		}	
-		
+		}
+		// return $fast;
+		$result_arr=$data['result_arr'];
+		$max_w=$data['max_w'];
+		$max_h=$data['max_h'];
+		$total_height=$data['total_height'];
+		// return $data;	
 		$y=0;	
 		if($item['text_vAlign']==1){
 			$y=($item['h']-$total_height)/2;
@@ -269,13 +303,10 @@ class MergeText{
 		foreach($result_arr as  $val){
 			$text=preg_replace("/###space###/"," ",$val);
 			$text_img=self::make_text($text,$item,$max_w,$max_h);
-			// return "data:image/png;base64,".base64_encode($text_img);
 			$c->compositeImage($text_img,\imagick::COMPOSITE_OVER,$x,$y);
-			// $c.drawImage($text_img,$x,$y);// c.fillStyle=["#ff0000","#00ddff","#00ff00"][i];// c.fillRect(x,y,text_img.width,text_img.height);
 			$y+=$max_h;
 		}
 		$data="data:image/png;base64,".base64_encode($c);
-		return compact(['data','count']);
-		//.canvas;//$message[]="圖層{$index}文字合成判斷{$count}次";
+		return compact(['data','count','tt']);
 	}	
 }

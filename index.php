@@ -20,8 +20,8 @@
 				text_vAlign:1,
 				text_size:500,
 				text_color:"#FF0000",
-				text_content:"dsfsdfdfsdfsdfsdfsdf fsdfsdf",
-				// text_content:"我我我我我",
+				text_content:"dsfsdfdfs dfsdfsdfs dfdsffsdfsdf",
+				// text_content:"我我我我我我我我我",
 				text_type:0,
 				
 				useFontBg:1,
@@ -42,8 +42,9 @@
 				arg:text_position,
 			}
 			$.post("ajax.php",post_data,function(res){
+				console.log(res)
 				$("img").eq(0).attr("src",res.data);
-				console.log(res.count)
+				// console.log(res.count)
 			},"json")
 			var start_time=Date.now();
 			var src=merge_text(text_position).toDataURL();
@@ -106,7 +107,7 @@ java -jar ../compiler-latest/closure-compiler-v20160911.jar \
 	<body>
 		<div>
 		<img style="vertical-align: top;" />
-		<img style="vertical-align: top;" />
+		<img style="vertical-align: top;!left:0;!position:absolute;" />
 		</div>
 		<input type="file" class="upload" />
 		<textarea></textarea>

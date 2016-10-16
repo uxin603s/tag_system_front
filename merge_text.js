@@ -29,6 +29,7 @@ function merge_text(item){
 			throw "卡迴圈，強制中斷";
 		}
 		var type=0;
+		
 		if(item.text_content.indexOf(" ")==-1){
 			var tmp_line_limit_count=Math.floor(item.w/item.text_size*2);
 			type=1;
@@ -70,7 +71,8 @@ function merge_text(item){
 				throw "卡迴圈，強制中斷";
 			}
 		}
-		
+		// console.log(item.text_content)
+		// console.log(text)
 		if(text.trim()!=="")
 			result_arr.push(text.trim());
 		
@@ -79,7 +81,7 @@ function merge_text(item){
 				return result_arr;
 			}
 		}else{
-			item.text_content=item.text_content.join(" ")
+			item.text_content=item.text_content.join(" ");
 		}
 		
 		
@@ -145,6 +147,46 @@ function merge_text(item){
 		}		
 		return c.canvas;	
 	}	
+	function break_line(item,c){
+		 
+		
+		if(item.text_type==1 || !item.text_content.match(/[^a-zA-Z0-9\.]+/)){
+			var result_arr=[item.text_content];
+			var max_w=c.measureText(item.text_content).width;
+		}else{
+			var result_arr=get_ok_width_string(item,c);
+			var w=c.measureText(result_arr[result_arr.length-2]).width;
+			var w1=c.measureText(result_arr[result_arr.length-1]).width;
+			if(w/2 > w1){
+				return false;
+			}
+			
+			var max_w=0;
+			for(var i in result_arr){
+				var w=c.measureText(result_arr[i]).width;
+				if(w>max_w){
+					max_w=w;
+				}
+			}
+		}
+		var max_h=item.text_size*1.2;
+		if(item.useFontBg && item.FontBgSize){
+			max_w+=item.FontBgSize*2;
+			max_h+=item.FontBgSize*2;
+		}
+		
+		var total_height=result_arr.length*max_h;
+		// console.log(result_arr,item.w,max_w,item.h,total_height)
+		if(max_w<=item.w && total_height<=item.h){
+			return {
+				result_arr:result_arr,
+				max_w:max_w,
+				max_h:max_h,
+				total_height:total_height,
+			}
+		}
+		return false;
+	}	
 	item.text_content=item.text_content.trim();
 	if(item.text_size>item.h){
 		item.text_size=item.h;
@@ -164,49 +206,54 @@ function merge_text(item){
 	if(item.text_type==2){
 		item.text_content=item.text_content.split("").join("\n")
 	}
+	var fast={
+		flag:false,
+		max:item.text_size,
+		min:0,
+	};
 	
+	var fast_func=function(statement,item,fast){
+		if(statement){
+			fast.min=item.text_size*1;
+		}else{
+			fast.max=item.text_size*1;
+		}
+		item.text_size=(fast.max+fast.min)/2;
+		
+		fast.flag=Math.floor(fast.min)!=Math.floor(fast.max);
+	};
 	var count=0;
+	// var tt=[];
 	while(true){
-		count++;
-		var tmp_text_content=item.text_content;
+		if(count>10 && !fast.flag){
+			fast.flag=true;
+		}
+		var text_content=item.text_content;
+		var data=break_line(item,c);
+		item.text_content=text_content;
 		
-		if(item.text_type==1 || !item.text_content.match(/[^a-zA-Z0-9\.]+/)){
-			var result_arr=[tmp_text_content];
-			var max_w=c.measureText(tmp_text_content).width;
+		if(fast.flag){
+			fast_func(data,item,fast);
+			c.font=item.text_size+"px 微軟正黑體";
+			console.log(JSON.stringify(fast))
 		}else{
-			var result_arr=get_ok_width_string(item,c);
-			var w=c.measureText(result_arr[result_arr.length-2]).width;
-			var w1=c.measureText(result_arr[result_arr.length-1]).width;
-			if(w/2 > w1){
-				item.text_content=tmp_text_content;
+			if(data){
+				break;
+			}else{
 				c.font=--item.text_size+"px 微軟正黑體";
-				continue;
-			}
-			
-			var max_w=0;
-			for(var i in result_arr){
-				var w=c.measureText(result_arr[i]).width;
-				if(w>max_w){
-					max_w=w;
-				}
 			}
 		}
-		
-		if(item.useFontBg && item.FontBgSize){
-			max_w+=item.FontBgSize*2;
-			max_h=item.text_size*1.2+item.FontBgSize*2;
-		}else{
-			max_h=item.text_size*1.2;
-		}
-		var total_height=result_arr.length*max_h;
-		
-		if(max_w>item.w || total_height>item.h){
-			c.font=--item.text_size+"px 微軟正黑體";
-			item.text_content=tmp_text_content;
-		}else{
+		// console.log(data.result_arr)
+		if(++count>50){
+			console.log("ggwp");
 			break;
 		}
 	}	
+	
+	var result_arr=data.result_arr;
+	var max_w=data.max_w;
+	var max_h=data.max_h;
+	var total_height=data.total_height;
 	
 	var y=0;	
 	if(item.text_vAlign==1){
@@ -225,7 +272,6 @@ function merge_text(item){
 		var text_img=make_text(text,item,c,max_w,max_h);
 		// c.fillStyle=["#ffeeee","#ffddff","#aaff00"][i];
 		// c.fillRect(x,y,text_img.width,text_img.height);
-		// return text_img;
 		c.drawImage(text_img,x,y);
 		y+=text_img.height;
 	}
