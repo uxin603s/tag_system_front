@@ -20,8 +20,8 @@
 				text_vAlign:1,
 				text_size:500,
 				text_color:"#FF0000",
-				text_content:"Wdfgdfggdfg dfgdfgds fgdgfdg123.",
-				// text_content:"我我我我我",
+				// text_content:"Wdfgdfggdfg dfgds fgdgfdg123.",
+				text_content:"我我我我我",
 				text_type:0,
 				
 				useFontBg:1,

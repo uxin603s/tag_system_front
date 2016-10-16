@@ -175,6 +175,15 @@ function merge_text(item){
 			var max_w=c.measureText(tmp_text_content).width;
 		}else{
 			var result_arr=get_ok_width_string(item,c);
+			if(result_arr.length==2){
+				var w=c.measureText(result_arr[0]).width;
+				var w1=c.measureText(result_arr[1]).width;
+				if(w/2 > w1){
+					item.text_content=tmp_text_content;
+					item.text_type=1;
+					continue;
+				}
+			}
 			var max_w=0;
 			for(var i in result_arr){
 				var w=c.measureText(result_arr[i]).width;

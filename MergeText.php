@@ -225,6 +225,14 @@ class MergeText{
 				$max_h=$info['textHeight'];
 			}else{
 				$result_arr=self::get_ok_width_string($item,$c);
+				if(count($result_arr)==2){
+					$info=self::measureText($c,$item,$result_arr[0]);
+					$info1=self::measureText($c,$item,$result_arr[1]);
+					if($info['textWidth']/2 > $info1['textWidth']){
+						$item['text_type']=1;
+						continue;
+					}
+				}
 				foreach($result_arr as $text){
 					$info=self::measureText($c,$item,$text);
 					if($info['textWidth']>$max_w){
