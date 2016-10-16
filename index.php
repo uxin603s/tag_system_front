@@ -16,12 +16,13 @@
 				zIndex:1,
 				x:50,y:50,w:500,h:300,
 				type:1,
-				text_hAlign:1,
-				text_vAlign:1,
+				text_hAlign:2,
+				text_vAlign:2,
 				text_size:500,
 				text_color:"#FF0000",
-				text_content:"dsfsdfdfs dfsdfsdfs dfdsffsdfsdf",
-				// text_content:"我我我我我我我我我",
+				text_content:"wang chi dsfsdfdsf fdsfdf fdfffghfdfffghfdfffghfdfffghfdfffgh",
+				// text_content:"我我\n我我g我我\n我我我",
+				// text_content:"我我我我我我我我我我我",
 				text_type:0,
 				
 				useFontBg:1,
@@ -44,7 +45,6 @@
 			$.post("ajax.php",post_data,function(res){
 				console.log(res)
 				$("img").eq(0).attr("src",res.data);
-				// console.log(res.count)
 			},"json")
 			var start_time=Date.now();
 			var src=merge_text(text_position).toDataURL();

@@ -13,7 +13,9 @@ function merge_text(item){
 		item.text_size=Math.floor(item.text_size*scale);//計算需要縮放比例
 	}
 	function get_ok_width_string(item,c,result_arr,break_time){
+		
 		if(item.text_content.indexOf("\n")!=-1){
+			item.text_content=item.text_content.replace(/###space###/g," ");
 			return item.text_content.split("\n");
 		}
 		
@@ -31,10 +33,12 @@ function merge_text(item){
 		var type=0;
 		
 		if(item.text_content.indexOf(" ")==-1){
+			item.text_content=item.text_content.replace(/###space###/g," ");
 			var tmp_line_limit_count=Math.floor(item.w/item.text_size*2);
 			type=1;
 		}else{
 			if(typeof(item.text_content)=="string"){
+				item.text_content=item.text_content.replace(/###space###/g," ");
 				item.text_content=item.text_content.split(" ");
 			}
 			type=2;
@@ -81,6 +85,11 @@ function merge_text(item){
 				return result_arr;
 			}
 		}else{
+			
+			if(item.text_content.length==1){
+				result_arr.push(item.text_content[0]);
+				return result_arr;
+			}
 			item.text_content=item.text_content.join(" ");
 		}
 		
@@ -100,7 +109,7 @@ function merge_text(item){
 			c.strokeStyle = item.FontBgColor;		
 		}
 		var x=0;
-		var y=item.text_size/2;
+		var y=(item.text_size)/2;
 		
 		var text_w=c.measureText(text).width;
 		if(item.text_hAlign==0){
@@ -117,8 +126,8 @@ function merge_text(item){
 				x+=item.FontBgSize
 			}else if(item.text_hAlign==1){
 				x+=item.FontBgSize/2;
-			}else if(item.text_hAlign==2){
-				x-=item.FontBgSize;
+			}else if(item.text_hAlign==2){// 
+				x-=item.FontBgSize/2;
 			}
 			y+=item.FontBgSize/2;
 		}
@@ -155,8 +164,8 @@ function merge_text(item){
 			var max_w=c.measureText(item.text_content).width;
 		}else{
 			var result_arr=get_ok_width_string(item,c);
-			var w=c.measureText(result_arr[result_arr.length-2]).width;
-			var w1=c.measureText(result_arr[result_arr.length-1]).width;
+			var w=c.measureText(result_arr[result_arr.length-1]).width;
+			var w1=c.measureText(result_arr[result_arr.length-2]).width;
 			if(w/2 > w1){
 				return false;
 			}
@@ -172,7 +181,7 @@ function merge_text(item){
 		var max_h=item.text_size*1.2;
 		if(item.useFontBg && item.FontBgSize){
 			max_w+=item.FontBgSize*2;
-			max_h+=item.FontBgSize*2;
+			max_h+=item.FontBgSize;
 		}
 		
 		var total_height=result_arr.length*max_h;
@@ -207,7 +216,7 @@ function merge_text(item){
 		item.text_content=item.text_content.split("").join("\n")
 	}
 	var fast={
-		flag:false,
+		flag:true,
 		max:item.text_size,
 		min:0,
 	};
@@ -223,11 +232,8 @@ function merge_text(item){
 		fast.flag=Math.floor(fast.min)!=Math.floor(fast.max);
 	};
 	var count=0;
-	// var tt=[];
 	while(true){
-		if(count>10 && !fast.flag){
-			fast.flag=true;
-		}
+		
 		var text_content=item.text_content;
 		var data=break_line(item,c);
 		item.text_content=text_content;
@@ -244,7 +250,7 @@ function merge_text(item){
 			}
 		}
 		// console.log(data.result_arr)
-		if(++count>50){
+		if(++count>100){
 			console.log("ggwp");
 			break;
 		}
@@ -254,13 +260,14 @@ function merge_text(item){
 	var max_w=data.max_w;
 	var max_h=data.max_h;
 	var total_height=data.total_height;
-	
+	// console.log(data)
 	var y=0;	
 	if(item.text_vAlign==1){
 		y=(item.h-total_height)/2;
 	}else if(item.text_vAlign==2){
 		y=(item.h-total_height);
 	}
+	
 	var x=0;
 	if(item.text_hAlign==1){
 		x=(item.w-max_w)/2;
@@ -268,10 +275,10 @@ function merge_text(item){
 		x=(item.w-max_w);
 	}
 	for(var i in result_arr){
-		var text=result_arr[i].replace(/###space###/g," ");
+		var text=result_arr[i]
 		var text_img=make_text(text,item,c,max_w,max_h);
-		// c.fillStyle=["#ffeeee","#ffddff","#aaff00"][i];
-		// c.fillRect(x,y,text_img.width,text_img.height);
+		c.fillStyle=["#ffeeee","#ffddff","#aaff00"][i];
+		c.fillRect(x,y,text_img.width,text_img.height);
 		c.drawImage(text_img,x,y);
 		y+=text_img.height;
 	}

@@ -93,7 +93,13 @@ class MergeText{
 				return $result_arr;
 			}
 		}else{
+			
+			if(count($item['text_content'])==1){
+				$result_arr[]=$item['text_content'][0];
+				return $result_arr;
+			}
 			$item['text_content']=implode(" ",$item['text_content']);
+			
 		}
 		
 		
@@ -194,8 +200,8 @@ class MergeText{
 			$max_h=$info['textHeight'];
 		}else{
 			$result_arr=self::get_ok_width_string($item,$c);
-			$info=self::measureText($c,$item,$result_arr[count($result_arr)-2]);
-			$info1=self::measureText($c,$item,$result_arr[count($result_arr)-1]);
+			$info=self::measureText($c,$item,$result_arr[count($result_arr)-1]);
+			$info1=self::measureText($c,$item,$result_arr[count($result_arr)-2]);
 			
 			if($info['textWidth']/2 > $info1['textWidth']){
 				return false;
@@ -243,7 +249,7 @@ class MergeText{
 		}
 		
 		$fast=[
-			"flag"=>false,
+			"flag"=>true,
 			"max"=>$item["text_size"],
 			"min"=>0,
 		];
@@ -260,9 +266,7 @@ class MergeText{
 		$count=0;
 		$tt=[];
 		while(true){
-			if($count>10 && !$fast['flag']){
-				$fast['flag']=true;
-			}
+			
 			$text_content=$item['text_content'];
 			$data=self::break_line($item,$c);
 			$item['text_content']=$text_content;
@@ -277,8 +281,7 @@ class MergeText{
 					--$item["text_size"];
 				}
 			}
-			if(++$count>50){
-				// var_dump("ggwp");
+			if(++$count>100){
 				break;
 			}
 		}
@@ -287,7 +290,7 @@ class MergeText{
 		$max_w=$data['max_w'];
 		$max_h=$data['max_h'];
 		$total_height=$data['total_height'];
-		// return $data;	
+		
 		$y=0;	
 		if($item['text_vAlign']==1){
 			$y=($item['h']-$total_height)/2;
@@ -303,6 +306,8 @@ class MergeText{
 		foreach($result_arr as  $val){
 			$text=preg_replace("/###space###/"," ",$val);
 			$text_img=self::make_text($text,$item,$max_w,$max_h);
+			// var_dump($y);
+			
 			$c->compositeImage($text_img,\imagick::COMPOSITE_OVER,$x,$y);
 			$y+=$max_h;
 		}
