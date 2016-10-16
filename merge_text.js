@@ -1,4 +1,4 @@
-function merge_text(item,index,message){
+function merge_text(item){
 	function area_scale_w_h(item){
 		var len=item.text_content.length;	
 		var area=len*item.text_size*item.text_size;//計算文字面積
@@ -85,25 +85,50 @@ function merge_text(item,index,message){
 		
 		return get_ok_width_string(item,c,result_arr,break_time);
 	}
-	function make_text(text,item,c){
-		var w=c.measureText(text).width;	
-		var h=item.text_size*1.2;
-		if(item.useFontBg && item.FontBgSize){
-			h+=item.FontBgSize;
-		}
+	
+	
+	function make_text(text,item,c,w,h){
+		
 		var c=init_canvas(w,h);	
 		c.fillStyle=item.text_color;
 		c.font=item.text_size+"px 微軟正黑體";
 		c.textBaseline="middle";
-		
-		var y=item.text_size/2;	
 		if(item.useFontBg && item.FontBgSize){
-			y+=item.FontBgSize/2;
 			c.lineWidth = item.FontBgSize;
 			c.strokeStyle = item.FontBgColor;		
-			c.strokeText(text,0,y);	
 		}
-		c.fillText(text,0,y);	
+		var x=0;
+		var y=item.text_size/2;
+		
+		var text_w=c.measureText(text).width;
+		if(item.text_hAlign==0){
+			x=0;
+		}else if(item.text_hAlign==1){
+			x=(w-text_w)/2;
+		}else if(item.text_hAlign==2){
+			x=(w-text_w);
+		}
+		
+		
+		if(item.useFontBg && item.FontBgSize){
+			if(item.text_hAlign==0){
+				x+=item.FontBgSize
+			}else if(item.text_hAlign==1){
+				x+=item.FontBgSize/2;
+			}else if(item.text_hAlign==2){
+				x-=item.FontBgSize;
+			}
+			y+=item.FontBgSize/2;
+		}
+		var line_x=x;
+		var line_w=x+text_w;
+		
+		if(item.useFontBg && item.FontBgSize){
+			line_x-=item.FontBgSize/2;
+			line_w+=item.FontBgSize/2;
+			c.strokeText(text,x,y);	
+		}
+		c.fillText(text,x,y);	
 		if(item.useLine){
 			if(item.useLine==1){
 				var line_y=.9;
@@ -113,10 +138,9 @@ function merge_text(item,index,message){
 			c.strokeStyle = item.text_color;
 			c.lineWidth = Math.floor(item.text_size/10);
 			
-			var x=w;
 			var y=h*line_y-c.lineWidth/2
-			c.moveTo(0,y);
-			c.lineTo(x,y);
+			c.moveTo(line_x,y);
+			c.lineTo(line_w,y);
 			c.stroke();
 		}		
 		return c.canvas;	
@@ -146,34 +170,29 @@ function merge_text(item,index,message){
 		count++;
 		var tmp_text_content=item.text_content;
 		
-		var break_flag=false;
 		if(item.text_type==1 || !item.text_content.match(/[^a-zA-Z0-9\.]+/)){
 			var result_arr=[tmp_text_content];
-			var w=c.measureText(tmp_text_content).width;
-			
+			var max_w=c.measureText(tmp_text_content).width;
 		}else{
 			var result_arr=get_ok_width_string(item,c);
-			
-			var w=result_arr.map(function(value){
-				return c.measureText(value).width;
-			}).reduce(function(prev,curr){
-				if(prev>curr){
-					return prev;
+			var max_w=0;
+			for(var i in result_arr){
+				var w=c.measureText(result_arr[i]).width;
+				if(w>max_w){
+					max_w=w;
 				}
-				return curr;
-			},0)
-			// console.log(result_arr,w)
+			}
 		}
 		
-		break_flag=break_flag || w >item.w;
 		if(item.useFontBg && item.FontBgSize){
-			var text_size=item.text_size*1.2+item.FontBgSize;
+			max_w+=item.FontBgSize*2;
+			max_h=item.text_size*1.2+item.FontBgSize*2;
 		}else{
-			var text_size=item.text_size*1.2;
+			max_h=item.text_size*1.2;
 		}
-		var total_height=result_arr.length*text_size;
-		break_flag=break_flag || total_height>item.h
-		if(break_flag){
+		var total_height=result_arr.length*max_h;
+		
+		if(max_w>item.w || total_height>item.h){
 			c.font=--item.text_size+"px 微軟正黑體";
 			item.text_content=tmp_text_content;
 		}else{
@@ -187,20 +206,21 @@ function merge_text(item,index,message){
 	}else if(item.text_vAlign==2){
 		y=(item.h-total_height);
 	}
+	var x=0;
+	if(item.text_hAlign==1){
+		x=(item.w-max_w)/2;
+	}else if(item.text_hAlign==2){
+		x=(item.w-max_w);
+	}
 	for(var i in result_arr){
 		var text=result_arr[i].replace(/###space###/g," ");
-		var text_img=make_text(text,item,c);
-		var x=0;
-		if(item.text_hAlign==1){
-			x=(item.w-text_img.width)/2;
-		}else if(item.text_hAlign==2){
-			x=(item.w-text_img.width);
-		}
-		// c.fillStyle=["#ff0000","#00ddff","#00ff00"][i];
+		var text_img=make_text(text,item,c,max_w,max_h);
+		// c.fillStyle=["#ffeeee","#ffddff","#aaff00"][i];
 		// c.fillRect(x,y,text_img.width,text_img.height);
+		// return text_img;
 		c.drawImage(text_img,x,y);
 		y+=text_img.height;
 	}
-	message.push("圖層"+index+"文字合成判斷"+count+"次");
+	console.log("文字合成判斷"+count+"次");
 	return c.canvas;
 }
