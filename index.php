@@ -14,20 +14,20 @@
 		$(document).ready(function(){
 			var text_position={
 				zIndex:1,
-				x:50,y:50,w:500,h:300,
+				x:50,y:50,w:400,h:300,
 				type:1,
-				text_hAlign:2,
-				text_vAlign:2,
+				text_hAlign:0,
+				text_vAlign:0,
 				text_size:500,
 				text_color:"#FF0000",
 				// text_content:"###user_name###wang chi###user_name###jkhfjdfhfghgf",
-				text_content:"我我我我我我我 我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我",
+				text_content:"",
 				// text_content:"我我\n我我g我我\n我我我",
 				// text_content:"我我我我我我我我我我我",
 				text_type:0,
 				
 				useFontBg:1,
-				FontBgSize:10,
+				FontBgSize:0,
 				FontBgColor:"#00FF00",
 				
 				useLine:2,
@@ -47,10 +47,22 @@
 				// console.log(res)
 				// $("img").eq(0).attr("src",res.data);
 			// },"json")
-			var start_time=Date.now();
-			var src=merge_text(text_position).toDataURL();
-			console.log((Date.now()-start_time)/1000);
-			$("img").eq(1).attr("src",src);
+			// var start_time=Date.now();
+			// console.log((Date.now()-start_time)/1000);
+			
+			
+			var text_list=["我gg"]
+			setInterval(function(){
+			// setTimeout(function(){
+				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
+				// console.log(text_position.text_content.length)
+				text_position.text_hAlign=1
+				text_position.text_vAlign=1
+				var src=merge_text(text_position).toDataURL();
+				$("img").eq(1).attr("src",src);
+			},50)
+			// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
+			// text_position.text_vAlign=(text_position.text_vAlign+1) % 3
 			return ;
 			
 			
