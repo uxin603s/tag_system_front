@@ -27,7 +27,7 @@
 				text_type:0,
 				
 				useFontBg:1,
-				FontBgSize:0,
+				FontBgSize:5,
 				FontBgColor:"#00FF00",
 				
 				useLine:2,
@@ -51,15 +51,22 @@
 			// console.log((Date.now()-start_time)/1000);
 			
 			
-			var text_list=["我gg"]
-			// setInterval(function(){
-			setTimeout(function(){
+			var text_list=["我"]
+			var count=0
+			var dd=setInterval(function(){
+			// setTimeout(function(){
 				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
 				// console.log(text_position.text_content.length)
 				text_position.text_hAlign=1
 				text_position.text_vAlign=1
-				var src=merge_text(text_position).toDataURL();
-				$("img").eq(1).attr("src",src);
+				var src=merge_text(text_position);
+				
+				if(src){
+					$("img").eq(1).attr("src",src.toDataURL());
+				}else{
+					clearTimeout(dd);
+				}
+				if(++count>10000)clearTimeout(dd);
 			},50)
 			// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
 			// text_position.text_vAlign=(text_position.text_vAlign+1) % 3
