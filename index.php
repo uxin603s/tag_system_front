@@ -20,7 +20,8 @@
 				text_vAlign:2,
 				text_size:500,
 				text_color:"#FF0000",
-				text_content:"wang chi dsfsdfdsf fdsfdf fdfffghfdfffghfdfffghfdfffghfdfffgh",
+				// text_content:"###user_name###wang chi###user_name###jkhfjdfhfghgf",
+				text_content:"我我我我我我我 我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我",
 				// text_content:"我我\n我我g我我\n我我我",
 				// text_content:"我我我我我我我我我我我",
 				text_type:0,
@@ -38,14 +39,14 @@
 				rotate:0,
 			}
 			
-			var post_data={
-				func_name:"MergeText::init",
-				arg:text_position,
-			}
-			$.post("ajax.php",post_data,function(res){
-				console.log(res)
-				$("img").eq(0).attr("src",res.data);
-			},"json")
+			// var post_data={
+				// func_name:"MergeText::init",
+				// arg:text_position,
+			// }
+			// $.post("ajax.php",post_data,function(res){
+				// console.log(res)
+				// $("img").eq(0).attr("src",res.data);
+			// },"json")
 			var start_time=Date.now();
 			var src=merge_text(text_position).toDataURL();
 			console.log((Date.now()-start_time)/1000);
