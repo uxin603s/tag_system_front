@@ -25,7 +25,7 @@ function merge_text(item){
 	// }
 	// ###user_name###wang chi###user_name###
 	
-	function get_ok_width_string(item,c){
+	function get_ok_width_string(item,c,limit_w){
 		var result_arr=[];	
 		if(item.text_content.indexOf("\n")!=-1){
 			item.text_content=item.text_content.replace(/###user_name###/g," ");
@@ -43,29 +43,29 @@ function merge_text(item){
 		if(item.text_content.indexOf(" ")==-1){
 			var get_count=Math.floor(item.w/item.text_size)*2;
 			// console.log(get_count)
-			var limit_w=item.w;;
+			if(!limit_w){
+				var limit_w=item.w;;
+			}
 			type=1;
 			var tmp_line_limit_count=get_count;
 			var tmp_text_content=item.text_content;
-			if(item.text_size<20){
-				limit_w*=20/item.text_size;
-				get_count*=20/item.text_size
-				item.text_size=20;
-				c.font=item.text_size+"px 微軟正黑體";
+			// if(item.text_size<20){
 				// limit_w*=20/item.text_size;
+				// get_count*=20/item.text_size
 				// item.text_size=20;
 				// c.font=item.text_size+"px 微軟正黑體";
-			}
+			// }
 		}else{
 			var tmp_text_content=item.text_content.split(" ");
-			var limit_w=0;
-			for(var i in tmp_text_content){
-				var tmp_w=c.measureText(tmp_text_content[i]).width;
-				if(tmp_w>limit_w){
-					limit_w=tmp_w;
+			if(!limit_w){			
+				var limit_w=0;
+				for(var i in tmp_text_content){
+					var tmp_w=c.measureText(tmp_text_content[i]).width;
+					if(tmp_w>limit_w){
+						limit_w=tmp_w;
+					}
 				}
 			}
-			// limit_w*=10;
 			type=2;
 			var tmp_arr=[];
 		}
@@ -214,15 +214,16 @@ function merge_text(item){
 			})
 		}
 	}
-	
-	// if(item.text_size<20){
-		// item.text_size=20;
-		// c.font=item.text_size+"px 微軟正黑體";
-		// for(var i in result_arr){
-			// var text=result_arr[i].text;
-			// result_arr[i].w=c.measureText(text).width;
-		// }
-	// }
+	alert("計算出 寬和高 不符合比例改變limit_w");
+	return
+	if(item.text_size<20){
+		item.text_size=20;
+		c.font=item.text_size+"px 微軟正黑體";
+		for(var i in result_arr){
+			var text=result_arr[i].text;
+			result_arr[i].w=c.measureText(text).width;
+		}
+	}
 	
 	var max_h=item.text_size*1.5;
 	if(item.useFontBg && item.FontBgSize){

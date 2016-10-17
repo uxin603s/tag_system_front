@@ -52,8 +52,8 @@
 			
 			
 			var text_list=["我gg"]
-			setInterval(function(){
-			// setTimeout(function(){
+			// setInterval(function(){
+			setTimeout(function(){
 				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
 				// console.log(text_position.text_content.length)
 				text_position.text_hAlign=1
