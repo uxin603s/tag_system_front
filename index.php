@@ -51,12 +51,16 @@
 			// console.log((Date.now()-start_time)/1000);
 			
 			
-			var text_list=["###user_name###wang###space###chi###user_name###gogo###user_name###gogo###space###qq###user_name###",]
+			var text_list=["###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###","吃飯","與"]
+			// var text_list=["###user_name###wang###space###chi###user_name###與與與與與###user_name###ggwpggwpggwp###user_name###"]
+			// var text_list=["吃飯與與與與與###user_name###wang###space###chi###user_name###"]
+			// var text_list=["###user_name###wang###space###chi###user_name###吃飯吃飯與吃飯吃飯###user_name###wang###space###chi###user_name###與###user_name###wang###space###chi###user_name###與###user_name###ggwp###user_name###與###user_name###ggwp###user_name###"]
+			// var text_list=["###user_name###ggwp###user_name######user_name###ggwp###user_name###吃飯"]
 			var count=0
 			// var dd=setInterval(function(){
 			setTimeout(function(){
 				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
-				// console.log(text_position.text_content.length)
+				// console.log(text_position.text_content)
 				text_position.text_hAlign=1
 				text_position.text_vAlign=1
 				// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
