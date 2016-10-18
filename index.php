@@ -51,14 +51,16 @@
 			// console.log((Date.now()-start_time)/1000);
 			
 			
-			var text_list=["我"]
+			var text_list=["###user_name###wang###space###chi###user_name###gogo###user_name###gogo###space###qq###user_name###",]
 			var count=0
-			var dd=setInterval(function(){
-			// setTimeout(function(){
+			// var dd=setInterval(function(){
+			setTimeout(function(){
 				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
 				// console.log(text_position.text_content.length)
 				text_position.text_hAlign=1
 				text_position.text_vAlign=1
+				// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
+				// text_position.text_vAlign=(text_position.text_vAlign+1) % 3
 				var src=merge_text(text_position);
 				
 				if(src){
@@ -68,8 +70,7 @@
 				}
 				if(++count>10000)clearTimeout(dd);
 			},50)
-			// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
-			// text_position.text_vAlign=(text_position.text_vAlign+1) % 3
+			
 			return ;
 			
 			

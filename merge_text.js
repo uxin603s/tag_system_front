@@ -1,29 +1,16 @@
+
 function merge_text(item){
 	item=JSON.parse(JSON.stringify(item));
-	function area_scale_w_h(item){
+	function area_scale_w_h(item){		
 		var len=item.text_content.length;	
 		var text_size=item.text_size;
 		if(item.useFontBg && item.FontBgSize){
 			text_size+=item.FontBgSize*2;
 		}
 		var area=len*text_size*text_size*1.2*1.2;//計算文字面積
-		
 		var scale=Math.sqrt(item.w*item.h/area);		
-		
 		item.text_size=Math.floor(item.text_size*scale);//計算需要縮放比例
-		
-		// var area_new=len*item.text_size*item.text_size*1.1*1.1;//計算文字面積
-		// console.log(area,area_new)
 	}
-	// var tmp=item.text_content.match(/###user_name###([\w\W]+?)###user_name###/)
-	// if(tmp){
-		// console.log(tmp)
-		// var user_name_tmp=item.text_content.substr(tmp.index,tmp[0].length);
-		// console.log(user_name_tmp)
-		// item.text_content=item.text_content.substr(tmp[0].length,item.text_content.length-tmp[0].length);
-		// console.log(item.text_content)
-	// }
-	// ###user_name###wang chi###user_name###
 	
 	function get_ok_width_string(item,c,limit_w,count_re){
 		var result_arr=[];	
@@ -41,7 +28,6 @@ function merge_text(item){
 			var count_re=0;
 		}
 		
-		
 		var type=0;
 		if(item.text_content.indexOf(" ")==-1){
 			
@@ -49,7 +35,7 @@ function merge_text(item){
 				var limit_w=item.w;
 			}
 			var get_count=Math.floor(limit_w/item.text_size*1.5);
-			// console.log(limit_w,get_count)
+			
 			type=1;
 			var tmp_line_limit_count=get_count;
 			var tmp_text_content=item.text_content;
@@ -69,7 +55,11 @@ function merge_text(item){
 			var tmp_arr=[];
 		}
 		
+		
+		// console.log(user_name)
+	
 		var start_time=Date.now();
+		var while_count=0
 		while(true){
 			if(type==1){
 				var text=tmp_text_content.substr(0,tmp_line_limit_count);
@@ -103,6 +93,7 @@ function merge_text(item){
 								// continue;
 							// }
 						// }
+						
 						break;
 					}
 				}
@@ -123,7 +114,9 @@ function merge_text(item){
 					
 				}
 			}
-			if(((Date.now()-start_time)/2000)>1){
+			if(++while_count>1000000){
+				
+				console.log(while_count,result_arr)
 				throw "卡迴圈，強制中斷";
 			}
 		}
@@ -134,7 +127,16 @@ function merge_text(item){
 		}
 		
 		var max_w=0;
+		var min_w=0;
 		for(var i in result_arr){
+			if(!min_w){
+				min_w=result_arr[i].w
+			}else{
+				if(result_arr[i].w<min_w){
+					min_w=result_arr[i].w
+				}
+			}
+			
 			if(result_arr[i].w>max_w){
 				max_w=result_arr[i].w
 			}
@@ -149,14 +151,14 @@ function merge_text(item){
 			if(type==1){
 				limit_w*=1.1;
 			}else{
-				limit_w*=2;
+				limit_w+=min_w/2;
 			}
 			// console.log(limit_w)
 			if(count_re>100){
 				console.log("error",limit_w,item.text_size,check_h,new_h)
 				throw "卡迴圈";
 			}
-			console.log("return")
+			console.log("again")
 			return get_ok_width_string(item,c,limit_w,++count_re);
 		}else{
 			console.log("ok")
@@ -175,7 +177,9 @@ function merge_text(item){
 		}
 		var x=0;
 		var y=item.text_size/2;
-		
+		if(item.useFontBg && item.FontBgSize){
+			x+=item.FontBgSize;
+		}
 		if(item.useFontBg && item.FontBgSize){
 			c.strokeText(text,x,y);	
 		}
@@ -197,10 +201,45 @@ function merge_text(item){
 		return c.canvas;	
 	}	
 	
-	item.text_content=item.text_content.trim();
+	item.text_content=item.text_content.toString().trim();
 	if(item.text_size>item.h){
 		item.text_size=item.h;
 	}
+	// var tmp=text_content.match(/###user_name###([\w\W]+?)###user_name###/g)
+	// if(tmp){
+		// for(var i in tmp){
+			// var text=tmp[i].replace(/###user_name###/g,"")
+			// .replace(/###space###/g," ");
+			// while(text_content.indexOf(tmp[i])!=-1){
+				// text_content=text_content.replace(tmp[i],text);
+			// }
+		// }
+	// }
+	var tmp=item.text_content.match(/###user_name###([\w\W]+?)###user_name###/g)
+	var user_arr=[];
+	if(tmp){
+		for(var i in tmp){
+			var start=item.text_content.indexOf(tmp[i]);
+			var count=tmp[i].length;
+			var text_arr=item.text_content.split("");
+			var text=text_arr.slice(start,start+count).join("").replace(/###user_name###/g,"").replace(/###space###/g," ")
+			text_arr.splice(start,count,text)// tmp_text_content=text_arr.join("");
+			item.text_content=text_arr.join("");
+			user_arr.push({
+				start:start,
+				count:text.length,
+				index:0,
+			})
+		}
+	}
+	// for(var i in user_arr){
+		// var start=user_arr[i].start;
+		// var count=user_arr[i].count+start;
+		// var qq=item.text_content.split("").slice(start,count).join("")
+		// console.log(qq)		
+	// }
+	alert("偵測user_arr決定斷行")
+	return
 	area_scale_w_h(item);
 	
 	var c=init_canvas(item.w,item.h);
@@ -224,6 +263,7 @@ function merge_text(item){
 	if(item.text_type==0){
 		var result_arr=get_ok_width_string(item,c);
 	}else if(item.text_type==1){
+		item.text_content=item.text_content.replace(/###user_name###/g," ");
 		var text=item.text_content;
 		var width=c.measureText(text).width;
 		var result_arr=[
@@ -232,8 +272,8 @@ function merge_text(item){
 				w:width,
 			}
 		];
-		
 	}else if(item.text_type==2){
+		item.text_content=item.text_content.replace(/###user_name###/g," ");
 		var text_arr=item.text_content.split("");
 		var result_arr=[];
 		for(var i in text_arr){
@@ -265,6 +305,9 @@ function merge_text(item){
 		var data=result_arr[i];
 		var text=data.text;
 		var w=data.w;
+		if(item.useFontBg && item.FontBgSize){
+			w+=item.FontBgSize*2;
+		}
 		var text_img=make_text(text,item,w,max_h);
 		image_arr.push(text_img);
 	}
@@ -286,6 +329,7 @@ function merge_text(item){
 		new_c.drawImage(image_arr[i],x,y,w,h);
 		y+=h;
 	}
+	// return new_c.canvas
 	var scale=item.w/new_w;
 	new_w*=scale;
 	new_h*=scale;
