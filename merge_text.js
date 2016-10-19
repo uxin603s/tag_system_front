@@ -34,7 +34,8 @@ function merge_text(item){
 				var limit_w=0;
 				if(user_arr.list.length){
 					for(var i in user_arr.list){
-						var tmp_w=c.measureText(user_arr.list[i].text).width;
+						var text=user_arr.list[i].text;
+						var tmp_w=c.measureText(text).width;
 						if(tmp_w>limit_w)limit_w=tmp_w;
 					}
 				}else{
@@ -50,18 +51,25 @@ function merge_text(item){
 			if(!limit_w){			
 				var limit_w=0;
 				for(var i in tmp_text_content){
-					var text=tmp_text_content[i];
-					var tmp_w=c.measureText(text.replace(/###space###/g," ")).width;
+					var text=tmp_text_content[i].replace(/###space###/g," ");
+					var tmp_w=c.measureText(text).width;
 					if(tmp_w>limit_w){
 						limit_w=tmp_w;
 					}
 				}
-				// limit_w*=1.5;
 			}
+			
 			type=2;
 			var tmp_arr=[];
+			var tmp_width_arr=[];
+			var space_width=c.measureText(" ").width
+			var tmp_text_content_width=[];
+			for(var i in tmp_text_content){
+				var text=tmp_text_content[i].replace(/###space###/g," ");
+				tmp_text_content_width.push(c.measureText(text).width);
+			}
 		}
-		// console.log(tmp_text_content)
+		
 		var start_time=Date.now();
 		var while_count=0
 		while(true){
@@ -82,12 +90,34 @@ function merge_text(item){
 						// console.log(text,"a")
 					}
 				}
-			}else{
-				var text=tmp_text_content.join(" ").replace(/###space###/g," ");
+			}
+			else{
+				var index=tmp_text_content_width.length;
+				do{
+					var tmp=tmp_text_content_width.slice(0,index);
+					var width=tmp.reduce(function(prev,curr){
+						var width_tmp=0;
+						if(prev!=0)width_tmp+=space_width;
+						width_tmp+=prev+curr;
+						return width_tmp;
+					},0);
+					if(width>limit_w){
+						index--;
+					}else{
+						break;
+					}
+				}while(true);
+				
+				var text=tmp_text_content.splice(0,index).join(" ").replace(/###space###/g," ");
+				var width=c.measureText(text).width;
+				
+				tmp_text_content_width.splice(0,index)
+				
 			}
 				
-			var width=c.measureText(text).width;
+			
 			if(type==1){
+				var width=c.measureText(text).width;
 				if(width>limit_w){
 					user_arr.index-=text.length;
 					tmp_line_limit_count--;
@@ -119,25 +149,21 @@ function merge_text(item){
 						break;
 					}
 				}
-			}else{
-				if(width>limit_w && tmp_text_content.length!==1){
-					tmp_arr.unshift(tmp_text_content.pop());
-				}else{
-					while_count=0;
-					if(text){
-						result_arr.push({text:text,w:width});
-					}
-					tmp_text_content=tmp_arr;
-					
-					if(tmp_text_content.length){
-						var tmp_arr=[];
-					}else{
-						
-						break;
-					}
+			}
+			else{
+				
+				if(text){
+					result_arr.push({text:text,w:width});
+				}
+				
+				
+				if(!tmp_text_content.length){
+					break;
 					
 				}
+				
 			}
+			
 			if(++while_count>1000){
 				console.log(user_arr.source,result_arr,while_count)
 				throw "卡迴圈，強制中斷";
@@ -166,31 +192,24 @@ function merge_text(item){
 		var new_w=max_w;
 		var new_h=max_h*result_arr.length;
 		var check_h=h=new_w*item.h/item.w
-		// if(!user_arr.text_list.length)
-		// console.log(result_arr.length)
-		// if(false)
+		
 		if(result_arr.length!=1)
 		if(check_h<new_h){
-			// var limit_w=max_w;
 			
 			if(type==1){
 				limit_w*=1.1;
 			}else{
-				// limit_w*=2;
-				// limit_w+=max_w/3;
 				limit_w*=1.1;
-				// limit_w+=min_w/2;
 			}
-			// console.log(limit_w)
 			if(count_re>100){
 				console.log("error",user_arr.source,limit_w,item.text_size,check_h,new_h)
 				throw "卡迴圈";
 			}
-			
 			// console.log("again")
 			return get_ok_width_string(item,c,limit_w,user_arr,++count_re);
 		}
-			// console.log("ok")
+		// console.log("ok",count_re);
+		
 		return result_arr;
 		
 	}
@@ -222,7 +241,12 @@ function merge_text(item){
 			c.strokeStyle = item.text_color;
 			c.lineWidth = Math.floor(item.text_size/10);
 			
-			var y=h*line_y-c.lineWidth/2
+			var y=h
+			if(item.useFontBg && item.FontBgSize){
+				y-=item.FontBgSize;
+			}
+			y*=line_y;
+			y-=c.lineWidth/2
 			c.moveTo(0,y);
 			c.lineTo(w,y);
 			c.stroke();
@@ -261,18 +285,7 @@ function merge_text(item){
 		user_arr.list.reverse();
 		
 	}
-	// console.log(user_arr.list);
 	
-	// for(var i in user_arr.list){
-		// var start=user_arr.list[i].start;
-		// var count=user_arr.list[i].count;
-		// var end=start+count;
-		// var qq=item.text_content.split("").slice(start,end).join("")
-		// console.log(qq)		
-	// }
-	// return
-	// alert("偵測user_arr決定斷行")
-	// return
 	area_scale_w_h(item);
 	
 	var c=init_canvas(item.w,item.h);
@@ -297,7 +310,7 @@ function merge_text(item){
 	}else if(item.text_type==1){
 		item.text_content=item.text_content.replace(/###user_name###/g," ");
 		var text=item.text_content;
-		var width=c.measureText(text).width;
+		var width=Math.ceil(c.measureText(text).width);
 		var result_arr=[
 			{
 				text:text,
@@ -310,18 +323,16 @@ function merge_text(item){
 		var result_arr=[];
 		for(var i in text_arr){
 			var text=text_arr[i];
-			var width=c.measureText(text).width;
+			var width=Math.ceil(c.measureText(text).width);
 			result_arr.push({
 				text:text,
 				w:width,
 			})
 		}
 	}
-		
+	
 	var max_h=item.text_size*1.2;
-	if(item.useFontBg && item.FontBgSize){
-		max_h+=item.FontBgSize;
-	}
+	
 	
 	var max_w=0;
 	for(var i in result_arr){
@@ -329,9 +340,14 @@ function merge_text(item){
 			max_w=result_arr[i].w
 		}
 	}
+	max_w=Math.ceil(max_w)
+	max_h=Math.ceil(max_h);
+	if(item.useFontBg && item.FontBgSize){
+		max_w+=item.FontBgSize;
+		max_h+=item.FontBgSize;
+	}
 	var new_w=max_w;
 	var new_h=max_h*result_arr.length;	
-		
 	var image_arr=[];
 	for(var i in result_arr){
 		var data=result_arr[i];
@@ -340,6 +356,8 @@ function merge_text(item){
 		if(item.useFontBg && item.FontBgSize){
 			w+=item.FontBgSize*2;
 		}
+		w=Math.ceil(w)
+		
 		var text_img=make_text(text,item,w,max_h);
 		image_arr.push(text_img);
 	}
@@ -351,6 +369,7 @@ function merge_text(item){
 		var data=image_arr[i];
 		var w=data.width;
 		var h=data.height;
+		
 		if(item.text_hAlign==0){
 			x=0;
 		}else if(item.text_hAlign==1){
