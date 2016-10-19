@@ -32,9 +32,9 @@ function merge_text(item){
 		if(user_arr.source.indexOf(" ")==-1){
 			if(!limit_w){
 				var limit_w=0;
-				if(user_arr.text_list.length){
-					for(var i in user_arr.text_list){
-						var tmp_w=c.measureText(user_arr.text_list[i]).width;
+				if(user_arr.list.length){
+					for(var i in user_arr.list){
+						var tmp_w=c.measureText(user_arr.list[i].text).width;
 						if(tmp_w>limit_w)limit_w=tmp_w;
 					}
 				}else{
@@ -46,11 +46,12 @@ function merge_text(item){
 			type=1;
 			var tmp_line_limit_count=get_count;
 		}else{
-			tmp_text_content=tmp_text_content.split(" ");
+			tmp_text_content=user_arr.source.replace(/###user_name###/g,"").split(" ");
 			if(!limit_w){			
 				var limit_w=0;
 				for(var i in tmp_text_content){
-					var tmp_w=c.measureText(tmp_text_content[i]).width;
+					var text=tmp_text_content[i];
+					var tmp_w=c.measureText(text.replace(/###space###/g," ")).width;
 					if(tmp_w>limit_w){
 						limit_w=tmp_w;
 					}
@@ -59,15 +60,7 @@ function merge_text(item){
 			type=2;
 			var tmp_arr=[];
 		}
-		
-		// var max_len=user_arr.text_list.reduce(function(prev,curr){
-			// if(prev>curr.length){
-				// return prev;
-			// }
-			// return curr.length;
-		// },0);
-		// console.log(user_arr.list)
-		
+				
 		var start_time=Date.now();
 		var while_count=0
 		while(true){
@@ -77,7 +70,6 @@ function merge_text(item){
 				for(var i in user_arr.list){
 					var start=user_arr.list[i].start
 					var end=user_arr.list[i].end
-					// console.log(start,end,user_arr.index)
 					if(start <= user_arr.index && user_arr.index <end){
 						// console.log(start,user_arr.index,end)
 						user_arr.index-=text.length;
@@ -89,9 +81,8 @@ function merge_text(item){
 						// console.log(text,"a")
 					}
 				}
-				// console.log(user_arr.index)
 			}else{
-				var text=tmp_text_content.join(" ");
+				var text=tmp_text_content.join(" ").replace(/###space###/g," ");
 			}
 				
 			var width=c.measureText(text).width;
@@ -242,7 +233,6 @@ function merge_text(item){
 		source:item.text_content,
 		list:[],
 		index:0,
-		text_list:[],
 	};
 	if(tmp){
 		for(var i in tmp){
@@ -253,7 +243,6 @@ function merge_text(item){
 			var text=source.replace(/###user_name###/g,"").replace(/###space###/g," ")
 			text_arr.splice(start,count,text)// tmp_text_content=text_arr.join("");
 			item.text_content=text_arr.join("");
-			user_arr.text_list[text]=text;
 			user_arr.list.push({
 				text:text,
 				source:source,
@@ -263,11 +252,7 @@ function merge_text(item){
 			})
 		}
 		user_arr.list.reverse();
-		var tmp=[];
-		for(var i in user_arr.text_list){
-			tmp.push(i)
-		}
-		user_arr.text_list=tmp;
+		
 	}
 	// console.log(user_arr.list);
 	

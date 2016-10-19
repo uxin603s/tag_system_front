@@ -51,7 +51,7 @@
 			// console.log((Date.now()-start_time)/1000);
 			
 			
-			var text_list=["###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###","吃飯","與"]
+			var text_list=["###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###","吃飯 ","與"]
 			// var text_list=["###user_name###wang###space###chi###user_name###與與與與與###user_name###ggwpggwpggwp###user_name###"]
 			// var text_list=["吃飯與與與與與###user_name###wang###space###chi###user_name###"]
 			// var text_list=["###user_name###wang###space###chi###user_name###吃飯吃飯與吃飯吃飯###user_name###wang###space###chi###user_name###與###user_name###wang###space###chi###user_name###與###user_name###ggwp###user_name###與###user_name###ggwp###user_name###"]
