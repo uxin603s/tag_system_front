@@ -37,7 +37,6 @@ function merge_text(item){
 						var tmp_w=c.measureText(user_arr.text_list[i]).width;
 						if(tmp_w>limit_w)limit_w=tmp_w;
 					}
-					limit_w*=1.1;
 				}else{
 					limit_w=item.w;
 				}
