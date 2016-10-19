@@ -1,4 +1,3 @@
-
 function merge_text(item){
 	item=JSON.parse(JSON.stringify(item));
 	function area_scale_w_h(item){		
@@ -13,10 +12,9 @@ function merge_text(item){
 	}
 	
 	function get_ok_width_string(item,c,limit_w,user_arr,count_re){
-		// user_arr.index=0;
+		user_arr.index=0;
 		var result_arr=[];	
 		if(item.text_content.indexOf("\n")!=-1){
-			// item.text_content=item.text_content.replace(/###user_name###/g," ").replace(/###space###/g," ");
 			var tmp=item.text_content.split("\n");
 			for(var i in tmp){
 				var text=tmp[i];
@@ -39,7 +37,7 @@ function merge_text(item){
 						var tmp_w=c.measureText(user_arr.text_list[i]).width;
 						if(tmp_w>limit_w)limit_w=tmp_w;
 					}
-					limit_w*=1.5;
+					limit_w*=1.1;
 				}else{
 					limit_w=item.w;
 				}
@@ -62,38 +60,37 @@ function merge_text(item){
 			type=2;
 			var tmp_arr=[];
 		}
-		// text_list
-		var max_len=user_arr.text_list.reduce(function(prev,curr){
-			if(prev>curr.length){
-				return prev;
-			}
-			return curr.length;
-		},0)
-		// console.log(user_arr.text_list,max_len)
+		
+		// var max_len=user_arr.text_list.reduce(function(prev,curr){
+			// if(prev>curr.length){
+				// return prev;
+			// }
+			// return curr.length;
+		// },0);
+		// console.log(user_arr.list)
+		
 		var start_time=Date.now();
 		var while_count=0
 		while(true){
 			if(type==1){
 				var text=tmp_text_content.substr(0,tmp_line_limit_count);
-				
-				var check_text=tmp_text_content.substr(0,tmp_line_limit_count+max_len);
-				// console.log(text,check_text)
-				for(var i in user_arr.text_list){
-					var tmp=user_arr.text_list[i];
-					var index=check_text.lastIndexOf(tmp);
-					if(index==-1)continue;
-					var corrent_len=index+tmp.length;
-					if(corrent_len>tmp_line_limit_count){
-						var cut=corrent_len-tmp_line_limit_count
-						// console.log("切到",text,index,corrent_len,cut)
-						var count=index?index:tmp.length;
+				user_arr.index+=text.length;
+				for(var i in user_arr.list){
+					var start=user_arr.list[i].start
+					var end=user_arr.list[i].end
+					// console.log(start,end,user_arr.index)
+					if(start <= user_arr.index && user_arr.index <end){
+						// console.log(start,user_arr.index,end)
+						user_arr.index-=text.length;
+						var count=start-user_arr.index;
+						if(count==0)count=end-start;
+						// console.log(text,"b")
 						var text=tmp_text_content.substr(0,count);
-						// console.log(text)
-						break;
-						
+						user_arr.index+=text.length;
+						// console.log(text,"a")
 					}
-					
 				}
+				// console.log(user_arr.index)
 			}else{
 				var text=tmp_text_content.join(" ");
 			}
@@ -101,6 +98,7 @@ function merge_text(item){
 			var width=c.measureText(text).width;
 			if(type==1){
 				if(width>limit_w){
+					user_arr.index-=text.length;
 					tmp_line_limit_count--;
 				}else{
 					var start=text.length;
@@ -148,7 +146,7 @@ function merge_text(item){
 				}
 			}
 			if(++while_count>1000){
-				console.log(result_arr,tmp_line_limit_count)
+				console.log(user_arr.source,result_arr,tmp_line_limit_count)
 				throw "卡迴圈，強制中斷";
 			}
 		}
@@ -175,8 +173,10 @@ function merge_text(item){
 		var new_w=max_w;
 		var new_h=max_h*result_arr.length;
 		var check_h=h=new_w*item.h/item.w
-		
-		if(check_h<new_h && result_arr.length!=1){
+		// if(!user_arr.text_list.length)
+		// console.log(result_arr.length)
+		if(result_arr.length!=1)
+		if(check_h<new_h){
 			// var limit_w=max_w;
 			
 			if(type==1){
@@ -186,16 +186,16 @@ function merge_text(item){
 			}
 			// console.log(limit_w)
 			if(count_re>100){
-				console.log("error",limit_w,item.text_size,check_h,new_h)
+				console.log("error",user_arr.source,limit_w,item.text_size,check_h,new_h)
 				throw "卡迴圈";
 			}
-			// return result_arr;
+			
 			// console.log("again")
 			return get_ok_width_string(item,c,limit_w,user_arr,++count_re);
-		}else{
-			// console.log("ok")
-			return result_arr;
 		}
+			// console.log("ok")
+		return result_arr;
+		
 	}
 	
 	function make_text(text,item,w,h){
@@ -260,8 +260,10 @@ function merge_text(item){
 				source:source,
 				start:start,
 				count:text.length,
+				end:start+text.length,
 			})
 		}
+		user_arr.list.reverse();
 		var tmp=[];
 		for(var i in user_arr.text_list){
 			tmp.push(i)
