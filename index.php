@@ -51,13 +51,14 @@
 			// console.log((Date.now()-start_time)/1000);
 			
 			
-			var text_list=["###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###","吃飯 ","與"]
-			// var text_list=["###user_name###wang###space###chi###user_name###與與與與與###user_name###ggwpggwpggwp###user_name###"]
-			// var text_list=["吃飯與與與與與###user_name###wang###space###chi###user_name###"]
-			// var text_list=["###user_name###wang###space###chi###user_name###吃飯吃飯與吃飯吃飯###user_name###wang###space###chi###user_name###與###user_name###wang###space###chi###user_name###與###user_name###ggwp###user_name###與###user_name###ggwp###user_name###"]
-			// var text_list=["###user_name###ggwp###user_name######user_name###ggwp###user_name###吃飯"]
-			// var text_list=["吃飯###user_name###ggwp###user_name###"]
-			// var text_list=["與"]
+			var text_list=[
+			"###user_name###wang###space###chi###user_name### ","###user_name###ggwp###user_name### ",
+			"吃飯 ","與 ","gogo ","sleep "
+			];
+			// var text_list=[
+			// "###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###",
+			// "吃飯","與","gogo","sleep"
+			// ];
 			var count=0
 			var dd=setInterval(function(){
 			// setTimeout(function(){
@@ -67,15 +68,20 @@
 				text_position.text_vAlign=1
 				// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
 				// text_position.text_vAlign=(text_position.text_vAlign+1) % 3
-				var src=merge_text(text_position);
-				
+				try{
+					var start_time=Date.now();
+					var src=merge_text(text_position);
+					console.log(text_position.text_content.length,(Date.now()-start_time)/1000)
+				}catch(e){
+					clearTimeout(dd);
+				}
 				if(src){
 					$("img").eq(1).attr("src",src.toDataURL());
 				}else{
 					clearTimeout(dd);
 				}
 				if(++count>10000)clearTimeout(dd);
-			},50)
+			},100)
 			
 			return ;
 			

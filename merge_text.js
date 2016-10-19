@@ -56,11 +56,12 @@ function merge_text(item){
 						limit_w=tmp_w;
 					}
 				}
+				// limit_w*=1.5;
 			}
 			type=2;
 			var tmp_arr=[];
 		}
-				
+		// console.log(tmp_text_content)
 		var start_time=Date.now();
 		var while_count=0
 		while(true){
@@ -91,6 +92,7 @@ function merge_text(item){
 					user_arr.index-=text.length;
 					tmp_line_limit_count--;
 				}else{
+					while_count=0;
 					var start=text.length;
 					var count=tmp_text_content.length-text.length;
 					tmp_text_content=tmp_text_content.substr(start,count);
@@ -121,6 +123,7 @@ function merge_text(item){
 				if(width>limit_w && tmp_text_content.length!==1){
 					tmp_arr.unshift(tmp_text_content.pop());
 				}else{
+					while_count=0;
 					if(text){
 						result_arr.push({text:text,w:width});
 					}
@@ -136,7 +139,7 @@ function merge_text(item){
 				}
 			}
 			if(++while_count>1000){
-				console.log(user_arr.source,result_arr,tmp_line_limit_count)
+				console.log(user_arr.source,result_arr,while_count)
 				throw "卡迴圈，強制中斷";
 			}
 		}
@@ -165,6 +168,7 @@ function merge_text(item){
 		var check_h=h=new_w*item.h/item.w
 		// if(!user_arr.text_list.length)
 		// console.log(result_arr.length)
+		// if(false)
 		if(result_arr.length!=1)
 		if(check_h<new_h){
 			// var limit_w=max_w;
@@ -172,7 +176,10 @@ function merge_text(item){
 			if(type==1){
 				limit_w*=1.1;
 			}else{
-				limit_w+=min_w/2;
+				// limit_w*=2;
+				// limit_w+=max_w/3;
+				limit_w*=1.1;
+				// limit_w+=min_w/2;
 			}
 			// console.log(limit_w)
 			if(count_re>100){
