@@ -5,16 +5,16 @@
 		<meta charset="UTF-8" />
 		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 		
-		<script src="init_canvas.js"></script>
-		<script src="dataURItoBlob.js"></script>
-		<script src="merge_image.js"></script>
-		<script src="merge_text.js"></script>
+		<script src="init_canvas.js?t=<?=time()?>"></script>
+		<script src="dataURItoBlob.js?t=<?=time()?>"></script>
+		<script src="merge_image.js?t=<?=time()?>"></script>
+		<script src="merge_text.js?t=<?=time()?>"></script>
 		
 		<script>
 		$(document).ready(function(){
 			var text_position={
 				zIndex:1,
-				x:50,y:50,w:400,h:300,
+				x:50,y:50,w:200,h:100,
 				type:1,
 				text_hAlign:0,
 				text_vAlign:0,
@@ -26,11 +26,11 @@
 				// text_content:"我我我我我我我我我我我",
 				text_type:0,
 				
-				useFontBg:1,
+				// useFontBg:1,
 				FontBgSize:5,
-				FontBgColor:"#00FF00",
+				FontBgColor:"#0000FF",
 				
-				useLine:2,
+				useLine:1,
 				
 				useBg:1,
 				bgPadding:0,
@@ -53,21 +53,27 @@
 			
 			var text_list=[
 			"###user_name###wang###space###chi###user_name### ","###user_name###ggwp###user_name### ",
-			"吃飯 ","與 ","gogo ","sleep "
+			"吃飯 ","與 ","gogo ","sleep ",
+			// "gggpp吃飯",
 			];
-			// var text_list=[
-			// "###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###",
-			// "吃飯","與","gogo","sleep"
-			// ];
+			var text_list=[
+			"###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###",
+			"吃飯","與","gogo","sleep"
+			];
 			var count=0
 			var dd=setInterval(function(){
 			// setTimeout(function(){
+				// while(text_position.text_content.length<1407 )
 				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
 				// console.log(text_position.text_content)
 				text_position.text_hAlign=1
 				text_position.text_vAlign=1
+				if(text_position.text_content.length>50){
+					clearTimeout(dd);
+				}
 				// text_position.text_hAlign=(text_position.text_hAlign+1) % 3
 				// text_position.text_vAlign=(text_position.text_vAlign+1) % 3
+					// console.log(text_position.text_content)
 				try{
 					var start_time=Date.now();
 					var src=merge_text(text_position);
@@ -80,8 +86,8 @@
 				}else{
 					clearTimeout(dd);
 				}
-				if(++count>10000)clearTimeout(dd);
-			},100)
+				if(++count>200)clearTimeout(dd);
+			},50)
 			
 			return ;
 			
