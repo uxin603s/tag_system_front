@@ -26,7 +26,7 @@
 				// text_content:"我我我我我我我我我我我",
 				text_type:0,
 				
-				// useFontBg:1,
+				useFontBg:1,
 				FontBgSize:5,
 				FontBgColor:"#0000FF",
 				
@@ -52,19 +52,16 @@
 			
 			
 			var text_list=[
-			"###user_name###wang###space###chi###user_name### ","###user_name###ggwp###user_name### ",
-			"吃飯 ","與 ","gogo ","sleep ",
-			// "gggpp吃飯",
-			];
-			var text_list=[
 			"###user_name###wang###space###chi###user_name###","###user_name###ggwp###user_name###",
-			"吃飯","與","gogo","sleep"
+			"吃飯","與","gogo","sleep",
+			// "gggpp吃飯",
 			];
 			var count=0
 			var dd=setInterval(function(){
 			// setTimeout(function(){
 				// while(text_position.text_content.length<1407 )
 				text_position.text_content+=text_list[Math.floor(Math.random()*text_list.length)]
+				text_position.text_content+=" "
 				// console.log(text_position.text_content)
 				text_position.text_hAlign=1
 				text_position.text_vAlign=1
