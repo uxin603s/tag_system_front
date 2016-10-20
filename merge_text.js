@@ -1,5 +1,18 @@
 function merge_text(item){
 	item=JSON.parse(JSON.stringify(item));
+	function string_to_num(arr){
+		for(var i in arr){
+			if(typeof arr[i] =="object"){
+				arr[i]=string_to_num(arr[i]);
+			}else{
+				if(!isNaN(arr[i])){
+					arr[i]*=1;
+				}
+			}
+		}
+		return arr;
+	}
+	item=string_to_num(item);
 	function area_scale_w_h(item){		
 		var len=item.text_content.length;	
 		var text_size=item.text_size;
