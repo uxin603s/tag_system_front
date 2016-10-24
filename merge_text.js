@@ -5,13 +5,14 @@ function merge_text(item){
 			if(typeof arr[i] =="object"){
 				arr[i]=string_to_num(arr[i]);
 			}else{
-				if(!isNaN(arr[i])){
+				if(!isNaN(arr[i]) && arr[i]!=""){
 					arr[i]*=1;
 				}
 			}
 		}
 		return arr;
 	}
+	
 	item=string_to_num(item);
 	function area_scale_w_h(item){		
 		var len=item.text_content.length;	
@@ -60,30 +61,26 @@ function merge_text(item){
 			type=1;
 			var tmp_line_limit_count=get_count;
 		}else{
-			tmp_text_content=user_arr.source.replace(/###user_name###/g,"").split(" ");
-			if(!limit_w){			
-				var limit_w=0;
-				for(var i in tmp_text_content){
-					var text=tmp_text_content[i].replace(/###space###/g," ");
-					var tmp_w=c.measureText(text).width;
-					if(tmp_w>limit_w){
-						limit_w=tmp_w;
-					}
-				}
-			}
-			
 			type=2;
 			var tmp_arr=[];
 			var tmp_width_arr=[];
 			var space_width=c.measureText(" ").width
 			var tmp_text_content_width=[];
+			tmp_text_content=user_arr.source.replace(/###user_name###/g,"").split(" ");
+			if(!limit_w){			
+				var limit_w=0;
+			}
+			
 			for(var i in tmp_text_content){
 				var text=tmp_text_content[i].replace(/###space###/g," ");
-				tmp_text_content_width.push(c.measureText(text).width);
+				var tmp_w=c.measureText(text).width;
+				tmp_text_content_width.push(tmp_w);
+				if(tmp_w>limit_w){
+					limit_w=tmp_w;
+				}
 			}
 		}
 		
-		var start_time=Date.now();
 		var while_count=0
 		while(true){
 			if(type==1){
@@ -204,7 +201,7 @@ function merge_text(item){
 		}
 		var new_w=max_w;
 		var new_h=max_h*result_arr.length;
-		var check_h=h=new_w*item.h/item.w
+		var check_h=new_w*item.h/item.w
 		
 		if(result_arr.length!=1)
 		if(check_h<new_h){
@@ -255,9 +252,7 @@ function merge_text(item){
 			c.lineWidth = Math.floor(item.text_size/10);
 			
 			var y=h
-			if(item.useFontBg && item.FontBgSize){
-				y-=item.FontBgSize;
-			}
+			
 			y*=line_y;
 			y-=c.lineWidth/2
 			c.moveTo(0,y);
@@ -268,6 +263,7 @@ function merge_text(item){
 	}	
 	
 	item.text_content=item.text_content.toString().trim();
+	
 	if(item.text_size>item.h){
 		item.text_size=item.h;
 	}
@@ -317,11 +313,11 @@ function merge_text(item){
 	if(item.text_type==0 && !item.text_content.match(/[^a-zA-Z0-9\.]+/)){
 		item.text_type=1;
 	}
-	var limie_w;
+	var limit_w;
 	if(item.text_type==0){
-		var result_arr=get_ok_width_string(item,c,limie_w,user_arr);
+		var result_arr=get_ok_width_string(item,c,limit_w,user_arr);
 	}else if(item.text_type==1){
-		item.text_content=item.text_content.replace(/###user_name###/g," ");
+		item.text_content=item.text_content.replace(/###user_name###/g,"").replace(/###space###/g," ")
 		var text=item.text_content;
 		var width=Math.ceil(c.measureText(text).width);
 		var result_arr=[
@@ -331,7 +327,7 @@ function merge_text(item){
 			}
 		];
 	}else if(item.text_type==2){
-		item.text_content=item.text_content.replace(/###user_name###/g," ");
+		item.text_content=item.text_content.replace(/###user_name###/g,"").replace(/###space###/g," ")
 		var text_arr=item.text_content.split("");
 		var result_arr=[];
 		for(var i in text_arr){
@@ -342,7 +338,9 @@ function merge_text(item){
 				w:width,
 			})
 		}
+		console.log(result_arr)
 	}
+	
 	
 	var max_h=item.text_size*1.2;
 	
@@ -356,7 +354,7 @@ function merge_text(item){
 	max_w=Math.ceil(max_w)
 	max_h=Math.ceil(max_h);
 	if(item.useFontBg && item.FontBgSize){
-		max_w+=item.FontBgSize;
+		max_w+=item.FontBgSize*2;
 		max_h+=item.FontBgSize;
 	}
 	var new_w=max_w;
