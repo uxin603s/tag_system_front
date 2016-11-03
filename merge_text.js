@@ -1,5 +1,6 @@
 function merge_text(item){
-	item=JSON.parse(JSON.stringify(item));
+	
+	
 	function string_to_num(arr){
 		for(var i in arr){
 			if(typeof arr[i] =="object"){
@@ -13,7 +14,6 @@ function merge_text(item){
 		return arr;
 	}
 	
-	item=string_to_num(item);
 	function area_scale_w_h(item){		
 		var len=item.text_content.length;	
 		var text_size=item.text_size;
@@ -103,6 +103,7 @@ function merge_text(item){
 			}
 			else{
 				var index=tmp_text_content_width.length;
+				
 				do{
 					var tmp=tmp_text_content_width.slice(0,index);
 					var width=tmp.reduce(function(prev,curr){
@@ -261,7 +262,17 @@ function merge_text(item){
 		}		
 		return c.canvas;	
 	}	
+	item=JSON.parse(JSON.stringify(item));
+	var c=init_canvas(item.w,item.h);
 	
+	if(!item.text_content){
+		return c;
+	}
+	
+	item.w=Math.abs(item.w);
+	item.h=Math.abs(item.h);
+	
+	item=string_to_num(item);
 	item.text_content=item.text_content.toString().trim();
 	
 	if(item.text_size>item.h){
@@ -297,7 +308,7 @@ function merge_text(item){
 	
 	area_scale_w_h(item);
 	
-	var c=init_canvas(item.w,item.h);
+	
 	c.fillStyle=item.text_color;
 	c.font=item.text_size+"px 微軟正黑體";
 	c.textBaseline="middle";
