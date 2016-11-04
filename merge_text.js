@@ -265,8 +265,8 @@ function merge_text(item){
 	item=JSON.parse(JSON.stringify(item));
 	var c=init_canvas(item.w,item.h);
 	
-	if(!item.text_content || !item.w || !item.h){
-		return c;
+	if(!item.text_content || isNaN(item.w) || isNaN(item.h) || !(item.w*1) || !(item.h*1)){
+		return c.canvas;
 	}
 	
 	item.w=Math.abs(item.w);
