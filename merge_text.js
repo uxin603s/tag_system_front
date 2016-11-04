@@ -265,7 +265,7 @@ function merge_text(item){
 	item=JSON.parse(JSON.stringify(item));
 	var c=init_canvas(item.w,item.h);
 	
-	if(!item.text_content || isNaN(item.w) || isNaN(item.h) || item.w==0 || item.h==0 ){
+	if(!item.text_content || isNaN(item.w) || isNaN(item.h) || item.w==0 || item.h==0 || item.w<20 || item.h<20 ){
 		return c.canvas;
 	}
 	
