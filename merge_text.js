@@ -265,7 +265,7 @@ function merge_text(item){
 	item=JSON.parse(JSON.stringify(item));
 	var c=init_canvas(item.w,item.h);
 	
-	if(!item.text_content){
+	if(!item.text_content || !item.w || !item.h){
 		return c;
 	}
 	
