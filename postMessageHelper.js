@@ -11,14 +11,13 @@ var postMessageHelper={
 	send:function(connect,sendData){
 		var self=this;
 		self.connect[connect] || (self.connect[connect]={});
-		if(!self.connect[connect].post_window){
+		if(!self.connect[connect].post_window || !sendData,self.connect[connect].status){
 			clearTimeout(self.sendTimer[JSON.stringify(connect)+JSON.stringify(sendData)])
 			self.sendTimer[JSON.stringify(connect)+JSON.stringify(sendData)]=setTimeout(function(){
 				self.send(connect,sendData);
 			},500)
 			return;
 		}
-		
 		var send={
 			sendData:sendData,
 			connect:connect,
