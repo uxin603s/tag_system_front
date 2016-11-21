@@ -58,6 +58,9 @@ function merge_text(item){
 				
 			}
 			var get_count=Math.floor(limit_w/item.text_size*1.5);
+			if(!get_count){
+				get_count=1;
+			}
 			type=1;
 			var tmp_line_limit_count=get_count;
 		}else{
@@ -117,6 +120,7 @@ function merge_text(item){
 					}else{
 						break;
 					}
+					
 				}while(true);
 				
 				var text=tmp_text_content.splice(0,index).join(" ").replace(/###space###/g," ");
@@ -129,9 +133,10 @@ function merge_text(item){
 			
 			if(type==1){
 				var width=c.measureText(text).width;
-				if(width>limit_w){
+				if(tmp_line_limit_count!=1 && width>limit_w){
 					user_arr.index-=text.length;
-					tmp_line_limit_count--;
+					if(tmp_line_limit_count>1)
+						tmp_line_limit_count--;
 				}else{
 					while_count=0;
 					var start=text.length;
@@ -174,9 +179,10 @@ function merge_text(item){
 				}
 				
 			}
-			
+			// console.log(result_arr)
+			// break;
 			if(++while_count>1000){
-				console.log(user_arr.source,result_arr,while_count)
+				console.log(user_arr.source,result_arr,while_count,tmp_line_limit_count)
 				throw "卡迴圈，強制中斷";
 			}
 		}
@@ -203,6 +209,7 @@ function merge_text(item){
 		var new_w=max_w;
 		var new_h=max_h*result_arr.length;
 		var check_h=new_w*item.h/item.w
+		
 		
 		if(result_arr.length!=1)
 		if(check_h<new_h){
@@ -308,7 +315,6 @@ function merge_text(item){
 	
 	area_scale_w_h(item);
 	
-	
 	c.fillStyle=item.text_color;
 	c.font=item.text_size+"px 微軟正黑體";
 	c.textBaseline="middle";
@@ -351,7 +357,7 @@ function merge_text(item){
 		}
 		console.log(result_arr)
 	}
-	
+	// console.log(result_arr);
 	
 	var max_h=item.text_size*1.2;
 	
