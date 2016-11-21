@@ -10,14 +10,9 @@ var postMessageHelper={
 	},
 	send:function(connect,sendData){
 		var self=this;
+		
 		self.connect[connect] || (self.connect[connect]={});
-		if(!self.connect[connect].post_window || !sendData,self.connect[connect].status){
-			clearTimeout(self.sendTimer[JSON.stringify(connect)+JSON.stringify(sendData)])
-			self.sendTimer[JSON.stringify(connect)+JSON.stringify(sendData)]=setTimeout(function(){
-				self.send(connect,sendData);
-			},500)
-			return;
-		}
+		
 		var send={
 			sendData:sendData,
 			connect:connect,
@@ -27,7 +22,12 @@ var postMessageHelper={
 			self.connect[connect].post_window.postMessage(send,"*");
 		}else {
 			var timer=setInterval(function(){
-				self.connect[connect].post_window.postMessage(send,"*");
+				if(self.connect[connect].post_window)
+					self.connect[connect].post_window.postMessage(send,"*");
+				if(self.connect[connect].status){
+					clearTimeout(timer);
+				}
+				
 			},500)
 			window.addEventListener("message",function(e){
 				if(e.data.connect!=connect)return;
