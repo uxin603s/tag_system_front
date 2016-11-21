@@ -135,7 +135,6 @@ function merge_text(item){
 				var width=c.measureText(text).width;
 				if(tmp_line_limit_count!=1 && width>limit_w){
 					user_arr.index-=text.length;
-					if(tmp_line_limit_count>1)
 						tmp_line_limit_count--;
 				}else{
 					while_count=0;
