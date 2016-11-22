@@ -5,12 +5,14 @@
 	<script src="postMessageHelper.js?t=<?=time()?>"></script>
 	<script>
 	$(document).ready(function(){
-		//master需要init 才能send 
-		//init(string connect_name,window)
-		postMessageHelper.init("text",$("#b")[0].contentWindow)
+		
+		//init不一定在在最前面 
 		
 		//send(string connect_name,mix send_data)
 		postMessageHelper.send("text",{a:1,b:2})
+		
+		//init(string connect_name,window)
+		postMessageHelper.init("text",$("#b")[0].contentWindow)
 		
 		//receive(string connect_name,callback)
 		postMessageHelper.receive("text",function(res){
