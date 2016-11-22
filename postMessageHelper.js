@@ -10,7 +10,9 @@ var postMessageHelper={
 	},
 	send:function(connect,sendData){
 		var self=this;
+		
 		if(!self.connect[connect] || !self.connect[connect].post_window){
+			
 			setTimeout(function(){
 				self.send(connect,sendData);
 			},500)
@@ -24,8 +26,9 @@ var postMessageHelper={
 		}
 		if(self.connect[connect].status){
 			self.connect[connect].post_window.postMessage(send,"*");
-		}else {
-			self.cacheSendData.push(sendData);
+		}else{
+			if(sendData)
+				self.cacheSendData.push(sendData);
 			
 			var send={
 				connect:connect,
