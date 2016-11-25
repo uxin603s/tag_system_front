@@ -1,0 +1,85 @@
+<div 
+	style="display:inline-block;" 
+	ng-show="$ctrl.lockLv1 && list.length"
+>
+	<button
+	class="btn btn-sm btn-primary"
+	>
+	{{cache.tagName[$ctrl.selectList[$ctrl.levelIndex].select]}}
+	({{$ctrl.cache.tagCount[$ctrl.selectList[$ctrl.levelIndex].select]||0}})
+	</button>
+</div>
+
+<input 
+ng-show="cache.editMode && !$ctrl.lockLv1"
+type="text" 
+ng-model="search.tagName"
+ng-enter="add(search)"
+/>
+
+<div 
+	style="display:inline-block;" 
+	ng-show="!$ctrl.lockLv1 && list.length"
+>
+
+	<button
+	draggable="true"
+	sortable="list"
+	index="$index"
+
+	ng-show="
+	cache.tagName[item.child_id].indexOf(search.tagName)!=-1 
+	&& 
+	!$ctrl.mode
+	"
+	ng-class="
+	$ctrl.selectList[$ctrl.levelIndex].select==item.child_id?
+	'btn-danger':
+	'btn-primary'
+	"
+	ng-click="
+	$ctrl.selectList[$ctrl.levelIndex].select==item.child_id?
+	$ctrl.selectList[$ctrl.levelIndex].select=undefined:
+	$ctrl.selectList[$ctrl.levelIndex].select=item.child_id
+	"
+	ng-right-click="del($index)"
+	ng-repeat="item in list"
+	class="btn btn-sm" 
+	>
+	{{cache.tagName[item.child_id]}}
+	({{$ctrl.cache.tagCount[item.child_id]||0}})
+	</button>
+	<select 
+	ng-show="$ctrl.mode && list.length"
+	ng-options="item.child_id as cache.tagName[item.child_id] for item in list"
+	ng-model="$ctrl.selectList[$ctrl.levelIndex].select"
+	>
+	<option value="">無</option>
+	</select>
+</div>
+
+<tag-recusion
+style="display:{{$ctrl.mode?'inline-block;':'block'}}"
+ng-if="
+$ctrl.selectList[$ctrl.levelIndex].select && 
+cache.levelList[$ctrl.levelIndex+1] &&
+list.length
+"
+
+
+
+select-list="$ctrl.selectList"
+
+select="$ctrl.selectList[$ctrl.levelIndex].select"
+
+level-index="$ctrl.levelIndex+1"
+mode="$ctrl.mode"
+></tag-recusion>
+
+
+
+
+
+
+
+

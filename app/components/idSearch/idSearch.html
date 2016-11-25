@@ -1,0 +1,38 @@
+<div class="bottom_line">
+	<div>
+		以source_id搜尋
+		<input 
+		placeholder="輸入id"
+		type="text" 
+		ng-model="search_id"
+		ng-enter="add_id_search(search_id);search_id='';"
+		/>
+		
+		<button 
+		draggable="true"
+		sortable="idRelation.search"
+		index="$index"
+		
+		ng-right-click="del_id_search($index,item)"
+		ng-repeat="item in idRelation.search"
+		class="btn btn-primary btn-sm"
+		>{{item}}</button>
+	</div>
+	<div>
+		<button 
+		ng-if="0 && !item.type"
+		ng-right-click=""
+		ng-repeat="item in cache.clickSearch"
+		class="btn btn-default btn-sm "
+		>{{item.name}}</button>
+	</div>
+	
+	<div ng-repeat="source_id in idRelation.search">
+		{{source_id}}:
+		<id-relation
+		ng-if="idRelation.result[source_id]"
+		list="idRelation.result[source_id]"
+		source-id="source_id"
+		></id-relation>
+	</div>
+</div>
