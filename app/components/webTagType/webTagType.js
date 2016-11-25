@@ -93,28 +93,28 @@ angular.module('app').component("webTagType",{
 		var watch=function(){
 			$scope.list=[];
 			$scope.not_list=[];
-			cache.tagType.selects=[];
+			// cache.tagType.selects=cache.tagType.list.map(function(val){
+				// return val.id;
+			// });
 			if(!cache.webTagType.list.length)return
-			// clearTimeout($scope.timer)
-			// $scope.timer=setTimeout(function(){
-				
-				for(var i in cache.tagType.list){
-					var data=angular.copy(cache.tagType.list[i]);
-					var index=cache.webTagType.list.findIndex(function(val){
-						return val.tid==data.id;
-					})
-					if(index==-1){
-						$scope.not_list.push(data);
-					}else{
-						$scope.list.push(cache.webTagType.list[index]);
-					}
-					cache.tagType.name[data.id]=data.name;
-				}
-				$scope.list.sort(sort);
-				cache.tagType.selects=$scope.list.map(function(val){
-					return val.tid;
+			
+			for(var i in cache.tagType.list){
+				var data=angular.copy(cache.tagType.list[i]);
+				var index=cache.webTagType.list.findIndex(function(val){
+					return val.tid==data.id;
 				})
-			// },0)
+				if(index==-1){
+					$scope.not_list.push(data);
+				}else{
+					$scope.list.push(cache.webTagType.list[index]);
+				}
+				cache.tagType.name[data.id]=data.name;
+			}
+			$scope.list.sort(sort);
+			cache.tagType.selects=$scope.list.map(function(val){
+				return val.tid;
+			})
+			
 		}
 		
 		$scope.$watch("cache.webTagType.list",watch,1)

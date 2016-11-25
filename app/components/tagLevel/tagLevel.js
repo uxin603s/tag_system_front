@@ -28,8 +28,7 @@ angular.module('app').component("tagLevel",{
 					if(cut<0){
 						cache.selectList[$scope.$ctrl.tid].splice($scope.list.length,Math.abs(cut))
 					}
-					// console.log(cut);
-					// cache.selectList[$scope.$ctrl.tid]
+					
 				}else{
 					$scope.list=[];
 				}
@@ -51,11 +50,17 @@ angular.module('app').component("tagLevel",{
 		
 		$scope.del=function(index){
 			if($scope.list.length-1!=index)return;
-			var arg=angular.copy($scope.list.splice(index,1).pop());
-			cache.selectList[$scope.$ctrl.tid].splice(index,1);
+			var list=$scope.list.splice(index,1).pop()
+			var arg=angular.copy(list);
+			var select=cache.selectList[$scope.$ctrl.tid].splice(index,1).pop();
+			
 			crud.del("TagLevel",arg)
 			.then(function(res){
-				console.log(res)
+				if(!res.status){
+					$scope.list.push(list)
+					cache.selectList[$scope.$ctrl.tid].push(select)
+					$scope.$apply();
+				}
 			});
 			
 		}

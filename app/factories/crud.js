@@ -67,6 +67,7 @@ angular.module('app').factory('crud',
 			if(curr[i][compare_field]==prev[i][compare_field])continue;
 				
 			var where=angular.copy(curr[i])
+			
 			delete where.sort_id;
 			var update={
 				sort_id:i
@@ -75,7 +76,7 @@ angular.module('app').factory('crud',
 			var arg={where:where,update:update}
 			ch(name,arg)
 			.then(function(res){
-				// console.log(res,name,arg)
+				$rootScope.$apply();
 			})
 		}
 	}
