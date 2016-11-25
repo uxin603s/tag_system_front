@@ -1,72 +1,63 @@
 angular.module('app').component("tagLevel",{
-	bindings:{},
+	bindings:{
+		editMode:"=",
+		tid:"=",
+	},
 	templateUrl:'app/components/tagLevel/tagLevel.html?t='+Date.now(),
 	controller:
-	["$scope","cache","tagName",
-	function($scope,cache,tagName){
+	["$scope","cache","crud",
+	function($scope,cache,crud){
 		$scope.cache=cache;
-		cache.count || (cache.count={})
-		cache.relation || (cache.relation={})
-		cache.selectList || (cache.selectList=[]);
-		cache.clickSearch || (cache.clickSearch=[])
-		
+		var sort=function(a,b){
+			return a.sort_id-b.sort_id;
+		}
 		$scope.get=function(){
-			var post_data={
-				func_name:'TagLevel::getList',
-				arg:{
-					tid:cache.tagType.list[cache.tagType.select].id,
-				},
-			}
-			$.post("ajax.php",post_data,function(res){
+			var where_list=[
+				{field:'tid',type:0,value:$scope.$ctrl.tid},
+			]
+			crud.get("TagLevel",{where_list:where_list})
+			.then(function(res){
 				if(res.status){
-					
-					cache.levelList=res.list;
-					var count=res.list.length;
-					cache.selectList=[];
-					for(var i=0;i<count;i++){
-						cache.selectList.push({})
+					res.list.sort(sort);
+					$scope.list=res.list;
+					cache.selectList[$scope.$ctrl.tid] || (cache.selectList[$scope.$ctrl.tid]=[])
+					var cut=$scope.list.length-cache.selectList[$scope.$ctrl.tid].length;
+					for(var i=0;i<cut;i++){
+						cache.selectList[$scope.$ctrl.tid].push({});
 					}
-					
+					if(cut<0){
+						cache.selectList[$scope.$ctrl.tid].splice($scope.list.length,Math.abs(cut))
+					}
+					// console.log(cut);
+					// cache.selectList[$scope.$ctrl.tid]
 				}else{
-					cache.selectList=[]
-					cache.levelList=[];
-					cache.count={};
-					cache.relation={};
+					$scope.list=[];
 				}
 				$scope.$apply();
-			},"json")
+			})
+			
 		}
 		$scope.get();
+		
 		$scope.add=function(){
-			var post_data={
-				func_name:'TagLevel::insert',
-				arg:{
-					tid:cache.tagType.list[cache.tagType.select].id,
-					sort_id:cache.levelList.length || 0,
-				},
-			}
-			$.post("ajax.php",post_data,function(res){
-				if(res.status){
-					cache.levelList.push(res.insert);
-				}
-				$scope.$apply();
-			},"json")
+			var arg={
+				tid:$scope.$ctrl.tid,
+				sort_id:$scope.list.length,
+			};
+			$scope.list.push(arg);
+			cache.selectList[$scope.$ctrl.tid].push({});
+			crud.add("TagLevel",arg);
 		}
+		
 		$scope.del=function(index){
+			if($scope.list.length-1!=index)return;
+			var arg=angular.copy($scope.list.splice(index,1).pop());
+			cache.selectList[$scope.$ctrl.tid].splice(index,1);
+			crud.del("TagLevel",arg)
+			.then(function(res){
+				console.log(res)
+			});
 			
-			var post_data={
-				func_name:'TagLevel::delete',
-				arg:{
-					id:cache.levelList[index].id,
-					tid:cache.tagType.list[cache.tagType.select].id,
-				},
-			}
-			$.post("ajax.php",post_data,function(res){
-				if(res.status){
-					cache.levelList.splice(index,1);
-					$scope.$apply();
-				}
-			},"json")
 		}
 		
 	}]

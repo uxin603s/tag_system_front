@@ -1,44 +1,34 @@
 <div class="col-xs-12 bottom_line" >
-	<input 
-	type="checkbox" 
-	parseInt
-	ng-true-value="1" 
-	ng-false-value="0"
-	ng-model="cache.editMode"
-	/>編輯模式
+	<button 
+	class="btn btn-sm btn-primary"
+	ng-click="edit=!edit;"
+	>{{cache.tagType.name[$ctrl.tid]}}</button>
+	
+	
 	<div 
-	ng-show="cache.editMode"
+	ng-show="edit"
 	style="display:inline-block;"
 	>
-		<input 
-		
-		type="checkbox" 
-		parseInt
-		ng-true-value="1" 
-		ng-false-value="0"
-		ng-model="cache.tagType.list[cache.tagType.select].lock_lv1"
-		/>第一層鎖定
-	
 		<button 
-		ng-repeat="item in cache.levelList"
+		ng-click="add()"
+		class="btn btn-primary btn-sm"
+		>新增階層</button>
+		<button 
+		ng-repeat="item in list"
 		ng-right-click="del($index)"
 		class="btn btn-primary btn-sm">
 		第{{$index+1}}層
 		</button>
-		<button 
-		ng-if="cache.tagType.list[cache.tagType.select]"
-		ng-click="add()"
-		class="btn btn-primary btn-sm"
-		>新增階層</button>
+		
 	</div>
 </div>
+
 <tag-recusion
-ng-if="cache.levelList.length && cache.clickSearch"
+ng-if="list.length"
 
-select-list="cache.selectList"
-
+select-list="cache.selectList[$ctrl.tid]"
+level-list="list"
 level-index="0"
-mode="cache.width<300"
-click-search="cache.clickSearch"
+
 ></tag-recusion>
 		

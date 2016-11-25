@@ -13,15 +13,17 @@
 	<script src="app/factories/cache.js?t=<?=time()?>"></script>
 	<script src="app/factories/tagName.js?t=<?=time()?>"></script>
 	<script src="app/factories/webRelation.js?t=<?=time()?>"></script>
-	<script src="app/factories/tagRelation.js?t=<?=time()?>"></script>
+	
 	<script src="app/factories/idRelation.js?t=<?=time()?>"></script>
-	<script src="app/factories/webList.js?t=<?=time()?>"></script>
-	<script src="app/factories/tagType.js?t=<?=time()?>"></script>
+
+	
+	<script src="app/factories/crud.js?t=<?=time()?>"></script>
 	
 	<script src="app/components/index/index.js?t<?=time()?>"></script>
-
-	<script src="app/components/tagLevel/tagLevel.js?t<?=time()?>"></script>
+	
 	<script src="app/components/webTagType/webTagType.js?t<?=time()?>"></script>
+	<script src="app/components/tagLevel/tagLevel.js?t<?=time()?>"></script>
+	
 	
 	<script src="app/components/tagRecusion/tagRecusion.js?t<?=time()?>"></script>
 	

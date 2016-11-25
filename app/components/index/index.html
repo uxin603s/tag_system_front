@@ -2,13 +2,10 @@
 ng-if="!cache.not_finish_flag"
 ></web-tag-type>
 
-{{cache.webTagType.list}}
+
 <tag-level
-ng-if="
-0
-&&
-cache.tagType.list[cache.tagType.select]
-"
+ng-repeat="tid in cache.tagType.selects"
+tid="tid"
 ></tag-level>
 
 

@@ -3,7 +3,7 @@
 	placeholder="網站名稱"
 	style="vertical-align: middle;"
 	ng-model="webList.name" 
-	ng-enter="add(webList)"
+	ng-enter="add('WebList',cache.webList.list,webList)"
 	></textarea>
 	<button 
 	draggable="true"
@@ -19,8 +19,8 @@
 	'btn-danger':'btn-primary'
 	"
 	class="btn btn-sm"	
-	ng-right-click="del($index)"
-	>{{item.name}}({{item.sort_id}})</button>
+	ng-right-click="del('WebList',cache.webList.list,$index)"
+	>{{item.name}}</button>
 	
 </div>
 <div class="col-xs-12 bottom_line">
@@ -28,7 +28,7 @@
 	placeholder="標籤種類"
 	ng-model="tagType.name" 
 	style="vertical-align: middle;"
-	ng-enter="add(tagType);"
+	ng-enter="add('TagType',cache.tagType.list,tagType);"
 	></textarea>
 	<div style="display:inline-block;">
 		<div ng-if="!cache.webTagType.list.length">
@@ -38,11 +38,11 @@
 			index="$index"
 			
 			ng-click="relation(item.id)"
-			ng-class="0?'btn-danger':'btn-primary'"
+			ng-class="cache.tagType.selects.indexOf(item.id)==-1?'btn-primary':'btn-danger'"
 			class="btn btn-sm"	
-			ng-right-click="del($index)"
+			ng-right-click="del('TagType',cache.tagType.list,$index)"
 			ng-repeat="item in cache.tagType.list">
-			{{item.name}}({{item.sort_id}})
+			{{item.name}}
 			</button>
 		</div>
 		<div ng-if="cache.webTagType.list.length">
@@ -51,16 +51,17 @@
 			sortable="list"
 			index="$index"
 			
-			ng-click="relation(item.id)"
+			ng-click="relation(item.tid)"
 			class="btn btn-sm btn-danger"	
 			ng-right-click="del($index)"
 			ng-repeat="item in list">
-			{{item.name}}({{item.sort_id}})
+			{{cache.tagType.name[item.tid]}}
 			</button><button
 			ng-click="relation(item.id)"
 			class="btn btn-sm btn-primary"	
-			ng-right-click="del($index)"
-			ng-repeat="item in not_list">
+			ng-right-click="del('TagType',not_list,$index)"
+			ng-repeat="item in not_list"
+			>
 			{{item.name}}
 			</button>
 		</div>

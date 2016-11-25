@@ -1,17 +1,4 @@
-<div 
-	style="display:inline-block;" 
-	ng-show="$ctrl.lockLv1 && list.length"
->
-	<button
-	class="btn btn-sm btn-primary"
-	>
-	{{cache.tagName[$ctrl.selectList[$ctrl.levelIndex].select]}}
-	({{$ctrl.cache.tagCount[$ctrl.selectList[$ctrl.levelIndex].select]||0}})
-	</button>
-</div>
-
 <input 
-ng-show="cache.editMode && !$ctrl.lockLv1"
 type="text" 
 ng-model="search.tagName"
 ng-enter="add(search)"
@@ -62,16 +49,15 @@ ng-enter="add(search)"
 style="display:{{$ctrl.mode?'inline-block;':'block'}}"
 ng-if="
 $ctrl.selectList[$ctrl.levelIndex].select && 
-cache.levelList[$ctrl.levelIndex+1] &&
+$ctrl.levelList[$ctrl.levelIndex+1] &&
 list.length
 "
-
-
 
 select-list="$ctrl.selectList"
 
 select="$ctrl.selectList[$ctrl.levelIndex].select"
 
+level-list="$ctrl.levelList"
 level-index="$ctrl.levelIndex+1"
 mode="$ctrl.mode"
 ></tag-recusion>
