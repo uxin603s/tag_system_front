@@ -2,7 +2,7 @@ angular.module('app').factory('tagName',
 ['cache','$rootScope',
 function(cache,$rootScope){
 	cache.tagName || (cache.tagName={});
-	cache.tagCount || (cache.tagCount={});
+	cache.tagNameR || (cache.tagNameR={});
 	var insert=function(name,callback){
 		if(name===""){
 			alert("標籤不能空白")
@@ -25,6 +25,7 @@ function(cache,$rootScope){
 			var id=data.id;
 			var name=data.name;
 			cache.tagName[id]=name;
+			cache.tagNameR[name]=id;
 		}
 	}
 	var getList=function(where_list,return_type){

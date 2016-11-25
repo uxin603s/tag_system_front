@@ -3,24 +3,24 @@
 	<input 
 	placeholder="輸入tag"
 	type="text" 
-	ng-enter="add_tag_search(search_name);search_name='';"
+	ng-enter="add(search_name);search_name='';"
 	ng-model="search_name"
 	/>
 	<button 
 	ng-click="item.type=!item.type"
 	ng-class="item.type?'btn-danger':'btn-primary'"
-	ng-right-click="del_tag_search($index)"
-	ng-repeat="item in cache.tag_search.absoluteSearch"
+	ng-right-click="del($index)"
+	ng-repeat="item in cache.absoluteSearch"
 	class="btn btn-sm"
 	>{{item.name}}</button><button 
-	ng-repeat="item in cache.tag_search.diffSearch"
+	ng-repeat="item in cache.diffSearch"
 	class="btn btn-default btn-sm"
 	>{{item.name}}({{item.type?'可選':'必選'}})</button>
 	
-	<div class="hiddend">
+	<div >
 		source_id:
 		<button 
-		ng-repeat="item in cache.tag_search.result"
+		ng-repeat="item in result"
 		class="btn btn-primary btn-sm"
 		>{{item}}</button>
 	</div>

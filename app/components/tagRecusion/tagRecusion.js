@@ -38,7 +38,6 @@ function($scope,tagName,cache,crud){
 						yield tagName.idToName(res.list.map(function(val){
 							return val.child_id;
 						}));
-						$scope.$apply();
 					}
 				}
 				$scope.watch_list && $scope.watch_list();
@@ -59,7 +58,6 @@ function($scope,tagName,cache,crud){
 				$scope.list.sort(function(a,b){
 					return a.sort_id-b.sort_id;
 				})
-				$scope.$apply();
 				
 				
 				if($scope.list.length){					
@@ -74,7 +72,6 @@ function($scope,tagName,cache,crud){
 						var res=yield crud.get("TagRelation",{where_list:where_list})
 						if(res.status){
 							$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select=select;
-							$scope.$apply();
 						}
 					}
 				}

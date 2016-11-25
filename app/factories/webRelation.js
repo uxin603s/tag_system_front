@@ -10,7 +10,7 @@ angular.module('app').factory('webRelation',
 					wid:wid,
 				},
 			}
-			$.post("ajax.php",post_data,function(res){
+			$.post("../tag_system_backend/ajax.php",post_data,function(res){
 				resolve(res);
 				$rootScope.$apply();
 			},"json");
@@ -24,7 +24,7 @@ angular.module('app').factory('webRelation',
 					where_list:where_list,
 				},
 			}
-			$.post("ajax.php",post_data,function(res){
+			$.post("../tag_system_backend/ajax.php",post_data,function(res){
 				resolve(res)
 				$rootScope.$apply();
 			},"json")
@@ -37,7 +37,7 @@ angular.module('app').factory('webRelation',
 				func_name:'WebRelation::insert',
 				arg:arg,
 			}
-			$.post("ajax.php",post_data,function(res){
+			$.post("../tag_system_backend/ajax.php",post_data,function(res){
 				if(res.status){
 					if(!cache.tagCount[res.insert.tid]){
 						cache.tagCount[res.insert.tid]=0;
@@ -56,7 +56,7 @@ angular.module('app').factory('webRelation',
 				func_name:'WebRelation::delete',
 				arg:arg,
 			}
-			$.post("ajax.php",post_data,function(res){
+			$.post("../tag_system_backend/ajax.php",post_data,function(res){
 				if(res.status){
 					if(cache.tagCount[res.delete.tid]){
 						cache.tagCount[res.delete.tid]--;
@@ -75,7 +75,7 @@ angular.module('app').factory('webRelation',
 				func_name:'WebRelation::update',
 				arg:arg,
 			}
-			$.post("ajax.php",post_data,function(res){
+			$.post("../tag_system_backend/ajax.php",post_data,function(res){
 				resolve(res);
 				$rootScope.$apply();
 			},"json")
@@ -96,7 +96,7 @@ angular.module('app').factory('webRelation',
 			}
 			// console.log(post_data.arg.require_id)
 			// console.log(post_data.arg.option_id)
-			$.post("ajax.php",post_data,function(res){
+			$.post("../tag_system_backend/ajax.php",post_data,function(res){
 				for(var i in cache.tagCount){
 					delete cache.tagCount[i];
 				}

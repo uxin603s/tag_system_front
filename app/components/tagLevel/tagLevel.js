@@ -8,6 +8,7 @@ angular.module('app').component("tagLevel",{
 	["$scope","cache","crud",
 	function($scope,cache,crud){
 		$scope.cache=cache;
+		cache.levelList || (cache.levelList={});
 		var sort=function(a,b){
 			return a.sort_id-b.sort_id;
 		}
@@ -20,6 +21,7 @@ angular.module('app').component("tagLevel",{
 				if(res.status){
 					res.list.sort(sort);
 					$scope.list=res.list;
+					cache.levelList[$scope.$ctrl.tid]=res.list;
 					cache.selectList[$scope.$ctrl.tid] || (cache.selectList[$scope.$ctrl.tid]=[])
 					var cut=$scope.list.length-cache.selectList[$scope.$ctrl.tid].length;
 					for(var i=0;i<cut;i++){

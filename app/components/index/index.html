@@ -10,19 +10,15 @@ tid="tid"
 
 
 
-<tag-search
-ng-if="
-0
-&&
-cache.tagType.list[cache.tagType.select] 
-&& 
-cache.webList.list[cache.webList.select]
-"
+<tag-search 
+ng-if="!cache.not_finish_flag"
 ></tag-search>
 <id-search
 
 ng-if="
 0
+&&
+!cache.not_finish_flag
 &&
 cache.tagType.list[cache.tagType.select] 
 && 
