@@ -82,21 +82,18 @@ angular.module('app').factory('webRelation',
 		});
 	}
 	
-	var getCount=function(tid_arr){
+	var getCount=function(wid,require_id){
 		
 		return new Promise(function(resolve,reject) {
 			var post_data={
 				func_name:'WebRelation::getCount',
 				arg:{
-					tid_arr:tid_arr,
-					wid:cache.webList.list[cache.webList.select].id,
-					require_id:cache.require_id,
-					option_id:cache.option_id,
+					wid:wid,
+					require_id:require_id,
 				},
 			}
-			// console.log(post_data.arg.require_id)
-			// console.log(post_data.arg.option_id)
 			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+				
 				for(var i in cache.tagCount){
 					delete cache.tagCount[i];
 				}
@@ -104,9 +101,9 @@ angular.module('app').factory('webRelation',
 					for(var i in res.list){
 						cache.tagCount[i]=res.list[i]
 					}
-					// console.log(cache.tagCount)
+					console.log(cache.tagCount)
 				}
-				resolve(res);
+				// resolve(res);
 				$rootScope.$apply();
 			},"json")
 		});

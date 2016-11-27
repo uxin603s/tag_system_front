@@ -6,6 +6,7 @@ angular.module('app').component("webTagType",{
 	function($scope,cache,crud){
 		
 		$scope.cache=cache;
+		cache.tagCount || (cache.tagCount={});
 		cache.levelList || (cache.levelList={});
 		cache.webList || (cache.webList={});
 		cache.tagType || (cache.tagType={});

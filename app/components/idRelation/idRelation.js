@@ -77,8 +77,5 @@ function($scope,cache,crud,tagName){
 		},0)
 	}
 
-	$scope.$watch("cache.id_search.select",watch_select,1)
-	$scope.$watch("cache.clickSearch",watch_select,1)
-
 }],
 })
