@@ -8,74 +8,55 @@ bindings:{
 templateUrl:'app/components/tagRecusion/tagRecusion.html?t='+Date.now(),
 controller:["$scope","tagName","cache","crud",
 function($scope,tagName,cache,crud){
+	
 	$scope.cache=cache;
-	$scope.level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;		
+	$scope.level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;	
+	
 	$scope.search={tagName:''};
 	$scope.get=function(){
+		
 		clearTimeout($scope.timer);
 		$scope.timer=setTimeout(function(){
 			promiseRecursive(function* (){
 				var level_id=$scope.level_id;
 				var select=$scope.$ctrl.select?$scope.$ctrl.select:0;
-				if(!cache.relation[level_id] || !cache.relation[level_id][select]){
+				$scope.watch_list && $scope.watch_list();
+				if(!cache.relation[level_id][select]){
 					var where_list=[
 						{field:'level_id',type:0,value:level_id},
 						{field:'id',type:0,value:select},
 					];
-					// console.log(level_id,select)
 					var res=yield crud.get("TagRelation",{where_list:where_list})
 					
 					if(res.status){
-						for(var i in res.list){
-							var data=res.list[i];
-							var id=data.id;
-							var child_id=data.child_id;
-							var level_id=data.level_id;
-							cache.relation[level_id] || (cache.relation[level_id]={});
-							cache.relation[level_id][id] || (cache.relation[level_id][id]={})
-							cache.relation[level_id][id][child_id]=data;
-						}
 						yield tagName.idToName(res.list.map(function(val){
 							return val.child_id;
 						}));
+						res.list.sort(function(a,b){
+							return a.sort_id-b.sort_id;
+						})
+						
+						cache.relation[level_id][select]=res.list;
+						
+						if($scope.$ctrl.levelList.length-1!=$scope.$ctrl.levelIndex){
+							if(!$scope.$ctrl.selectList[$scope.$ctrl.levelIndex+1].select){
+								var select=cache.relation[level_id][select][0].child_id;
+								var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex+1].id;
+								var where_list=[
+									{field:'level_id',type:0,value:level_id},
+									{field:'id',type:0,value:select},
+								];
+								var res=yield crud.get("TagRelation",{where_list:where_list})
+								if(res.status){
+									$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select=select;
+								}
+							}
+						}
+					}else{
+						cache.relation[level_id][select]=[];
 					}
 				}
-				$scope.watch_list && $scope.watch_list();
-				$scope.list=[];
-				
-				if(cache.relation[$scope.level_id]){
-					var relation=cache.relation[$scope.level_id][$scope.$ctrl.select?$scope.$ctrl.select:0];
-					if(relation){
-						var select=$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select
-						if(!relation[select]){
-							delete $scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select
-						}
-						for(var i in relation){
-							$scope.list.push(relation[i])
-						}
-					}
-				}
-				$scope.list.sort(function(a,b){
-					return a.sort_id-b.sort_id;
-				})
-				
-				
-				if($scope.list.length){					
-					if($scope.$ctrl.levelList.length-1!=$scope.$ctrl.levelIndex)
-					if(!$scope.$ctrl.selectList[$scope.$ctrl.levelIndex+1].select){
-						var select=$scope.list[0].child_id;
-						var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex+1].id;
-						var where_list=[
-							{field:'level_id',type:0,value:level_id},
-							{field:'id',type:0,value:select},
-						];
-						var res=yield crud.get("TagRelation",{where_list:where_list})
-						if(res.status){
-							$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select=select;
-						}
-					}
-				}
-				$scope.watch_list=$scope.$watch("list",crud.sort.bind(this,"TagRelation","child_id"),1)
+				$scope.watch_list=$scope.$watch("cache.relation["+level_id+"]["+select+"]",crud.sort.bind(this,"TagRelation","child_id"),1)
 				$scope.$apply();
 			}())
 		},0)
@@ -85,41 +66,38 @@ function($scope,tagName,cache,crud){
 		promiseRecursive(function* (){
 			var res=yield tagName.nameToId(search.tagName);
 			var child_id=res[0].id;
-			var select=$scope.$ctrl.select?$scope.$ctrl.select:0;
+			var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 			var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;
 			
-			cache.relation[$scope.level_id] || (cache.relation[$scope.level_id]={});
-			cache.relation[$scope.level_id][select] || (cache.relation[$scope.level_id][select]={});
-			var sort_id=Object.keys(cache.relation[$scope.level_id][select]).length;
+			var sort_id=$scope.list.length;
 			
 			var add={
 				level_id:level_id,
-				id:select,
+				id:id,
 				child_id:child_id,
 				sort_id:sort_id,
 			}
-			cache.relation[$scope.level_id][select][child_id]=add;
-			crud.add("tagRelation",add);
+			var index=cache.relation[level_id][id].findIndex(function(val){
+				return val.child_id==child_id
+			})
+			if(index==-1){
+				cache.relation[level_id][id].push(add);
+				crud.add("tagRelation",add);
+			}
+			
 			search.tagName='';
+			$scope.$apply();
 		}())
 	}
 	$scope.del=function(index){
-		var del=angular.copy($scope.list.splice(index,1).pop());
-		var level_id=del.level_id;
-		var id=del.id;
-		var child_id=del.child_id;
-		delete cache.relation[level_id][id][child_id];
+		var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
+		var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;
+		var del=angular.copy(cache.relation[level_id][id].splice(index,1).pop());
 		crud.del("TagRelation",del)
 	}
 	
-	
-	$scope.$watch("$ctrl.select",function(select){
-		if(!select){
-			select=0;
-		}
-		$scope.get()
-	
-	},1)
+	$scope.$watch("$ctrl.select",$scope.get,1)
+	$scope.$watch("cache.relation",$scope.get,1)
 	$scope.$watch("$ctrl.selectList["+$scope.$ctrl.levelIndex+"].select",function(select){
 		if(!select){
 			if($scope.$ctrl.selectList[$scope.$ctrl.levelIndex+1]){
@@ -127,7 +105,7 @@ function($scope,tagName,cache,crud){
 			}
 		}
 	},1)
-	$scope.$watch("cache.relation["+$scope.level_id+"]",$scope.get,1)
+	
 }
 ]
 });

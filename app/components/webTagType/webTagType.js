@@ -6,6 +6,7 @@ angular.module('app').component("webTagType",{
 	function($scope,cache,crud){
 		
 		$scope.cache=cache;
+		cache.levelList || (cache.levelList={});
 		cache.webList || (cache.webList={});
 		cache.tagType || (cache.tagType={});
 		cache.webTagType || (cache.webTagType={});
@@ -63,6 +64,7 @@ angular.module('app').component("webTagType",{
 		$scope.get();
 		
 		$scope.relation=function(tid){
+			// console.log(tid)
 			var wid=cache.webList.select;
 			if(wid){
 				var index=cache.webTagType.list.findIndex(function(val){
@@ -93,6 +95,7 @@ angular.module('app').component("webTagType",{
 		var watch=function(){
 			$scope.list=[];
 			$scope.not_list=[];
+			cache.tagType.selects=[];
 			// cache.tagType.selects=cache.tagType.list.map(function(val){
 				// return val.id;
 			// });

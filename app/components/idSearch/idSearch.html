@@ -5,7 +5,7 @@
 		placeholder="輸入id"
 		type="text" 
 		ng-model="search_id"
-		ng-enter="add_id_search(search_id);search_id='';"
+		ng-enter="add(search_id);search_id='';"
 		/>
 		
 		<button 
@@ -13,20 +13,19 @@
 		sortable="idRelation.search"
 		index="$index"
 		
-		ng-right-click="del_id_search($index,item)"
+		ng-right-click="del($index,item)"
 		ng-repeat="item in idRelation.search"
 		class="btn btn-primary btn-sm"
 		>{{item}}</button>
 	</div>
 	<div>
 		<button 
-		ng-if="0 && !item.type"
+		ng-if="!item.type"
 		ng-right-click=""
 		ng-repeat="item in cache.clickSearch"
 		class="btn btn-default btn-sm "
 		>{{item.name}}</button>
 	</div>
-	
 	<div ng-repeat="source_id in idRelation.search">
 		{{source_id}}:
 		<id-relation

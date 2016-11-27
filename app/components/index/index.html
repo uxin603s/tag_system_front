@@ -2,27 +2,25 @@
 ng-if="!cache.not_finish_flag"
 ></web-tag-type>
 
-
 <tag-level
+ng-if="!cache.not_finish_flag"
+
 ng-repeat="tid in cache.tagType.selects"
 tid="tid"
 ></tag-level>
 
-
-
 <tag-search 
-ng-if="!cache.not_finish_flag"
+ng-if="
+!cache.not_finish_flag"
 ></tag-search>
-<id-search
 
+<id-search
 ng-if="
 0
 &&
-!cache.not_finish_flag
-&&
-cache.tagType.list[cache.tagType.select] 
+!cache.not_finish_flag 
 && 
-cache.webList.list[cache.webList.select]
+cache.webList.select
 "
-
+wid="cache.webList.select"
 ></id-search>

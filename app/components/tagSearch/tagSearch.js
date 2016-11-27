@@ -8,10 +8,10 @@ angular.module('app').component("tagSearch",{
 		var watch_clickSearch=function(){
 			clearTimeout($scope.selectListTimer);
 			$scope.selectListTimer=setTimeout(function(){
-				cache.clickSearch=[]
+				cache.clickSearch=[];
 				var selectList=cache.selectList
 				for(var tid in selectList){
-					
+					if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
 					var select=selectList[tid][selectList[tid].length-1].select;
 					if(select){
 						var name=cache.tagName[select]
@@ -37,11 +37,15 @@ angular.module('app').component("tagSearch",{
 				$scope.$apply();
 			},0)
 		}
+		$scope.$watch("cache.tagType.selects",watch_clickSearch,1)
+		$scope.$watch("cache.webList.select",watch_clickSearch,1)
 		$scope.$watch("cache.selectList",watch_clickSearch,1)
 		$scope.$watch("cache.relation",watch_clickSearch,1)
+		
 		var interSearch=function(){
 			clearTimeout($scope.interSearchTimer);
 			$scope.interSearchTimer=setTimeout(function(){
+				// console.log('interSearch')
 				promiseRecursive(function* (){
 					cache.diffSearch=[];
 					var search=angular.copy(cache.absoluteSearch);
@@ -60,9 +64,7 @@ angular.module('app').component("tagSearch",{
 						var value=search.map(function(val){
 							return val.name;
 						})
-						// console.log(value)
 						var list=yield tagName.nameToId(value,1);
-						
 						if(search.length==list.length){
 							var require_id=[];
 							var option_id=[];
@@ -79,11 +81,8 @@ angular.module('app').component("tagSearch",{
 									require_id.push(id)
 								}
 							}
-							// console.log(option_id,require_id)
-							
-							var wid=cache.webList.list[cache.webList.select].id
+							var wid=cache.webList.select
 							var res=yield webRelation.getInter(require_id,option_id,wid);
-			
 							if(res.status){
 								$scope.result=res.list.map(function(val){
 									return val.source_id;
@@ -95,13 +94,14 @@ angular.module('app').component("tagSearch",{
 						}else{
 							yield Promise.reject("搜尋不存在的標籤");
 						}
+					}else{
+						yield Promise.reject("沒有搜尋");
 					}
 					$scope.$apply();
 				}())
 				.catch(function(message){
 					$scope.result=[];
 					$scope.$apply();
-					console.log(message)
 				})
 			},0)
 		}
