@@ -14,9 +14,6 @@
 	<script src="app/factories/tagName.js?t=<?=time()?>"></script>
 	<script src="app/factories/webRelation.js?t=<?=time()?>"></script>
 	
-	<script src="app/factories/idRelation.js?t=<?=time()?>"></script>
-
-	
 	<script src="app/factories/crud.js?t=<?=time()?>"></script>
 	
 	<script src="app/components/index/index.js?t<?=time()?>"></script>

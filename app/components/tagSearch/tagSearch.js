@@ -5,47 +5,9 @@ angular.module('app').component("tagSearch",{
 	function($scope,cache,tagName,webRelation){
 		$scope.cache=cache;
 		cache.absoluteSearch || (cache.absoluteSearch=[]);
-		var watch_clickSearch=function(){
-			clearTimeout($scope.selectListTimer);
-			$scope.selectListTimer=setTimeout(function(){
-				cache.clickSearch=[];
-				var selectList=cache.selectList
-				for(var tid in selectList){
-					if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
-					var select=selectList[tid][selectList[tid].length-1].select;
-					if(select){
-						var name=cache.tagName[select]
-						cache.clickSearch.push({id:select,name:name})
-					}else{
-						var data=selectList[tid][selectList[tid].length-2];
-						if(data){
-							var select=data.select;
-							if(select){
-								var level_id=cache.levelList[tid][cache.levelList[tid].length-1].id
-								if(cache.relation[level_id]){
-									var list=cache.relation[level_id][select];
-									for(var i in list){
-										var id=list[i].child_id;
-										var name=cache.tagName[id]
-										cache.clickSearch.push({id:id,name:name,type:1})
-									}
-								}
-							}
-						}
-					}
-				}
-				$scope.$apply();
-			},0)
-		}
-		$scope.$watch("cache.tagType.selects",watch_clickSearch,1)
-		$scope.$watch("cache.webList.select",watch_clickSearch,1)
-		$scope.$watch("cache.selectList",watch_clickSearch,1)
-		$scope.$watch("cache.relation",watch_clickSearch,1)
-		
 		var interSearch=function(){
 			clearTimeout($scope.interSearchTimer);
 			$scope.interSearchTimer=setTimeout(function(){
-				// console.log('interSearch')
 				promiseRecursive(function* (){
 					cache.diffSearch=[];
 					var search=angular.copy(cache.absoluteSearch);

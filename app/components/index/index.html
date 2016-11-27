@@ -4,23 +4,21 @@ ng-if="!cache.not_finish_flag"
 
 <tag-level
 ng-if="!cache.not_finish_flag"
-
 ng-repeat="tid in cache.tagType.selects"
 tid="tid"
 ></tag-level>
 
-<tag-search 
-ng-if="
-!cache.not_finish_flag"
-></tag-search>
-
 <id-search
 ng-if="
-0
-&&
+
 !cache.not_finish_flag 
 && 
 cache.webList.select
 "
-wid="cache.webList.select"
 ></id-search>
+
+<tag-search 
+ng-if="
+0 && 
+!cache.not_finish_flag"
+></tag-search>

@@ -10,11 +10,11 @@
 		
 		<button 
 		draggable="true"
-		sortable="idRelation.search"
+		sortable="search"
 		index="$index"
 		
 		ng-right-click="del($index,item)"
-		ng-repeat="item in idRelation.search"
+		ng-repeat="item in search"
 		class="btn btn-primary btn-sm"
 		>{{item}}</button>
 	</div>
@@ -26,11 +26,14 @@
 		class="btn btn-default btn-sm "
 		>{{item.name}}</button>
 	</div>
-	<div ng-repeat="source_id in idRelation.search">
+	
+	<div ng-repeat="source_id in search">
 		{{source_id}}:
 		<id-relation
-		ng-if="idRelation.result[source_id]"
-		list="idRelation.result[source_id]"
+		ng-if="
+		result[source_id]
+		"
+		list="result[source_id]"
 		source-id="source_id"
 		></id-relation>
 	</div>
