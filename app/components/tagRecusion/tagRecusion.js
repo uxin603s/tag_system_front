@@ -76,7 +76,7 @@ function($scope,tagName,cache,crud){
 			var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 			var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;
 			
-			var sort_id=$scope.list.length;
+			var sort_id=cache.relation[level_id][id].length;
 			
 			var add={
 				level_id:level_id,
@@ -104,7 +104,7 @@ function($scope,tagName,cache,crud){
 	}
 	
 	$scope.$watch("$ctrl.select",$scope.get,1)
-	$scope.$watch("cache.relation",$scope.get,1)
+	$scope.$watch("cache.relation["+$scope.level_id+"]["+$scope.$ctrl.select+"]",$scope.get,1);
 	$scope.$watch("$ctrl.selectList["+$scope.$ctrl.levelIndex+"].select",function(select){
 		if(!select){
 			if($scope.$ctrl.selectList[$scope.$ctrl.levelIndex+1]){

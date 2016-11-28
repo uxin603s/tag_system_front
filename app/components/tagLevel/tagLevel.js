@@ -49,6 +49,7 @@ angular.module('app').component("tagLevel",{
 				sort_id:$scope.list.length,
 			};
 			$scope.list.push(arg);
+			cache.selectList[$scope.$ctrl.tid] || (cache.selectList[$scope.$ctrl.tid]=[])
 			cache.selectList[$scope.$ctrl.tid].push({});
 			crud.add("TagLevel",arg);
 		}

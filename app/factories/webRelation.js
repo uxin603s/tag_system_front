@@ -27,7 +27,6 @@ angular.module('app').factory('webRelation',
 				},
 			}
 			$.post("../tag_system_backend/ajax.php",post_data,function(res){
-				
 				for(var i in cache.tagCount){
 					delete cache.tagCount[i];
 				}
@@ -36,6 +35,7 @@ angular.module('app').factory('webRelation',
 						cache.tagCount[i]=res.list[i]
 					}
 				}
+				resolve(res);
 				$rootScope.$apply();
 			},"json")
 		});

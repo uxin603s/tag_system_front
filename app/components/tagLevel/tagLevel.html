@@ -26,7 +26,15 @@
 <tag-recusion
 style="display:{{0?'inline-block;':'block'}}"
 
-ng-if="list.length"
+ng-if="
+list.length 
+&& 
+cache.selectList[$ctrl.tid]
+&&
+list[0]
+&&
+cache.relation[list[0].id]
+"
 
 select-list="cache.selectList[$ctrl.tid]"
 level-list="list"
