@@ -4,6 +4,9 @@ angular.module('app').component("index",{
 	controller:['$scope','cache',
 	function($scope,cache){
 		$scope.cache=cache;
+		// $scope.$watch("cache.mode",function(mode){
+			// console.log(mode)
+		// },1)
 		return
 		
 	

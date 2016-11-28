@@ -6,10 +6,10 @@ function($scope,cache,crud,tagName){
 	$scope.cache=cache;
 	cache.idSearch || (cache.idSearch=[]);
 	$scope.search=cache.idSearch;
-	
+	$scope.result={};
 	$scope.$watch("cache.selectList",function(value){
 		if(!value)return;
-		var selectList=cache.selectList
+		var selectList=cache.selectList;
 		var insert;
 		for(var tid in selectList){
 			if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
@@ -18,26 +18,32 @@ function($scope,cache,crud,tagName){
 				var select=data.select
 				for(var i in $scope.search){
 					var source_id=$scope.search[i];
-					var index=$scope.result[source_id].findIndex(function(val){
-						return val.tid==select;
-					});
-					if(index==-1){
-						var arg={
-							tid:select,
-							source_id:source_id,
-							wid:cache.webList.select,
-							sort_id:$scope.result[source_id].length,
+					if($scope.result[source_id]){
+						var index=$scope.result[source_id].findIndex(function(val){
+							return val.tid==select;
+						});
+						
+						if(index==-1){
+							var arg={
+								tid:select,
+								source_id:source_id,
+								wid:cache.webList.select,
+								sort_id:$scope.result[source_id].length,
+							}
+							$scope.result[source_id].push(arg);
+							
+							crud.add('WebRelation',arg)
+							cache.tagCount[select] || (cache.tagCount[select]=0);
+							cache.tagCount[select]++;
 						}
-						$scope.result[source_id].push(arg);
-						crud.add('WebRelation',arg)
 					}
 				}
 				insert=cache.tagName[select];
 				delete data.select;
-				break;
+				// break;
 			}
 		}
-	},1)
+	},1);
 	$scope.$watch("search",function(search){
 		if(!search)return;
 		if(!search.length)return;

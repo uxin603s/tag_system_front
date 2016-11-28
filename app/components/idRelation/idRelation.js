@@ -23,15 +23,21 @@ function($scope,cache,crud,tagName){
 					wid:cache.webList.select,
 					sort_id:$scope.$ctrl.list.length,
 				}
+				
 				$scope.$ctrl.list.push(arg);
 				crud.add('WebRelation',arg)
+				// console.log(cache.tagCount[tid])
+				cache.tagCount[tid] || (cache.tagCount[tid]=0);
+				cache.tagCount[tid]++;
 			}
 			tag.name='';
+			$scope.$apply();
 		})
 	};
 	$scope.del=function(index){
 		var del=angular.copy($scope.$ctrl.list.splice(index,1).pop());
 		crud.del('WebRelation',del)
+		cache.tagCount[del.tid]--;
 		// .then(function(res){
 			// console.log(res)
 		// })
