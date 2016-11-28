@@ -22,7 +22,6 @@ angular.module('app').component("tagSearch",{
 						}
 					}
 					if(search.length){
-						
 						var value=search.map(function(val){
 							return val.name;
 						})
@@ -67,28 +66,31 @@ angular.module('app').component("tagSearch",{
 				})
 			},0)
 		}
-		$scope.$watch("cache.absoluteSearch",function(value){
-			interSearch();
-			var wid=cache.webList.select
-			if(value.length){
-				var names=value.map(function(val){return val.name;})
-				tagName.nameToId(names,1)
-				.then(function(list){
-					if(list.length){
-						var tid_arr=list.map(function(val){
-							return val.id;
-						})
-						webRelation.getCount(wid,tid_arr);
-						$scope.$apply();
-					}
-				})
-			}
-			else{
-				webRelation.getCount(wid);
-			}
-			
-		},1)
 		$scope.$watch("cache.clickSearch",interSearch,1)
+		$scope.$watch("cache.absoluteSearch",interSearch,1);
+		//getCount
+		$scope.$watch("cache.absoluteSearch",function(value){
+			clearTimeout($scope.getCountTimer);
+			$scope.getCountTimer=setTimeout(function(){
+				promiseRecursive(function* (){
+					var wid=cache.webList.select
+					var tid_arr;
+					if(value.length){
+						var names=value.map(function(val){return val.name;})
+						var list=yield tagName.nameToId(names,1)
+						
+						if(list.length){
+							tid_arr=list.map(function(val){
+								return val.id;
+							})
+						}
+					}
+					webRelation.getCount(wid,tid_arr);
+					$scope.$apply();
+				}());
+			},0)
+		},1)
+		
 		
 		$scope.add=function(name){
 			var index=cache.absoluteSearch.findIndex(function(val){

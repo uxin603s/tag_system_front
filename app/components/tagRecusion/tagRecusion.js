@@ -19,12 +19,12 @@ function($scope,tagName,cache,crud){
 		$scope.timer=setTimeout(function(){
 			promiseRecursive(function* (){
 				var level_id=$scope.level_id;
-				var select=$scope.$ctrl.select?$scope.$ctrl.select:0;
+				var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 				$scope.watch_list && $scope.watch_list();
-				if(!cache.relation[level_id][select]){
+				if(!cache.relation[level_id][id]){
 					var where_list=[
 						{field:'level_id',type:0,value:level_id},
-						{field:'id',type:0,value:select},
+						{field:'id',type:0,value:id},
 					];
 					var res=yield crud.get("TagRelation",{where_list:where_list})
 					
@@ -36,26 +36,35 @@ function($scope,tagName,cache,crud){
 							return a.sort_id-b.sort_id;
 						})
 						
-						cache.relation[level_id][select]=res.list;
+						cache.relation[level_id][id]=res.list;
 					}else{
-						cache.relation[level_id][select]=[];
+						cache.relation[level_id][id]=[];
 					}
 				}
+				
+				var index=cache.relation[level_id][id].findIndex(function(val){
+					return val.child_id==$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select;
+				});
+				
+				if(index==-1){
+					delete $scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select;
+				}
+				
 				if($scope.$ctrl.levelList.length-1!=$scope.$ctrl.levelIndex){
 					if(!$scope.$ctrl.selectList[$scope.$ctrl.levelIndex+1].select){
-						var select=cache.relation[level_id][select][0].child_id;
+						var id=cache.relation[level_id][id][0].child_id;
 						var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex+1].id;
 						var where_list=[
 							{field:'level_id',type:0,value:level_id},
-							{field:'id',type:0,value:select},
+							{field:'id',type:0,value:id},
 						];
 						var res=yield crud.get("TagRelation",{where_list:where_list})
 						if(res.status){
-							$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select=select;
+							$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select=id;
 						}
 					}
 				}
-				$scope.watch_list=$scope.$watch("cache.relation["+level_id+"]["+select+"]",crud.sort.bind(this,"TagRelation","child_id"),1)
+				$scope.watch_list=$scope.$watch("cache.relation["+level_id+"]["+id+"]",crud.sort.bind(this,"TagRelation","child_id"),1)
 				$scope.$apply();
 			}())
 		},0)
