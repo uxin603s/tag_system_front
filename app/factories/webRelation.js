@@ -41,7 +41,6 @@ angular.module('app').factory('webRelation',
 		});
 	}
 	return {
-		
 		getInter:getInter,
 		getCount:getCount,
 	}
