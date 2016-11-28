@@ -3,7 +3,6 @@ type="text"
 ng-model="search.tagName"
 ng-enter="add(search)"
 />
-
 <div 
 	style="display:inline-block;" 
 >
@@ -33,14 +32,17 @@ ng-enter="add(search)"
 	class="btn btn-sm" 
 	>
 	{{cache.tagName[item.child_id]}}
+	<span>
 	({{cache.tagCount[item.child_id]||0}})
+	</span>
 	</button>
 </div>
 
 <tag-recusion
 style="display:{{$ctrl.mode?'inline-block;':'block'}}"
 ng-if="
-$ctrl.selectList[$ctrl.levelIndex].select && 
+$ctrl.selectList[$ctrl.levelIndex].select 
+&& 
 $ctrl.levelList[$ctrl.levelIndex+1]
 "
 
@@ -50,7 +52,6 @@ select="$ctrl.selectList[$ctrl.levelIndex].select"
 
 level-list="$ctrl.levelList"
 level-index="$ctrl.levelIndex+1"
-mode="$ctrl.mode"
 ></tag-recusion>
 
 

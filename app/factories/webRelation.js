@@ -35,9 +35,7 @@ angular.module('app').factory('webRelation',
 					for(var i in res.list){
 						cache.tagCount[i]=res.list[i]
 					}
-					// console.log(cache.tagCount)
 				}
-				// resolve(res);
 				$rootScope.$apply();
 			},"json")
 		});

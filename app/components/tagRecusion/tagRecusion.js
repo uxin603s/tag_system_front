@@ -14,7 +14,6 @@ function($scope,tagName,cache,crud){
 	
 	$scope.search={tagName:''};
 	$scope.get=function(){
-		
 		clearTimeout($scope.timer);
 		$scope.timer=setTimeout(function(){
 			promiseRecursive(function* (){
@@ -114,6 +113,5 @@ function($scope,tagName,cache,crud){
 		}
 	},1)
 	
-}
-]
+}]
 });
