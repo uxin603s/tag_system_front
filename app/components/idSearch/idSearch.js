@@ -44,40 +44,45 @@ function($scope,cache,crud,tagName){
 			}
 		}
 	},1);
-	$scope.$watch("search",function(search){
-		if(!search)return;
-		if(!search.length)return;
+	var watch_search=function(){
+		if(!$scope.search)return;
+		if(!$scope.search.length)return;
 		$scope.result={};
-		
-		var wid=cache.webList.select;
-		var where_list=[
-			{field:'wid',type:0,value:wid},
-		];
-		for(var i in search){
-			var id=search[i];
-			where_list.push({field:'source_id',type:0,value:id})
-			$scope.result[id]=[];
-		}
-		crud.get("WebRelation",{where_list:where_list})
-		.then(function(res){
-			if(res.status){
-				res.list.sort(function(a,b){
-					return a.sort_id-b.sort_id;
-				})
-				for(var i in res.list){
-					var data=res.list[i];
-					var source_id=data.source_id;
-					$scope.result[source_id] || ($scope.result[source_id]=[])
-					$scope.result[source_id].push(data)
+		clearTimeout($scope.search_timer)
+		$scope.search_timer=setTimeout(function(){
+			promiseRecursive(function* (){
+				var wid=cache.webList.select;
+				var where_list=[
+					{field:'wid',type:0,value:wid},
+				];
+				for(var i in $scope.search){
+					var id=$scope.search[i];
+					where_list.push({field:'source_id',type:0,value:id})
+					$scope.result[id]=[];
 				}
-				var ids=res.list.map(function(val){return val.tid})
-				tagName.idToName(ids,1)
-				.then(function(){
+				var res=yield crud.get("WebRelation",{where_list:where_list})
+				if(res.status){
+					res.list.sort(function(a,b){
+						return a.sort_id-b.sort_id;
+					})
+					for(var i in res.list){
+						var data=res.list[i];
+						var source_id=data.source_id;
+						$scope.result[source_id] || ($scope.result[source_id]=[])
+						$scope.result[source_id].push(data)
+					}
+					var ids=res.list.map(function(val){return val.tid})
+					yield tagName.idToName(ids,1);
+					
 					$scope.$apply();
-				})
-			}
-		})		
-	},1)
+					
+				}
+			}())
+		},0)
+	}
+	$scope.$watch("cache.webList.select",watch_search,1);
+	$scope.$watch("search",watch_search,1);
+	
 	$scope.add=function(id){
 		if($scope.search.indexOf(id)==-1){
 			$scope.search.push(id)

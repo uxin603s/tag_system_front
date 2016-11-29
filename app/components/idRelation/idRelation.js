@@ -41,7 +41,6 @@ function($scope,cache,crud,tagName){
 		// .then(function(res){
 			// console.log(res)
 		// })
-		
 	}
 	
 	return;
