@@ -4,18 +4,12 @@ angular.module('app').component("index",{
 	controller:['$scope','cache',
 	function($scope,cache){
 		$scope.cache=cache;
-		// $scope.$watch("cache.mode",function(mode){
-			// console.log(mode)
-		// },1)
-		return
-		
-	
-		$scope.$watch("cache.tag_search.result",function(value){
-			if(!value)return;
-			postMessageHelper.send('tagSystem',{name:'search',value:value})
+		postMessageHelper.receive('tagSystem',function(res){
+			
 		})
 		$scope.document=document.documentElement;
 		window.onresize=function(){
+			
 			clearTimeout($scope.resizeTimer)
 			$scope.resizeTimer=setTimeout(function(){
 				cache.width=$scope.document.scrollWidth;
@@ -34,7 +28,18 @@ angular.module('app').component("index",{
 		
 		$scope.$watch("document.scrollWidth",window.onresize);
 		$scope.$watch("document.scrollHeight",window.onresize);
-		$scope.$watch("cache.editMode",window.onresize);
+		$scope.$watch("cache.relation",window.onresize,1);
+		// $scope.$watch("cache.mode",function(mode){
+			// console.log(mode)
+		// },1)
+		return
+		
+	
+		$scope.$watch("cache.tag_search.result",function(value){
+			if(!value)return;
+			postMessageHelper.send('tagSystem',{name:'search',value:value})
+		})
+		
 	}],
 })
 
