@@ -110,15 +110,14 @@ function(cache,$rootScope){
 					where_list.push({field:'id',type:0,value:ids[i]});
 				}
 			}
+			
 			if(!where_list.length){
 				return resolve(result)
 			}
 			
-			getList(where_list)
+			return getList(where_list,1)
 			.then(function(list){
-				
 				$rootScope.$apply();
-				
 				return resolve(result);
 			})
 			

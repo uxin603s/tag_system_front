@@ -65,14 +65,15 @@ function($scope,cache,crud,tagName){
 					res.list.sort(function(a,b){
 						return a.sort_id-b.sort_id;
 					})
+					var ids=res.list.map(function(val){return val.tid})
+					yield tagName.idToName(ids,1);
 					for(var i in res.list){
 						var data=res.list[i];
 						var source_id=data.source_id;
 						$scope.result[source_id] || ($scope.result[source_id]=[])
 						$scope.result[source_id].push(data)
 					}
-					var ids=res.list.map(function(val){return val.tid})
-					yield tagName.idToName(ids,1);
+					
 					
 					$scope.$apply();
 					
@@ -91,5 +92,31 @@ function($scope,cache,crud,tagName){
 	$scope.del=function(index){
 		var source_id=$scope.search.splice(index,1).pop();
 	}
+	postMessageHelper.receive('tagSystem',function(res){
+		if(res.name=="idSearchTag"){
+			cache.idSearch.splice(0,cache.idSearch.length)
+			for(var i in res.value){
+				cache.idSearch.push(res.value[i].id);
+			}
+		}
+		$scope.$apply();
+	})
+	$scope.$watch("result",function(value){
+		clearTimeout($scope.watch_result);
+		$scope.watch_result=setTimeout(function(){
+			var result={};
+			for(var i in value){
+				result[i] || (result[i]=[])
+				for(var j in value[i]){
+					var tid=value[i][j].tid;
+					var name=cache.tagName[tid]
+					// console.log(name)
+					result[i].push(name)
+				}
+			}
+			// console.log(value,result)
+			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
+		},0)
+	},1)
 }],
 })
