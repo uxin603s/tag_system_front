@@ -4,59 +4,109 @@ templateUrl:'app/components/idSearch/idSearch.html?t='+Date.now(),
 controller:["$scope","cache","crud","tagName",
 function($scope,cache,crud,tagName){
 	$scope.cache=cache;
-	cache.idSearch || (cache.idSearch=[]);
-	$scope.search=cache.idSearch;
+	cache.idSearch || (cache.idSearch={});
+	cache.idSearch.search || (cache.idSearch.search=[]);
+	cache.idSearch.selects || (cache.idSearch.selects=[]);
+	cache.idSearch.img || (cache.idSearch.img=[]);
+	cache.idSearch.title || (cache.idSearch.title=[]);
 	$scope.result={};
-	$scope.$watch("cache.selectList",function(value){
+	$scope.idSearch_func={
+		add:function(id,tag){
+			promiseRecursive(function* (){
+				if(tag.name){
+					var list=yield tagName.nameToId(tag.name)
+					var tid=list[0].id;
+				}else if(tag.id){
+					var tid=tag.id;
+				}else{
+					return Promise.reject();
+				}
+				var index=$scope.result[id].findIndex(function(val){
+					return val.tid==tid;
+				})
+				if(index==-1){
+					var arg={
+						tid:tid,
+						source_id:id,
+						wid:cache.webList.select,
+						sort_id:$scope.result[id].length,
+					}
+					
+					$scope.result[id].push(arg);
+					crud.add('WebRelation',arg)
+					cache.tagCount[tid] || (cache.tagCount[tid]=0);
+					cache.tagCount[tid]++;
+				}
+				if(tag.name){
+					tag.name='';
+					$scope.$apply();
+				}
+			}())
+		},
+		del:function(id,index){
+			this.watch[id] && this.watch[id]();
+			var del=angular.copy($scope.result[id].splice(index,1).pop());
+			crud.del('WebRelation',del)
+			cache.tagCount[del.tid]--;
+		},
+		sort:function(id){
+			this.watch[id] && this.watch[id]();
+			this.watch[id]=$scope.$watch("result["+id+"]",crud.sort.bind(this,'WebRelation','tid'),1)
+		},
+		watch:{},
+	}
+	
+	$scope.select=function(id){
+		var index=cache.idSearch.selects.indexOf(id);
+		if(index==-1){
+			cache.idSearch.selects.push(id)
+		}else{
+			cache.idSearch.selects.splice(index,1);
+		}
+	}
+	var watch_selectList=function(value){
 		if(!value)return;
 		var selectList=cache.selectList;
 		var insert;
 		for(var tid in selectList){
 			if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
-			var data=selectList[tid][selectList[tid].length-1]
+			var data=selectList[tid][selectList[tid].length-1];
 			if(data.select){
-				var select=data.select
-				for(var i in $scope.search){
-					var source_id=$scope.search[i];
-					if($scope.result[source_id]){
-						var index=$scope.result[source_id].findIndex(function(val){
-							return val.tid==select;
-						});
-						
-						if(index==-1){
-							var arg={
-								tid:select,
-								source_id:source_id,
-								wid:cache.webList.select,
-								sort_id:$scope.result[source_id].length,
-							}
-							$scope.result[source_id].push(arg);
-							
-							crud.add('WebRelation',arg)
-							cache.tagCount[select] || (cache.tagCount[select]=0);
-							cache.tagCount[select]++;
-						}
+				if(cache.mode){
+					var select=data.select
+					for(var i in cache.idSearch.selects){
+						var source_id=cache.idSearch.selects[i];
+						$scope.idSearch_func.add(source_id,{id:select})
 					}
+					insert=cache.tagName[select];
+					if(insert){
+						postMessageHelper.send('tagSystem',{name:'insert',value:insert})
+					}
+					
+					delete data.select;
+					// break;
 				}
-				insert=cache.tagName[select];
-				delete data.select;
-				// break;
+				
 			}
 		}
-	},1);
+	}
+	
+	$scope.$watch("cache.selectList",watch_selectList,1);
+	$scope.$watch("cache.mode",watch_selectList,1);
+	
 	var watch_search=function(){
-		if(!$scope.search)return;
-		if(!$scope.search.length)return;
+		if(!cache.idSearch.search)return;
+		if(!cache.idSearch.search.length)return;
 		$scope.result={};
-		clearTimeout($scope.search_timer)
-		$scope.search_timer=setTimeout(function(){
+		clearTimeout(cache.idSearch.search_timer)
+		cache.idSearch.search_timer=setTimeout(function(){
 			promiseRecursive(function* (){
 				var wid=cache.webList.select;
 				var where_list=[
 					{field:'wid',type:0,value:wid},
 				];
-				for(var i in $scope.search){
-					var id=$scope.search[i];
+				for(var i in cache.idSearch.search){
+					var id=cache.idSearch.search[i];
 					where_list.push({field:'source_id',type:0,value:id})
 					$scope.result[id]=[];
 				}
@@ -67,6 +117,7 @@ function($scope,cache,crud,tagName){
 					})
 					var ids=res.list.map(function(val){return val.tid})
 					yield tagName.idToName(ids,1);
+					
 					for(var i in res.list){
 						var data=res.list[i];
 						var source_id=data.source_id;
@@ -82,25 +133,35 @@ function($scope,cache,crud,tagName){
 		},0)
 	}
 	$scope.$watch("cache.webList.select",watch_search,1);
-	$scope.$watch("search",watch_search,1);
+	$scope.$watch("cache.idSearch.search",watch_search,1);
 	
 	$scope.add=function(id){
-		if($scope.search.indexOf(id)==-1){
-			$scope.search.push(id)
+		if(cache.idSearch.search.indexOf(id)==-1){
+			cache.idSearch.search.push(id)
 		}
 	}
 	$scope.del=function(index){
-		var source_id=$scope.search.splice(index,1).pop();
+		var source_id=cache.idSearch.search.splice(index,1).pop();
 	}
 	postMessageHelper.receive('tagSystem',function(res){
 		if(res.name=="idSearchTag"){
-			cache.idSearch.splice(0,cache.idSearch.length)
+			cache.idSearch.search.splice(0,cache.idSearch.search.length)
 			for(var i in res.value){
-				cache.idSearch.push(res.value[i].id);
+				cache.idSearch.search.push(res.value[i].id);
+				if(res.value[i].title)
+					cache.idSearch.title.push(res.value[i].title);
+				if(res.value[i].img)
+					cache.idSearch.img.push(res.value[i].img);
+			}
+		}
+		if(res.name=="idSearchSelect"){
+			cache.idSearch.selects.splice(0,cache.idSearch.selects.length)
+			for(var i in res.value){
+				cache.idSearch.selects.push(res.value[i]);
 			}
 		}
 		$scope.$apply();
-	})
+	});
 	$scope.$watch("result",function(value){
 		clearTimeout($scope.watch_result);
 		$scope.watch_result=setTimeout(function(){
@@ -110,13 +171,12 @@ function($scope,cache,crud,tagName){
 				for(var j in value[i]){
 					var tid=value[i][j].tid;
 					var name=cache.tagName[tid]
-					// console.log(name)
-					result[i].push(name)
+					result[i].push(name);
 				}
 			}
-			// console.log(value,result)
+			// console.log(result)
 			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
 		},0)
-	},1)
+	},1);
 }],
 })

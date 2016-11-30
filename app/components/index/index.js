@@ -26,7 +26,6 @@ function($scope,cache){
 			if(cache.height==$scope.document.scrollHeight)
 			return;	
 			
-			
 			clearTimeout($scope.resizeTimer)
 			$scope.resizeTimer=setTimeout(function(){
 				var w=$scope.document.scrollWidth;
@@ -41,10 +40,10 @@ function($scope,cache){
 				$scope.$apply();
 			},50)
 		}
-		
 		$scope.$watch("document.scrollWidth",window.onresize);
 		$scope.$watch("document.scrollHeight",window.onresize);
 		$scope.$watch("cache.relation",window.onresize,1);
+		$scope.$watch("cache.mode",window.onresize,1);
 	})
 }],
 })

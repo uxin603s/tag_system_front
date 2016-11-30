@@ -25,9 +25,8 @@ tid="tid"
 
 
 <tag-search 
+ng-show="!cache.mode"
 ng-if="
-!cache.mode 
-&&
 !cache.not_finish_flag
 && 
 cache.webList.select
@@ -35,9 +34,8 @@ cache.webList.select
 ></tag-search>
 
 <id-search
+ng-show="cache.mode"
 ng-if="
-cache.mode 
-&& 
 !cache.not_finish_flag 
 && 
 cache.webList.select
