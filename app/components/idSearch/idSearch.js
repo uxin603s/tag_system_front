@@ -9,8 +9,38 @@ function($scope,cache,crud,tagName){
 	cache.idSearch.selects || (cache.idSearch.selects=[]);
 	cache.idSearch.img || (cache.idSearch.img=[]);
 	cache.idSearch.title || (cache.idSearch.title=[]);
-	$scope.result={};
+	
 	$scope.idSearch_func={
+		get:function(){
+			promiseRecursive(function* (){
+				$scope.result={};
+				var wid=cache.webList.select;
+				var where_list=[
+					{field:'wid',type:0,value:wid},
+				];
+				for(var i in cache.idSearch.search){
+					var id=cache.idSearch.search[i];
+					where_list.push({field:'source_id',type:0,value:id})
+					$scope.result[id]=[];
+				}
+				var res=yield crud.get("WebRelation",{where_list:where_list})
+				if(res.status){
+					res.list.sort(function(a,b){
+						return a.sort_id-b.sort_id;
+					})
+					var ids=res.list.map(function(val){return val.tid})
+					yield tagName.idToName(ids,1);
+					
+					for(var i in res.list){
+						var data=res.list[i];
+						var source_id=data.source_id;
+						$scope.result[source_id] || ($scope.result[source_id]=[])
+						$scope.result[source_id].push(data)
+					}
+					$scope.$apply();
+				}
+			}())
+		},
 		add:function(id,tag){
 			promiseRecursive(function* (){
 				if(tag.name){
@@ -96,42 +126,10 @@ function($scope,cache,crud,tagName){
 	
 	var watch_search=function(){
 		if(!cache.idSearch.search)return;
-		if(!cache.idSearch.search.length)return;
-		$scope.result={};
 		clearTimeout(cache.idSearch.search_timer)
-		cache.idSearch.search_timer=setTimeout(function(){
-			promiseRecursive(function* (){
-				var wid=cache.webList.select;
-				var where_list=[
-					{field:'wid',type:0,value:wid},
-				];
-				for(var i in cache.idSearch.search){
-					var id=cache.idSearch.search[i];
-					where_list.push({field:'source_id',type:0,value:id})
-					$scope.result[id]=[];
-				}
-				var res=yield crud.get("WebRelation",{where_list:where_list})
-				if(res.status){
-					res.list.sort(function(a,b){
-						return a.sort_id-b.sort_id;
-					})
-					var ids=res.list.map(function(val){return val.tid})
-					yield tagName.idToName(ids,1);
-					
-					for(var i in res.list){
-						var data=res.list[i];
-						var source_id=data.source_id;
-						$scope.result[source_id] || ($scope.result[source_id]=[])
-						$scope.result[source_id].push(data)
-					}
-					
-					
-					$scope.$apply();
-					
-				}
-			}())
-		},0)
+		cache.idSearch.search_timer=setTimeout($scope.idSearch_func.get,0)
 	}
+	
 	$scope.$watch("cache.webList.select",watch_search,1);
 	$scope.$watch("cache.idSearch.search",watch_search,1);
 	
@@ -143,6 +141,21 @@ function($scope,cache,crud,tagName){
 	$scope.del=function(index){
 		var source_id=cache.idSearch.search.splice(index,1).pop();
 	}
+	$scope.$watch("result",function(value){
+		clearTimeout($scope.watch_result);
+		$scope.watch_result=setTimeout(function(){
+			var result={};
+			for(var i in value){
+				result[i] || (result[i]=[])
+				for(var j in value[i]){
+					var tid=value[i][j].tid;
+					var name=cache.tagName[tid]
+					result[i].push(name);
+				}
+			}
+			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
+		},0)
+	},1);
 	postMessageHelper.receive('tagSystem',function(res){
 		if(res.name=="idSearchTag"){
 			cache.idSearch.search.splice(0,cache.idSearch.search.length)
@@ -160,23 +173,18 @@ function($scope,cache,crud,tagName){
 				cache.idSearch.selects.push(res.value[i]);
 			}
 		}
+		if(res.name=="addIdRelation"){
+			var id=res.value.id;
+			var name=res.value.name;
+			$scope.idSearch_func.add(id,{name:name})
+		}
+		if(res.name=="delIdRelation"){
+			var id=res.value.id;
+			var index=res.value.index;
+			$scope.idSearch_func.del(id,index)
+		}
 		$scope.$apply();
 	});
-	$scope.$watch("result",function(value){
-		clearTimeout($scope.watch_result);
-		$scope.watch_result=setTimeout(function(){
-			var result={};
-			for(var i in value){
-				result[i] || (result[i]=[])
-				for(var j in value[i]){
-					var tid=value[i][j].tid;
-					var name=cache.tagName[tid]
-					result[i].push(name);
-				}
-			}
-			// console.log(result)
-			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
-		},0)
-	},1);
+	
 }],
 })
