@@ -36,6 +36,7 @@ function($scope,cache,crud,tagName){
 					for(var i in res.list){
 						var data=res.list[i];
 						var source_id=data.source_id;
+						$scope.result[source_id] || ($scope.result[source_id]=[]);
 						$scope.result[source_id].push(data)
 					}
 					for(var i in $scope.result){
