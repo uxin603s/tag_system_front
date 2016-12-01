@@ -17,20 +17,25 @@ function($scope,tagName,cache,crud){
 		clearTimeout($scope.timer);
 		$scope.timer=setTimeout(function(){
 			promiseRecursive(function* (){
+				
 				var level_id=$scope.level_id;
 				var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 				$scope.watch_list && $scope.watch_list();
+				// console.log('get')
+				// console.log(cache.relation[level_id][id])
 				if(!cache.relation[level_id][id]){
 					var where_list=[
 						{field:'level_id',type:0,value:level_id},
 						{field:'id',type:0,value:id},
 					];
 					var res=yield crud.get("TagRelation",{where_list:where_list})
-					
+					// console.log(res)
 					if(res.status){
-						yield tagName.idToName(res.list.map(function(val){
+						var child_ids=res.list.map(function(val){
 							return val.child_id;
-						}));
+						})
+						// console.log(child_ids)
+						yield tagName.idToName(child_ids);
 						res.list.sort(function(a,b){
 							return a.sort_id-b.sort_id;
 						})

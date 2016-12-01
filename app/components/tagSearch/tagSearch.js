@@ -4,6 +4,7 @@ angular.module('app').component("tagSearch",{
 	controller:["$scope","cache","tagName","webRelation",
 	function($scope,cache,tagName,webRelation){
 		$scope.cache=cache;
+		$scope.result=[];
 		cache.absoluteSearch || (cache.absoluteSearch=[]);
 		var interSearch=function(){
 			clearTimeout($scope.interSearchTimer);
@@ -103,5 +104,20 @@ angular.module('app').component("tagSearch",{
 		$scope.del=function(index){
 			cache.absoluteSearch.splice(index,1);
 		}
+		
+		postMessageHelper.receive('tagSystem',function(res){
+			if(res.name=="tagSearchId"){
+				cache.absoluteSearch=[];
+				for(var i in res.value){
+					cache.absoluteSearch.push({name:res.value[i]});
+				}
+			}
+			$scope.$apply();
+		})
+		$scope.$watch("result",function(result){
+			postMessageHelper
+				.send("tagSystem",{name:'tagSearchId',value:result})
+		},1)
+		
 	}],
 })

@@ -10,15 +10,8 @@ function($scope,cache){
 			if(res.name=='setMode'){
 				cache.mode=res.value
 			}
-			if(res.name=="tagSearchId"){
-				cache.absoluteSearch=[];
-				for(var i in res.value){
-					cache.absoluteSearch.push({name:res.value[i]});
-				}
-			}
 			$scope.$apply();
 		})
-		
 		
 		$scope.document=document;
 		var w,h
