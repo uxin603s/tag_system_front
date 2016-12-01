@@ -9,9 +9,10 @@ function($scope,cache,crud,tagName){
 	cache.idSearch.selects || (cache.idSearch.selects=[]);
 	cache.idSearch.img || (cache.idSearch.img=[]);
 	cache.idSearch.title || (cache.idSearch.title=[]);
-	
+	var watch={};
 	$scope.idSearch_func={
 		get:function(){
+			var self=this;
 			promiseRecursive(function* (){
 				$scope.result={};
 				var wid=cache.webList.select;
@@ -21,6 +22,7 @@ function($scope,cache,crud,tagName){
 				for(var i in cache.idSearch.search){
 					var id=cache.idSearch.search[i];
 					where_list.push({field:'source_id',type:0,value:id})
+					watch[id] && watch[id]();
 					$scope.result[id]=[];
 				}
 				var res=yield crud.get("WebRelation",{where_list:where_list})
@@ -34,8 +36,10 @@ function($scope,cache,crud,tagName){
 					for(var i in res.list){
 						var data=res.list[i];
 						var source_id=data.source_id;
-						$scope.result[source_id] || ($scope.result[source_id]=[])
 						$scope.result[source_id].push(data)
+					}
+					for(var i in $scope.result){
+						watch[i]=$scope.$watch("result["+i+"]",crud.sort.bind(this,'WebRelation','tid'),1)
 					}
 					$scope.$apply();
 				}
@@ -74,16 +78,12 @@ function($scope,cache,crud,tagName){
 			}())
 		},
 		del:function(id,index){
-			this.watch[id] && this.watch[id]();
+			watch[id] && watch[id]();
 			var del=angular.copy($scope.result[id].splice(index,1).pop());
 			crud.del('WebRelation',del)
 			cache.tagCount[del.tid]--;
 		},
-		sort:function(id){
-			this.watch[id] && this.watch[id]();
-			this.watch[id]=$scope.$watch("result["+id+"]",crud.sort.bind(this,'WebRelation','tid'),1)
-		},
-		watch:{},
+		
 	}
 	
 	$scope.select=function(id){
@@ -123,7 +123,6 @@ function($scope,cache,crud,tagName){
 	$scope.$watch("cache.mode",watch_selectList,1);
 	
 	var watch_search=function(){
-		// if(!cache.idSearch.search)return;
 		clearTimeout(cache.idSearch.search_timer)
 		cache.idSearch.search_timer=setTimeout($scope.idSearch_func.get,0)
 	}
@@ -182,6 +181,18 @@ function($scope,cache,crud,tagName){
 			var index=res.value.index;
 			$scope.idSearch_func.del(id,index)
 		}
+		if(res.name=="chIdRelation"){
+			var id=res.value.id;
+			var a=res.value.a;
+			var b=res.value.b;
+			var sort_id=$scope.result[id][a].sort_id
+			$scope.result[id][a].sort_id=$scope.result[id][b].sort_id
+			$scope.result[id][b].sort_id=sort_id;
+			$scope.result[id].sort(function(a,b){
+				return a.sort_id-b.sort_id
+			})
+		}
+		
 		$scope.$apply();
 	});
 	

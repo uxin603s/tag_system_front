@@ -10,6 +10,6 @@ function($scope,cache,crud,tagName){
 	$scope.cache=cache;
 	$scope.add=$scope.$ctrl.func.add.bind($scope.$ctrl.func,$scope.$ctrl.sourceId);
 	$scope.del=$scope.$ctrl.func.del.bind($scope.$ctrl.func,$scope.$ctrl.sourceId);
-	$scope.$watch("$ctrl.list",$scope.$ctrl.func.sort.bind($scope.$ctrl.func,$scope.$ctrl.sourceId),1)
+	// $scope.$watch("$ctrl.list",$scope.$ctrl.func.sort.bind($scope.$ctrl.func,$scope.$ctrl.sourceId),1)
 }],
 })
