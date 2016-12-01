@@ -31,7 +31,7 @@ var postMessageHelper={
 				status:0,
 			}
 			var timer=setInterval(function(){
-				if(self.connect[connect].post_window)
+				if(self.connect[connect] && self.connect[connect].post_window)
 				self.connect[connect].post_window.postMessage(send,"*");
 			},0)
 			window.addEventListener("message",function(e){
