@@ -152,7 +152,6 @@ function($scope,cache,crud,tagName){
 						result[i].push(name);
 				}
 			}
-			console.log(JSON.stringify(result),JSON.stringify(postMessageHelper.connect.tagSystem.status))
 			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
 		},0)
 	},1);
