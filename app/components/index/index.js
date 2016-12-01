@@ -20,16 +20,16 @@ function($scope,cache){
 		})
 		
 		
-		$scope.document=document.documentElement;
+		$scope.document=document;
+		var w,h
 		window.onresize=function(){
-			if(cache.width==$scope.document.scrollWidth)
-			if(cache.height==$scope.document.scrollHeight)
-			return;	
-			
+			if(w==$scope.document.documentElement.scrollWidth)
+			if(h==$scope.document.documentElement.scrollHeight)
+				return ;
+			w=$scope.document.documentElement.scrollWidth;
+			h=$scope.document.documentElement.scrollHeight;
 			clearTimeout($scope.resizeTimer)
 			$scope.resizeTimer=setTimeout(function(){
-				var w=$scope.document.scrollWidth;
-				var h=$scope.document.scrollHeight;
 				postMessageHelper.send('tagSystem',{
 					name:'resize',
 					value:{
@@ -38,12 +38,10 @@ function($scope,cache){
 					},
 				})
 				$scope.$apply();
-			},50)
+			},0)
 		}
-		$scope.$watch("document.scrollWidth",window.onresize);
-		$scope.$watch("document.scrollHeight",window.onresize);
-		$scope.$watch("cache.relation",window.onresize,1);
-		$scope.$watch("cache.mode",window.onresize,1);
+		$scope.$watch("document.documentElement.scrollWidth",window.onresize);
+		$scope.$watch("document.documentElement.scrollHeight",window.onresize);
 	})
 }],
 })

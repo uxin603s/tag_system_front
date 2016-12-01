@@ -26,6 +26,9 @@ angular.module('app').component("webTagType",{
 				if(res.status){
 					res.list.sort(sort)
 					cache.webList.list=res.list;
+					if(location.search.match(/wid=(\d+)/)){
+						cache.webList.select=RegExp.$1;
+					}
 					$scope.$apply();
 				}
 			}())

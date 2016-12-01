@@ -94,38 +94,36 @@ function($scope,cache,crud,tagName){
 			cache.idSearch.selects.splice(index,1);
 		}
 	}
-	var watch_selectList=function(value){
-		if(!value)return;
-		var selectList=cache.selectList;
-		var insert;
-		for(var tid in selectList){
-			if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
-			var data=selectList[tid][selectList[tid].length-1];
-			if(data.select){
-				if(cache.mode){
-					var select=data.select
-					for(var i in cache.idSearch.selects){
-						var source_id=cache.idSearch.selects[i];
-						$scope.idSearch_func.add(source_id,{id:select})
+	var watch_selectList=function(){
+		clearTimeout($scope.watch_selectList);
+		$scope.watch_selectList=setTimeout(function(){
+			var selectList=cache.selectList;
+			for(var tid in selectList){
+				if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
+				var data=selectList[tid][selectList[tid].length-1];
+				if(data.select){
+					if(cache.mode){
+						var select=data.select
+						for(var i in cache.idSearch.selects){
+							var source_id=cache.idSearch.selects[i];
+							$scope.idSearch_func.add(source_id,{id:select})
+						}
+						var insert=cache.tagName[select];
+						if(insert){
+							postMessageHelper.send('tagSystem',{name:'insert',value:insert})
+						}
+						delete data.select;
 					}
-					insert=cache.tagName[select];
-					if(insert){
-						postMessageHelper.send('tagSystem',{name:'insert',value:insert})
-					}
-					
-					delete data.select;
-					// break;
 				}
-				
 			}
-		}
+		},0)
 	}
 	
 	$scope.$watch("cache.selectList",watch_selectList,1);
 	$scope.$watch("cache.mode",watch_selectList,1);
 	
 	var watch_search=function(){
-		if(!cache.idSearch.search)return;
+		// if(!cache.idSearch.search)return;
 		clearTimeout(cache.idSearch.search_timer)
 		cache.idSearch.search_timer=setTimeout($scope.idSearch_func.get,0)
 	}
@@ -150,9 +148,11 @@ function($scope,cache,crud,tagName){
 				for(var j in value[i]){
 					var tid=value[i][j].tid;
 					var name=cache.tagName[tid]
-					result[i].push(name);
+					if(result[i].indexOf(name)==-1)
+						result[i].push(name);
 				}
 			}
+			console.log(JSON.stringify(result),JSON.stringify(postMessageHelper.connect.tagSystem.status))
 			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
 		},0)
 	},1);
