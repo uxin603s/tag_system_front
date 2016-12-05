@@ -41,7 +41,7 @@ var postMessageHelper={
 					var send={
 						sendData:self.cacheSendData.shift(),
 						connect:connect,
-						status:self.connect[connect].status,
+						status:1,
 					}
 					self.connect[connect].post_window.postMessage(send,"*");
 				}
