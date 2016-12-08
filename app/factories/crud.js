@@ -7,7 +7,7 @@ angular.module('app').factory('crud',
 				arg:arg,
 			}
 			
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				if(res.status){
 					res.list.sort(function(a,b){
 						return a.sort_id-b.sort_id;
@@ -24,7 +24,7 @@ angular.module('app').factory('crud',
 				func_name:name+'::insert',
 				arg:arg,
 			}
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				resolve(res);
 				$rootScope.$apply();
 			},"json")
@@ -36,7 +36,7 @@ angular.module('app').factory('crud',
 				func_name:name+'::delete',
 				arg:arg,
 			}
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				resolve(res);
 				$rootScope.$apply();
 			},"json")
@@ -50,7 +50,7 @@ angular.module('app').factory('crud',
 				func_name:name+'::update',
 				arg:arg,
 			}
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				resolve(res);
 				$rootScope.$apply();
 			},"json")

@@ -1,4 +1,4 @@
-<div ng-if="!cache.not_finish_flag" >
+<div ng-if="0 && !cache.not_finish_flag " >
 	模式
 	<button 
 	ng-click="cache.mode=!cache.mode"
@@ -25,7 +25,7 @@ tid="tid"
 
 
 <tag-search 
-ng-show="!cache.mode"
+ng-show="0 && !cache.mode"
 ng-if="
 !cache.not_finish_flag
 && 
@@ -34,7 +34,7 @@ cache.webList.select
 ></tag-search>
 
 <id-search
-ng-show="cache.mode"
+ng-show="0 && cache.mode"
 ng-if="
 !cache.not_finish_flag 
 && 

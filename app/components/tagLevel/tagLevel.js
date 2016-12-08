@@ -8,7 +8,7 @@ angular.module('app').component("tagLevel",{
 	["$scope","cache","crud",
 	function($scope,cache,crud){
 		$scope.cache=cache;
-		
+		cache.selectList[$scope.$ctrl.tid] || (cache.selectList[$scope.$ctrl.tid]=[])
 		var sort=function(a,b){
 			return a.sort_id-b.sort_id;
 		}
@@ -22,7 +22,7 @@ angular.module('app').component("tagLevel",{
 					res.list.sort(sort);
 					$scope.list=res.list;
 					cache.levelList[$scope.$ctrl.tid]=res.list;
-					cache.selectList[$scope.$ctrl.tid] || (cache.selectList[$scope.$ctrl.tid]=[])
+					
 					for(var i in res.list){
 						cache.relation[res.list[i].id] || (cache.relation[res.list[i].id]={});
 					}
@@ -49,9 +49,12 @@ angular.module('app').component("tagLevel",{
 				sort_id:$scope.list.length,
 			};
 			$scope.list.push(arg);
-			cache.selectList[$scope.$ctrl.tid] || (cache.selectList[$scope.$ctrl.tid]=[])
-			cache.selectList[$scope.$ctrl.tid].push({});
+			
 			crud.add("TagLevel",arg);
+			cache.relation[$scope.$ctrl.tid] || (cache.relation[$scope.$ctrl.tid]={});
+			cache.selectList[$scope.$ctrl.tid].push({});
+			
+			$scope.get();
 		}
 		
 		$scope.del=function(index){
@@ -62,11 +65,13 @@ angular.module('app').component("tagLevel",{
 			
 			crud.del("TagLevel",arg)
 			.then(function(res){
-				if(!res.status){
+				if(res.status){
+					delete cache.relation[$scope.$ctrl.tid];
+				}else{
 					$scope.list.push(list)
 					cache.selectList[$scope.$ctrl.tid].push(select)
-					$scope.$apply();
 				}
+				$scope.$apply();
 			});
 			
 		}

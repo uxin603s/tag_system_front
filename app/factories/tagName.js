@@ -15,7 +15,7 @@ function(cache,$rootScope){
 			},
 		}
 		
-		$.post("../tag_system_backend/ajax.php",post_data,function(res){
+		$.post("ajax.php",post_data,function(res){
 			callback && callback(res)
 		},"json")
 	};
@@ -37,7 +37,7 @@ function(cache,$rootScope){
 				},
 			}
 			
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				var result_names=[];
 				// console.log(res.list)
 				if(res.status){

@@ -6,12 +6,7 @@ function($scope,cache){
 	$scope.cache=cache;
 	$scope.$watch("cache.not_finish_flag",function(not_finish_flag){
 		if(not_finish_flag)return;
-		postMessageHelper.receive('tagSystem',function(res){
-			if(res.name=='setMode'){
-				cache.mode=res.value
-			}
-			$scope.$apply();
-		})
+		// postMessageHelper.receive('tagSystem.size',function(res){})
 		
 		$scope.document=document;
 		var w,h

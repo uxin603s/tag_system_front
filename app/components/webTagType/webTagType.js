@@ -9,6 +9,7 @@ angular.module('app').component("webTagType",{
 		cache.tagCount || (cache.tagCount={});
 		cache.levelList || (cache.levelList={});
 		cache.webList || (cache.webList={});
+		cache.webList.list || (cache.webList.list=[]);
 		cache.tagType || (cache.tagType={});
 		cache.webTagType || (cache.webTagType={});
 		cache.tagType.selects || (cache.tagType.selects=[])
@@ -136,6 +137,7 @@ angular.module('app').component("webTagType",{
 			.then(function(res){
 				if(res.status){
 					list.push(res.insert);
+					cache.tagType.name[res.insert.id]=res.insert.name;
 					$scope.$apply();
 				}
 			})
@@ -152,6 +154,7 @@ angular.module('app').component("webTagType",{
 				var selectList=cache.selectList
 				for(var tid in selectList){
 					if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
+					if(!selectList[tid].length)continue;
 					var select=selectList[tid][selectList[tid].length-1].select;
 					if(select){
 						var name=cache.tagName[select]

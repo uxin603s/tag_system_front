@@ -26,6 +26,7 @@ function($scope,cache,crud,tagName){
 					$scope.result[id]=[];
 				}
 				var res=yield crud.get("WebRelation",{where_list:where_list})
+				console.log(cache.idSearch.search,res)
 				if(res.status){
 					res.list.sort(function(a,b){
 						return a.sort_id-b.sort_id;
@@ -39,11 +40,13 @@ function($scope,cache,crud,tagName){
 						$scope.result[source_id] || ($scope.result[source_id]=[]);
 						$scope.result[source_id].push(data)
 					}
+					
 					for(var i in $scope.result){
 						watch[i]=$scope.$watch("result["+i+"]",crud.sort.bind(this,'WebRelation','tid'),1)
 					}
-					$scope.$apply();
+					
 				}
+				$scope.$apply();
 			}())
 		},
 		add:function(id,tag){
@@ -101,6 +104,8 @@ function($scope,cache,crud,tagName){
 			var selectList=cache.selectList;
 			for(var tid in selectList){
 				if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
+				if(!selectList[tid].length)continue;
+				
 				var data=selectList[tid][selectList[tid].length-1];
 				if(data.select){
 					if(cache.mode){
@@ -152,12 +157,14 @@ function($scope,cache,crud,tagName){
 						result[i].push(name);
 				}
 			}
+			console.log(result);
 			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
 		},0)
 	},1);
 	postMessageHelper.receive('tagSystem',function(res){
 		if(res.name=="idSearchTag"){
-			cache.idSearch.search.splice(0,cache.idSearch.search.length)
+			console.log(res)
+			cache.idSearch.search.splice(0,cache.idSearch.search.length);
 			for(var i in res.value){
 				cache.idSearch.search.push(res.value[i].id);
 				if(res.value[i].title)
@@ -165,6 +172,7 @@ function($scope,cache,crud,tagName){
 				if(res.value[i].img)
 					cache.idSearch.img.push(res.value[i].img);
 			}
+			
 		}
 		if(res.name=="idSearchSelect"){
 			cache.idSearch.selects.splice(0,cache.idSearch.selects.length)
@@ -193,7 +201,9 @@ function($scope,cache,crud,tagName){
 				return a.sort_id-b.sort_id
 			})
 		}
-		
+		if(res.name=='setMode'){
+			cache.mode=res.value
+		}
 		$scope.$apply();
 	});
 	

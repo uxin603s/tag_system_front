@@ -10,7 +10,7 @@ angular.module('app').factory('webRelation',
 					wid:wid,
 				},
 			}
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				resolve(res);
 				$rootScope.$apply();
 			},"json");
@@ -26,7 +26,7 @@ angular.module('app').factory('webRelation',
 					require_id:require_id,
 				},
 			}
-			$.post("../tag_system_backend/ajax.php",post_data,function(res){
+			$.post("ajax.php",post_data,function(res){
 				for(var i in cache.tagCount){
 					delete cache.tagCount[i];
 				}
