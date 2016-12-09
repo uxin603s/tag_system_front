@@ -1,5 +1,5 @@
 angular.module('app').factory('crud',
-["$rootScope","cache",function($rootScope,cache){
+["$rootScope",function($rootScope){
 	var get=function(name,arg){
 		return new Promise(function(resolve,reject) {
 			var post_data={

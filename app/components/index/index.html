@@ -1,17 +1,3 @@
-<div ng-if="0 && !cache.not_finish_flag " >
-	模式
-	<button 
-	ng-click="cache.mode=!cache.mode"
-	ng-class="!cache.mode?'btn-danger':'btn-primary'"
-	class="btn btn-sm"
-	>搜尋</button>
-	<button 
-	ng-click="cache.mode=!cache.mode" 
-	ng-class="cache.mode?'btn-danger':'btn-primary'"
-	class="btn btn-sm"
-	>新增</button>
-</div>
-
 <web-tag-type
 ng-if="!cache.not_finish_flag"
 ></web-tag-type>
@@ -25,8 +11,8 @@ tid="tid"
 
 
 <tag-search 
-ng-show="0 && !cache.mode"
 ng-if="
+0 &&
 !cache.not_finish_flag
 && 
 cache.webList.select
@@ -34,8 +20,8 @@ cache.webList.select
 ></tag-search>
 
 <id-search
-ng-show="0 && cache.mode"
 ng-if="
+0 && 
 !cache.not_finish_flag 
 && 
 cache.webList.select

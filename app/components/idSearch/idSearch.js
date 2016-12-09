@@ -1,9 +1,8 @@
 angular.module('app').component("idSearch",{
 bindings:{},
 templateUrl:'app/components/idSearch/idSearch.html?t='+Date.now(),
-controller:["$scope","cache","crud","tagName",
-function($scope,cache,crud,tagName){
-	$scope.cache=cache;
+controller:["$scope","crud","tagName",
+function($scope,crud,tagName){
 	cache.idSearch || (cache.idSearch={});
 	cache.idSearch.search || (cache.idSearch.search=[]);
 	cache.idSearch.selects || (cache.idSearch.selects=[]);
@@ -26,7 +25,7 @@ function($scope,cache,crud,tagName){
 					$scope.result[id]=[];
 				}
 				var res=yield crud.get("WebRelation",{where_list:where_list})
-				console.log(cache.idSearch.search,res)
+				// console.log(cache.idSearch.search,res)
 				if(res.status){
 					res.list.sort(function(a,b){
 						return a.sort_id-b.sort_id;
@@ -87,7 +86,6 @@ function($scope,cache,crud,tagName){
 			crud.del('WebRelation',del)
 			cache.tagCount[del.tid]--;
 		},
-		
 	}
 	
 	$scope.select=function(id){
@@ -157,13 +155,13 @@ function($scope,cache,crud,tagName){
 						result[i].push(name);
 				}
 			}
-			console.log(result);
+			// console.log(result);
 			postMessageHelper.send('tagSystem',{name:'idSearchTag',value:result})
 		},0)
 	},1);
 	postMessageHelper.receive('tagSystem',function(res){
 		if(res.name=="idSearchTag"){
-			console.log(res)
+			// console.log(res)
 			cache.idSearch.search.splice(0,cache.idSearch.search.length);
 			for(var i in res.value){
 				cache.idSearch.search.push(res.value[i].id);

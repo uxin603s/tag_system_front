@@ -9,13 +9,14 @@
 	<script src="js/promiseRecursive.js?t=<?=time()?>"></script>
 	<script src="js/postMessageHelper/postMessageHelper.js?t=<?=time()?>"></script>
 	
+	<script src="app/module/cache/cache.js?t=<?=time()?>"></script>
 	<script src="app/app.js?t=<?=time()?>"></script>
 	
-	<script src="app/factories/cache.js?t=<?=time()?>"></script>
 	<script src="app/factories/tagName.js?t=<?=time()?>"></script>
 	<script src="app/factories/webRelation.js?t=<?=time()?>"></script>
 	
 	<script src="app/factories/crud.js?t=<?=time()?>"></script>
+	<script src="app/factories/idSearch.js?t=<?=time()?>"></script>
 	
 	<script src="app/components/index/index.js?t<?=time()?>"></script>
 	
@@ -39,6 +40,6 @@
 	<link rel="stylesheet" type="text/css" href="css/index.css?t=<?=time()?>" />
 </head>
 <body ng-app="app"  style="overflow-y: scroll;" >
-	<index></index>
+	<index ng-if="!cache.not_finish_flag"></index>
 </body>
 </html>

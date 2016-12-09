@@ -2,19 +2,18 @@ angular.module('app').component("webTagType",{
 	bindings:{},
 	templateUrl:'app/components/webTagType/webTagType.html?t='+Date.now(),
 	controller:
-	["$scope","cache","crud",
-	function($scope,cache,crud){
+	["$scope","crud",
+	function($scope,crud){
 		
-		$scope.cache=cache;
-		cache.tagCount || (cache.tagCount={});
-		cache.levelList || (cache.levelList={});
-		cache.webList || (cache.webList={});
-		cache.webList.list || (cache.webList.list=[]);
-		cache.tagType || (cache.tagType={});
-		cache.webTagType || (cache.webTagType={});
-		cache.tagType.selects || (cache.tagType.selects=[])
-		cache.relation || (cache.relation={})
-		cache.selectList || (cache.selectList={})
+		$scope.cache.tagCount || ($scope.cache.tagCount={});
+		$scope.cache.levelList || ($scope.cache.levelList={});
+		$scope.cache.webList || ($scope.cache.webList={});
+		$scope.cache.webList.list || ($scope.cache.webList.list=[]);
+		$scope.cache.tagType || ($scope.cache.tagType={});
+		$scope.cache.webTagType || ($scope.cache.webTagType={});
+		$scope.cache.tagType.selects || ($scope.cache.tagType.selects=[])
+		$scope.cache.relation || ($scope.cache.relation={})
+		$scope.cache.selectList || ($scope.cache.selectList={})
 		$scope.$watch("cache.webList.list",crud.sort.bind(this,'WebList','id'),1)
 		$scope.$watch("cache.tagType.list",crud.sort.bind(this,'TagType','id'),1)
 		$scope.$watch("list",crud.sort.bind(this,'WebTagType','tid'),1);
@@ -26,9 +25,9 @@ angular.module('app').component("webTagType",{
 				var res=yield crud.get('WebList');
 				if(res.status){
 					res.list.sort(sort)
-					cache.webList.list=res.list;
+					$scope.cache.webList.list=res.list;
 					if(location.search.match(/wid=(\d+)/)){
-						cache.webList.select=RegExp.$1;
+						$scope.cache.webList.select=RegExp.$1;
 					}
 					$scope.$apply();
 				}
@@ -37,11 +36,11 @@ angular.module('app').component("webTagType",{
 				var res=yield crud.get('TagType');
 				if(res.status){
 					res.list.sort(sort)
-					cache.tagType.list=res.list;
-					cache.tagType.name={};
+					$scope.cache.tagType.list=res.list;
+					$scope.cache.tagType.name={};
 					for(var i in res.list){
 						var data=res.list[i];
-						cache.tagType.name[data.id]=data.name;
+						$scope.cache.tagType.name[data.id]=data.name;
 					}
 					$scope.$apply();
 				}
@@ -55,14 +54,14 @@ angular.module('app').component("webTagType",{
 				crud.get('WebTagType',{where_list:where_list})
 				.then(function(res){
 					if(res.status){
-						cache.webTagType.list=res.list;
+						$scope.cache.webTagType.list=res.list;
 					}else{
-						cache.webTagType.list=[];
+						$scope.cache.webTagType.list=[];
 					}
 					$scope.$apply();
 				})
 			}else{
-				cache.webTagType.list=[];
+				$scope.cache.webTagType.list=[];
 			}
 		})
 		
@@ -70,29 +69,29 @@ angular.module('app').component("webTagType",{
 		
 		$scope.relation=function(tid){
 			// console.log(tid)
-			var wid=cache.webList.select;
+			var wid=$scope.cache.webList.select;
 			if(wid){
-				var index=cache.webTagType.list.findIndex(function(val){
+				var index=$scope.cache.webTagType.list.findIndex(function(val){
 					return val.tid==tid;
 				})
 				if(index==-1){
 					var arg={
 						wid:wid,
 						tid:tid,
-						sort_id:cache.webTagType.list.length,
+						sort_id:$scope.cache.webTagType.list.length,
 					}
-					cache.webTagType.list.push(arg);
+					$scope.cache.webTagType.list.push(arg);
 					crud.add('WebTagType',arg);
 				}else{
-					var arg=angular.copy(cache.webTagType.list.splice(index,1).pop());
+					var arg=angular.copy($scope.cache.webTagType.list.splice(index,1).pop());
 					crud.del('WebTagType',arg)
 				}
 			}else{
-				var index=cache.tagType.selects.indexOf(tid);
+				var index=$scope.cache.tagType.selects.indexOf(tid);
 				if(index==-1){
-					cache.tagType.selects.push(tid);
+					$scope.cache.tagType.selects.push(tid);
 				}else{
-					cache.tagType.selects.splice(index,1);
+					$scope.cache.tagType.selects.splice(index,1);
 				}
 			}
 		}
@@ -100,26 +99,26 @@ angular.module('app').component("webTagType",{
 		var watch=function(){
 			$scope.list=[];
 			$scope.not_list=[];
-			cache.tagType.selects=[];
-			// cache.tagType.selects=cache.tagType.list.map(function(val){
+			$scope.cache.tagType.selects=[];
+			// $scope.cache.tagType.selects=$scope.cache.tagType.list.map(function(val){
 				// return val.id;
 			// });
-			if(!cache.webTagType.list.length)return
+			if(!$scope.cache.webTagType.list.length)return
 			
-			for(var i in cache.tagType.list){
-				var data=angular.copy(cache.tagType.list[i]);
-				var index=cache.webTagType.list.findIndex(function(val){
+			for(var i in $scope.cache.tagType.list){
+				var data=angular.copy($scope.cache.tagType.list[i]);
+				var index=$scope.cache.webTagType.list.findIndex(function(val){
 					return val.tid==data.id;
 				})
 				if(index==-1){
 					$scope.not_list.push(data);
 				}else{
-					$scope.list.push(cache.webTagType.list[index]);
+					$scope.list.push($scope.cache.webTagType.list[index]);
 				}
-				cache.tagType.name[data.id]=data.name;
+				$scope.cache.tagType.name[data.id]=data.name;
 			}
 			$scope.list.sort(sort);
-			cache.tagType.selects=$scope.list.map(function(val){
+			$scope.cache.tagType.selects=$scope.list.map(function(val){
 				return val.tid;
 			})
 			
@@ -137,7 +136,7 @@ angular.module('app').component("webTagType",{
 			.then(function(res){
 				if(res.status){
 					list.push(res.insert);
-					cache.tagType.name[res.insert.id]=res.insert.name;
+					$scope.cache.tagType.name[res.insert.id]=res.insert.name;
 					$scope.$apply();
 				}
 			})
@@ -147,43 +146,7 @@ angular.module('app').component("webTagType",{
 			var arg=angular.copy(list.splice(index,1).pop());
 			crud.del(name,arg)
 		}
-		var watch_clickSearch=function(){
-			clearTimeout($scope.selectListTimer);
-			$scope.selectListTimer=setTimeout(function(){
-				cache.clickSearch=[];
-				var selectList=cache.selectList
-				for(var tid in selectList){
-					if(cache.tagType.selects.indexOf(tid*1)==-1)continue;
-					if(!selectList[tid].length)continue;
-					var select=selectList[tid][selectList[tid].length-1].select;
-					if(select){
-						var name=cache.tagName[select]
-						cache.clickSearch.push({id:select,name:name})
-					}else{
-						var data=selectList[tid][selectList[tid].length-2];
-						if(data){
-							var select=data.select;
-							if(select){
-								var level_id=cache.levelList[tid][cache.levelList[tid].length-1].id
-								if(cache.relation[level_id]){
-									var list=cache.relation[level_id][select];
-									for(var i in list){
-										var id=list[i].child_id;
-										var name=cache.tagName[id]
-										cache.clickSearch.push({id:id,name:name,type:1})
-									}
-								}
-							}
-						}
-					}
-				}
-				$scope.$apply();
-			},0)
-		}
-		$scope.$watch("cache.tagType.selects",watch_clickSearch,1)
-		$scope.$watch("cache.webList.select",watch_clickSearch,1)
-		$scope.$watch("cache.selectList",watch_clickSearch,1)
-		$scope.$watch("cache.relation",watch_clickSearch,1)
+		
 	}],
 })
 

@@ -1,5 +1,5 @@
-angular.module('app')
-.factory('cache',['$rootScope',function($rootScope){
+angular.module('cache',[])
+.run(['$rootScope',function($rootScope){
 	var cache={
 		data:{
 			not_finish_flag:true,
@@ -25,5 +25,5 @@ angular.module('app')
 			localforage.setItem(location.pathname+"cache",angular.copy(cache));
 		},500)
 	});
-	return cache.data;
+	$rootScope.__proto__.cache=cache.data;
 }])

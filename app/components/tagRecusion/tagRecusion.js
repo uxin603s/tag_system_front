@@ -6,10 +6,8 @@ bindings:{
 	select:"=",//這層選
 },
 templateUrl:'app/components/tagRecusion/tagRecusion.html?t='+Date.now(),
-controller:["$scope","tagName","cache","crud",
-function($scope,tagName,cache,crud){
-	
-	$scope.cache=cache;
+controller:["$scope","tagName","crud",
+function($scope,tagName,crud){
 	$scope.level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;	
 	
 	$scope.search={tagName:''};
@@ -22,8 +20,8 @@ function($scope,tagName,cache,crud){
 				var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 				$scope.watch_list && $scope.watch_list();
 				// console.log('get')
-				// console.log(cache.relation[level_id][id])
-				if(!cache.relation[level_id][id]){
+				// console.log($scope.cache.relation[level_id][id])
+				if(!$scope.cache.relation[level_id][id]){
 					var where_list=[
 						{field:'level_id',type:0,value:level_id},
 						{field:'id',type:0,value:id},
@@ -40,13 +38,13 @@ function($scope,tagName,cache,crud){
 							return a.sort_id-b.sort_id;
 						})
 						
-						cache.relation[level_id][id]=res.list;
+						$scope.cache.relation[level_id][id]=res.list;
 					}else{
-						cache.relation[level_id][id]=[];
+						$scope.cache.relation[level_id][id]=[];
 					}
 				}
 				
-				var index=cache.relation[level_id][id].findIndex(function(val){
+				var index=$scope.cache.relation[level_id][id].findIndex(function(val){
 					return val.child_id==$scope.$ctrl.selectList[$scope.$ctrl.levelIndex].select;
 				});
 				
@@ -56,8 +54,8 @@ function($scope,tagName,cache,crud){
 				
 				if($scope.$ctrl.levelList.length-1!=$scope.$ctrl.levelIndex){
 					if(!$scope.$ctrl.selectList[$scope.$ctrl.levelIndex+1].select){
-						if(cache.relation[level_id][id][0]){
-							var id=cache.relation[level_id][id][0].child_id;
+						if($scope.cache.relation[level_id][id][0]){
+							var id=$scope.cache.relation[level_id][id][0].child_id;
 							var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex+1].id;
 							var where_list=[
 								{field:'level_id',type:0,value:level_id},
@@ -83,7 +81,7 @@ function($scope,tagName,cache,crud){
 			var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 			var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;
 			
-			var sort_id=cache.relation[level_id][id].length;
+			var sort_id=$scope.cache.relation[level_id][id].length;
 			
 			var add={
 				level_id:level_id,
@@ -91,12 +89,12 @@ function($scope,tagName,cache,crud){
 				child_id:child_id,
 				sort_id:sort_id,
 			}
-			var index=cache.relation[level_id][id].findIndex(function(val){
+			var index=$scope.cache.relation[level_id][id].findIndex(function(val){
 				return val.child_id==child_id
 			})
 			
 			if(index==-1){
-				cache.relation[level_id][id].push(add);
+				$scope.cache.relation[level_id][id].push(add);
 				crud.add("tagRelation",add);
 			}
 			
@@ -107,7 +105,7 @@ function($scope,tagName,cache,crud){
 	$scope.del=function(index){
 		var id=$scope.$ctrl.select?$scope.$ctrl.select:0;
 		var level_id=$scope.$ctrl.levelList[$scope.$ctrl.levelIndex].id;
-		var del=angular.copy(cache.relation[level_id][id].splice(index,1).pop());
+		var del=angular.copy($scope.cache.relation[level_id][id].splice(index,1).pop());
 		crud.del("TagRelation",del)
 	}
 	

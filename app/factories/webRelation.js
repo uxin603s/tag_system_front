@@ -1,5 +1,5 @@
 angular.module('app').factory('webRelation',
-["$rootScope","cache",function($rootScope,cache){
+["$rootScope",function($rootScope){
 	var getInter=function(require_id,option_id,wid){
 		return new Promise(function(resolve,reject){
 			var post_data={

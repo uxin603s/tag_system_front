@@ -39,11 +39,13 @@ ng-enter="add(search)"
 </div>
 
 <tag-recusion
-style="display:{{$ctrl.mode?'inline-block;':'block'}}"
+style="display:block;"
 ng-if="
 $ctrl.selectList[$ctrl.levelIndex].select 
-&& 
+&&
 $ctrl.levelList[$ctrl.levelIndex+1]
+&&
+cache.relation[$ctrl.levelList[$ctrl.levelIndex+1].id]
 "
 
 select-list="$ctrl.selectList"

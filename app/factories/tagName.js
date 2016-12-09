@@ -1,8 +1,7 @@
 angular.module('app').factory('tagName',
-['cache','$rootScope',
-function(cache,$rootScope){
-	cache.tagName || (cache.tagName={});
-	cache.tagNameR || (cache.tagNameR={});
+['$rootScope',function($rootScope){
+	$rootScope.cache.tagName || ($rootScope.cache.tagName={});
+	$rootScope.cache.tagNameR || ($rootScope.cache.tagNameR={});
 	var insert=function(name,callback){
 		if(name===""){
 			alert("標籤不能空白")
@@ -24,8 +23,8 @@ function(cache,$rootScope){
 			var data=list[i];
 			var id=data.id;
 			var name=data.name;
-			cache.tagName[id]=name;
-			cache.tagNameR[name]=id;
+			$rootScope.cache.tagName[id]=name;
+			$rootScope.cache.tagNameR[name]=id;
 		}
 	}
 	var getList=function(where_list,return_type){
@@ -104,8 +103,8 @@ function(cache,$rootScope){
 			var where_list=[];
 			var result=[];
 			for(var i in ids){
-				if(cache.tagName[ids[i]]){
-					result.push(cache.tagName[ids[i]])
+				if($rootScope.cache.tagName[ids[i]]){
+					result.push($rootScope.cache.tagName[ids[i]])
 				}else{
 					where_list.push({field:'id',type:0,value:ids[i]});
 				}

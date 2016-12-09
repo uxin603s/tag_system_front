@@ -67,6 +67,7 @@ angular.module('app').component("tagSearch",{
 				})
 			},0)
 		}
+		$scope.$watch("cache.mode",interSearch,1)
 		$scope.$watch("cache.clickSearch",interSearch,1)
 		$scope.$watch("cache.absoluteSearch",interSearch,1);
 		//getCount
