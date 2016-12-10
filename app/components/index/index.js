@@ -31,20 +31,16 @@ function($scope,tagName,crud,idSearch){
 		clearTimeout($scope.selectListTimer);
 		$scope.selectListTimer=setTimeout(function(){
 			$scope.cache.clickSearch=[];
+			var send={};
 			var selectList=$scope.cache.selectList
 			for(var tid in selectList){
 				if($scope.cache.tagType.selects.indexOf(tid*1)==-1)continue;
 				if(!selectList[tid].length)continue;
 				var select=selectList[tid][selectList[tid].length-1].select;
+				
+				
 				if(select){
 					var name=$scope.cache.tagName[select]
-					
-					if(name){
-						postMessageHelper.send('tagSystem',{name:'insert',value:name})
-					}
-					delete selectList[tid][selectList[tid].length-1].select;
-					
-					
 					$scope.cache.clickSearch.push({id:select,name:name})
 				}else{
 					var data=selectList[tid][selectList[tid].length-2];
@@ -52,17 +48,34 @@ function($scope,tagName,crud,idSearch){
 						var select=data.select;
 						if(select){
 							var level_id=$scope.cache.levelList[tid][$scope.cache.levelList[tid].length-1].id
+							var select_name=$scope.cache.tagName[select];
+							send[select_name]=[select_name];
 							if($scope.cache.relation[level_id]){
 								var list=$scope.cache.relation[level_id][select];
 								for(var i in list){
 									var id=list[i].child_id;
 									var name=$scope.cache.tagName[id]
-									$scope.cache.clickSearch.push({id:id,name:name,type:1})
+									$scope.cache.clickSearch.push({id:id,name:name,type:1});
+									send[select_name].push(name);
 								}
 							}
 						}
 					}
 				}
+				if($scope.cache.levelList[tid].length==1){
+					var select_name=$scope.cache.tagType.name[tid];
+					send[select_name]=[select_name];
+					var level_id=$scope.cache.levelList[tid][0].id
+					if($scope.cache.relation[level_id]){
+						var list=$scope.cache.relation[level_id][0];
+						for(var i in list){
+							var id=list[i].child_id;
+							var name=$scope.cache.tagName[id]
+							send[select_name].push(name);
+						}
+					}
+				}
+				postMessageHelper.send('tagSystem',{name:'getInsertList',value:send})
 			}
 			$scope.$apply();
 		},0)
@@ -116,64 +129,21 @@ function($scope,tagName,crud,idSearch){
 						option.push($scope.cache.tagNameR[option_tmp[i]]);
 					}
 				}
-				// console.log(require,require_tmp)
-				// console.log(option,option_tmp)
-				
-				var where_list=[];
-				for(var i in require){
-					where_list.push({field:'tid',type:0,value:require[i]})
-				}
-				
-				if($scope.cache.webList && $scope.cache.webList.select){
-					where_list.push({field:'wid',type:0,value:$scope.cache.webList.select});
-				}else{
-					yield Promise.reject("");
-				}
-				
-				for(var i in option){
-					where_list.push({field:'tid',type:0,value:option[i]})
-				}
-				if(!where_list.length){
+				// console.log(require,option)
+				return idSearch.getInter(require,option)
+				.then(function(ids){
 					postMessageHelper
-						.send("tagSystem",{name:'tagSearchId',value:{}})
-					yield Promise.reject("");
-				}
-				
-				var count=0;
-				var value=[]
-				if(require.length){
-					count=require.length;
-					value=value.concat(require)
-				}else{
-					if(option.length){
-						count=1
-					}
-				}
-				value.unshift(count);
-				
-				var group_list=[
-					{field:'tid',type:0,value:value},
-				]
-				var res=yield crud.get("WebRelation",{
-					where_list:where_list,
-					group_list:group_list,
+						.send("tagSystem",{name:'tagSearchId',value:ids})
 				})
-				if(res.status){
-					console.log(res);
-					postMessageHelper
-						.send("tagSystem",{name:'tagSearchId',value:{}})
-				}else{
-					postMessageHelper
-						.send("tagSystem",{name:'tagSearchId',value:{}})
-					yield Promise.reject("");
-				}
 			}())
-			.catch(function(){
-				// console.log("ggwp")
+			.catch(function(message){
+				postMessageHelper
+						.send("tagSystem",{name:'tagSearchId',value:[]})
 			})
 		},0)
 	}
-	
+	$scope.$watch("cache.clickSearch",getInter,1);
+	$scope.$watch("cache.absoluteSearch",getInter,1);
 	var time={}
 	postMessageHelper.receive('tagSystem',function(res){
 		clearTimeout(time[res.name])
@@ -223,21 +193,33 @@ function($scope,tagName,crud,idSearch){
 								.send("tagSystem",{name:'idSearchTag',value:names})
 						});
 					}
-					
+					if(res.name=="searchTagName"){
+						if(res.value){
+							var send={};
+							var key_name="%"+res.value+"%";
+							tagName.nameToId(key_name,1)
+							.then(function(list){
+								var value=list.map(function(val){
+									return val.name;
+								})
+								send[key_name]=value;
+								postMessageHelper
+									.send("tagSystem",{name:'searchTagName',value:send})
+							})
+						}
+					}
 					if(res.name=="tagSearchId"){
 						$scope.cache.absoluteSearch.splice(0,$scope.cache.absoluteSearch.length);
 						for(var i in res.value){
 							$scope.cache.absoluteSearch.push({name:res.value[i]});
 						}
 					}
-					
 					$scope.$apply();
 				}
 			},0)
 		},0);
 	});
-	$scope.$watch("cache.clickSearch",getInter,1);
-	$scope.$watch("cache.absoluteSearch",getInter,1);
+	
 }],
 })
 

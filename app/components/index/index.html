@@ -1,29 +1,18 @@
-<web-tag-type
-ng-if="!cache.not_finish_flag"
-></web-tag-type>
+<web-tag-type></web-tag-type>
 
 <tag-level
-ng-if="!cache.not_finish_flag"
 ng-repeat="tid in cache.tagType.selects"
 tid="tid"
 ></tag-level>
 
 
-
-<tag-search 
-ng-if="
-0 &&
-!cache.not_finish_flag
-&& 
-cache.webList.select
-"
-></tag-search>
-
-<id-search
-ng-if="
-0 && 
-!cache.not_finish_flag 
-&& 
-cache.webList.select
-"
-></id-search>
+<button 
+class="btn btn-sm btn-default"
+ng-repeat="item in cache.clickSearch"
+>
+{{item.name}}({{item.type?'可選':'必選'}})
+</button>
+<button 
+class="btn btn-sm btn-default"
+style="opacity:0;"
+>123</button>

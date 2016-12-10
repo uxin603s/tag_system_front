@@ -13,7 +13,6 @@
 	<script src="app/app.js?t=<?=time()?>"></script>
 	
 	<script src="app/factories/tagName.js?t=<?=time()?>"></script>
-	<script src="app/factories/webRelation.js?t=<?=time()?>"></script>
 	
 	<script src="app/factories/crud.js?t=<?=time()?>"></script>
 	<script src="app/factories/idSearch.js?t=<?=time()?>"></script>
