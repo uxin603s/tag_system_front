@@ -76,61 +76,60 @@ angular.module('app').factory('idSearch',
 		$rootScope.cache.tagCount[del.tid]--;
 		return Promise.resolve(result);
 	}
-	var getInter=function(require,option){
+	var getInter=function(require,option,mode){
 		getCount(require);
-		return promiseRecursive(function* (require,option){
-			var where_list=[];
-			for(var i in require){
-				where_list.push({field:'tid',type:0,value:require[i]})
-			}
+		return promiseRecursive(function* (require,option,mode){
+			var arg={};
+			arg.where_list=[];
 			
 			if($rootScope.cache.webList && $rootScope.cache.webList.select){
-				where_list.push({field:'wid',type:0,value:$rootScope.cache.webList.select});
+				arg.where_list.push({field:'wid',type:0,value:$rootScope.cache.webList.select});
 			}else{
 				yield Promise.reject("沒有選網站");
 			}
 			
-			for(var i in option){
-				where_list.push({field:'tid',type:0,value:option[i]})
-			}
-			if(!where_list.length){
-				yield Promise.reject("沒有搜尋條件");
-			}
-			
-			var count=0;
-			var value=[]
-			if(require.length){
-				count=require.length;
-				value=value.concat(require)
-			}else{
-				if(option.length){
-					count=1
+			if([2,3].indexOf(mode)==-1){
+				for(var i in require){
+					arg.where_list.push({field:'tid',type:0,value:require[i]})
 				}
+				for(var i in option){
+					arg.where_list.push({field:'tid',type:0,value:option[i]})
+				}
+				
+				if(!arg.where_list.length){
+					yield Promise.reject("沒有搜尋條件");
+				}
+				
+				var count=0;
+				var value=[]
+				if(require.length){
+					count=require.length;
+					value=value.concat(require)
+				}else{
+					if(option.length){
+						count=1;
+					}
+				}
+				value.unshift(count);
+				arg.have_list=[
+					{field:'tid',type:0,count:count,value:value},
+				];
 			}
-			value.unshift(count);
 			
-			var group_list=["source_id"];
+			arg.group_list=["source_id"];
 			
-			var have_list=[
-				{field:'tid',type:0,value:value},
-			];
-			
-			var res=yield crud.get("WebRelation",{
-				where_list:where_list,
-				group_list:group_list,
-				have_list:have_list,
-			})
+			var res=yield crud.get("WebRelation",arg);
+			// console.log(res);
 			
 			if(res.status){
 				var ids=res.list.map(function(val){
 					return val.source_id
 				})
 				return Promise.resolve(ids);
-				
 			}else{
 				yield Promise.reject("沒有資料");
 			}
-		}.bind(this,require,option)());
+		}.bind(this,require,option,mode)());
 	}
 	var getCount=function(require){
 		return promiseRecursive(function* (require){

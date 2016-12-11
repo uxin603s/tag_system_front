@@ -130,8 +130,9 @@ function($scope,tagName,crud,idSearch){
 					}
 				}
 				// console.log(require,option)
-				return idSearch.getInter(require,option)
+				return idSearch.getInter(require,option,$scope.cache.mode)
 				.then(function(ids){
+					// console.log(ids);
 					postMessageHelper
 						.send("tagSystem",{name:'tagSearchId',value:ids})
 				})
@@ -144,6 +145,7 @@ function($scope,tagName,crud,idSearch){
 	}
 	$scope.$watch("cache.clickSearch",getInter,1);
 	$scope.$watch("cache.absoluteSearch",getInter,1);
+	$scope.$watch("cache.mode",getInter,1);
 	var time={}
 	postMessageHelper.receive('tagSystem',function(res){
 		clearTimeout(time[res.name])
@@ -193,6 +195,7 @@ function($scope,tagName,crud,idSearch){
 								.send("tagSystem",{name:'idSearchTag',value:names})
 						});
 					}
+					
 					if(res.name=="searchTagName"){
 						if(res.value){
 							var send={};
@@ -208,18 +211,23 @@ function($scope,tagName,crud,idSearch){
 							})
 						}
 					}
+					
 					if(res.name=="tagSearchId"){
 						$scope.cache.absoluteSearch.splice(0,$scope.cache.absoluteSearch.length);
 						for(var i in res.value){
 							$scope.cache.absoluteSearch.push({name:res.value[i]});
 						}
 					}
+					
+					if(res.name=="setMode"){
+						$scope.cache.mode=res.value;						
+					}
+					
 					$scope.$apply();
 				}
 			},0)
 		},0);
 	});
-	
 }],
 })
 
