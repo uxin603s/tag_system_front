@@ -110,7 +110,6 @@ angular.module('app').factory('idSearch',
 						count=1;
 					}
 				}
-				value.unshift(count);
 				arg.have_list=[
 					{field:'tid',type:0,count:count,value:value},
 				];
@@ -119,7 +118,6 @@ angular.module('app').factory('idSearch',
 			arg.group_list=["source_id"];
 			
 			var res=yield crud.get("WebRelation",arg);
-			// console.log(res);
 			
 			if(res.status){
 				var ids=res.list.map(function(val){
@@ -146,12 +144,11 @@ angular.module('app').factory('idSearch',
 				count++;
 				value.push(require[i])
 			}
-			value.unshift(count);
 			
 			var select_list=["tid"];
 		
 			var have_list=[
-				{field:'tid',type:0,value:value},
+				{field:'tid',type:0,count:count,value:value},
 			];
 			
 			var res=yield crud.get("WebRelation",{
