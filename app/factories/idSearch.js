@@ -2,7 +2,7 @@ angular.module('app').factory('idSearch',
 ["$rootScope","crud","tagName",function($rootScope,crud,tagName){
 	var result={};
 	var get=function(ids,callback){
-		getCount();
+		// getCount();
 		return promiseRecursive(function* (ids){
 			for(var i in result){
 				delete result[i];
@@ -77,7 +77,7 @@ angular.module('app').factory('idSearch',
 		return Promise.resolve(result);
 	}
 	var getInter=function(require,option,mode){
-		getCount(require);
+		// getCount(require);
 		return promiseRecursive(function* (require,option,mode){
 			var arg={};
 			arg.where_list=[];
@@ -130,45 +130,73 @@ angular.module('app').factory('idSearch',
 		}.bind(this,require,option,mode)());
 	}
 	var getCount=function(require){
+		// console.log(require)
 		return promiseRecursive(function* (require){
-			var where_list=[];
+			
 			if($rootScope.cache.webList && $rootScope.cache.webList.select){
-				where_list.push({field:'wid',type:0,value:$rootScope.cache.webList.select});
+				var where_list=[
+					{field:'wid',type:0,value:$rootScope.cache.webList.select}
+				];
 			}else{
 				yield Promise.reject("沒有選網站");
 			}
-			var count=0;
-			var value=[];
+			
+			var select_list=["source_id"];
 			for(var i in require){
 				where_list.push({field:'tid',type:0,value:require[i]})
-				count++;
-				value.push(require[i])
 			}
-			
-			var select_list=["tid"];
-		
-			var have_list=[
-				{field:'tid',type:0,count:count,value:value},
-			];
-			
 			var res=yield crud.get("WebRelation",{
 				select_list:select_list,
-				count_select_list:select_list,
-				group_list:select_list,
-				
 				where_list:where_list,
-				have_list:have_list,
+				
 			})
-			$rootScope.cache.tagCount[tid]={};
+			
 			if(res.status){
-				for(var i in res.list){
-					var data=res.list[i];
-					var tid=data.tid;
-					var count=data["count(tid)"];
-					$rootScope.cache.tagCount[tid]=count
+				var where_list=[
+					{field:'wid',type:0,value:$rootScope.cache.webList.select}
+				];
+				var ids=res.list.map(function(val){
+					return val.source_id;
+				})
+				for(var i in ids){
+					where_list.push({field:'source_id',type:0,value:ids[i]})
+				}
+				var count=0;
+				var value=[];
+				for(var i in require){
+					count++;
+					value.push(require[i])
+				}
+				
+				
+				var select_list=["tid"];
+			
+				var have_list=[
+					{field:'tid',type:0,count:count,value:value},
+				];
+				
+				var res=yield crud.get("WebRelation",{
+					select_list:select_list,
+					count_select_list:select_list,
+					group_list:select_list,
+					where_list:where_list,
+					// have_list:have_list,
+				})
+				
+				$rootScope.cache.tagCount={};
+				if(res.status){
+					for(var i in res.list){
+						var data=res.list[i];
+						var tid=data.tid;
+						var count=data["count(tid)"];
+						$rootScope.cache.tagCount[tid]=count
+					}
 				}
 				$rootScope.$apply();
 			}
+			
+			
+			
 		}.bind(this,require)())
 		.catch(function(message){
 			console.log(message);
@@ -179,5 +207,6 @@ angular.module('app').factory('idSearch',
 		del:del,
 		get:get,
 		getInter:getInter,
+		getCount:getCount,
 	}
 }])

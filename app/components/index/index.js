@@ -90,6 +90,7 @@ function($scope,tagName,crud,idSearch){
 	$scope.cache.absoluteSearch || ($scope.cache.absoluteSearch=[]);
 	
 	var getInter=function(){
+		
 		clearTimeout($scope.getInterTimer);
 		$scope.getInterTimer=setTimeout(function(){
 			promiseRecursive(function* (){
@@ -123,19 +124,31 @@ function($scope,tagName,crud,idSearch){
 				if(names.length){
 					yield tagName.nameToId(names,1);
 					for(var i in require_tmp){
-						require.push($scope.cache.tagNameR[require_tmp[i]]);
+						var id=$scope.cache.tagNameR[require_tmp[i]];
+						if(require.indexOf(id)==-1)
+							require.push(id);
 					}
 					for(var i in option_tmp){
-						option.push($scope.cache.tagNameR[option_tmp[i]]);
+						var id=$scope.cache.tagNameR[option_tmp[i]];
+						if(option.indexOf(id)==-1)
+							option.push(id);
 					}
 				}
+				var tmp=[];
+				for(var i in $scope.cache.absoluteSearch){
+					tmp.push($scope.cache.tagNameR[$scope.cache.absoluteSearch[i].name]);
+				}
+				idSearch.getCount(tmp)
+				// console.log(tmp)
 				// console.log(require,option)
 				return idSearch.getInter(require,option,$scope.cache.mode)
 				.then(function(ids){
 					// console.log(ids);
 					postMessageHelper
 						.send("tagSystem",{name:'tagSearchId',value:ids})
-				})
+				});
+				
+				
 			}())
 			.catch(function(message){
 				postMessageHelper
@@ -143,6 +156,7 @@ function($scope,tagName,crud,idSearch){
 			})
 		},0)
 	}
+	$scope.$watch("cache.webList.select",getInter,1)
 	$scope.$watch("cache.clickSearch",getInter,1);
 	$scope.$watch("cache.absoluteSearch",getInter,1);
 	$scope.$watch("cache.mode",getInter,1);

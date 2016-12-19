@@ -10,6 +10,8 @@ angular.module('app').component("webTagType",{
 		$scope.cache.webList || ($scope.cache.webList={});
 		$scope.cache.webList.list || ($scope.cache.webList.list=[]);
 		$scope.cache.tagType || ($scope.cache.tagType={});
+		$scope.cache.tagType.list || ($scope.cache.tagType.list=[]);
+		
 		$scope.cache.webTagType || ($scope.cache.webTagType={});
 		$scope.cache.tagType.selects || ($scope.cache.tagType.selects=[])
 		$scope.cache.relation || ($scope.cache.relation={})
