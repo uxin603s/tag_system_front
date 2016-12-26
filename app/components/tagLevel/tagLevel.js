@@ -6,6 +6,7 @@ bindings:{
 templateUrl:'app/components/tagLevel/tagLevel.html?t='+Date.now(),
 controller:
 ["$scope","crud",function($scope,crud){
+	$scope.cache.levelList[$scope.$ctrl.tid] || ($scope.cache.levelList[$scope.$ctrl.tid]=[])
 	$scope.cache.selectList[$scope.$ctrl.tid] || ($scope.cache.selectList[$scope.$ctrl.tid]=[])
 	var sort=function(a,b){
 		return a.sort_id-b.sort_id;
@@ -46,26 +47,25 @@ controller:
 			tid:$scope.$ctrl.tid,
 			sort_id:$scope.list.length,
 		};
-		$scope.cache.relation[$scope.$ctrl.tid] || ($scope.cache.relation[$scope.$ctrl.tid]={});
-		$scope.cache.selectList[$scope.$ctrl.tid].push({});
-		$scope.list.push(arg);
-		
-		crud.add("TagLevel",arg);
-		
-		
-		$scope.get();
+		crud.add("TagLevel",arg)
+		.then(function(res){
+			$scope.list.push(res.insert);
+			$scope.cache.relation[res.insert.id] || ($scope.cache.relation[res.insert.id]={});
+			$scope.cache.selectList[$scope.$ctrl.tid].push({});
+			$scope.$apply();
+		})
 	}
 	
 	$scope.del=function(index){
 		if($scope.list.length-1!=index)return;
-		var list=$scope.list.splice(index,1).pop()
+		var list=$scope.list.splice(index,1).pop();
 		var arg=angular.copy(list);
 		var select=$scope.cache.selectList[$scope.$ctrl.tid].splice(index,1).pop();
 		
 		crud.del("TagLevel",arg)
 		.then(function(res){
 			if(res.status){
-				delete $scope.cache.relation[$scope.$ctrl.tid];
+				delete $scope.cache.relation[arg.id];
 			}else{
 				$scope.list.push(list)
 				$scope.cache.selectList[$scope.$ctrl.tid].push(select)

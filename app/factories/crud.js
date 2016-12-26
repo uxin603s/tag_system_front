@@ -1,5 +1,5 @@
 angular.module('app').factory('crud',
-["$rootScope",function($rootScope){
+[function(){
 	var get=function(name,arg){
 		return new Promise(function(resolve,reject) {
 			var post_data={
@@ -8,13 +8,7 @@ angular.module('app').factory('crud',
 			}
 			
 			$.post("ajax.php",post_data,function(res){
-				if(res.status){
-					res.list.sort(function(a,b){
-						return a.sort_id-b.sort_id;
-					})
-				}
 				resolve(res)
-				$rootScope.$apply();
 			},"json")
 		});
 	}
@@ -26,7 +20,7 @@ angular.module('app').factory('crud',
 			}
 			$.post("ajax.php",post_data,function(res){
 				resolve(res);
-				$rootScope.$apply();
+				
 			},"json")
 		})
 	}
@@ -38,7 +32,6 @@ angular.module('app').factory('crud',
 			}
 			$.post("ajax.php",post_data,function(res){
 				resolve(res);
-				$rootScope.$apply();
 			},"json")
 			
 		});
@@ -52,7 +45,6 @@ angular.module('app').factory('crud',
 			}
 			$.post("ajax.php",post_data,function(res){
 				resolve(res);
-				$rootScope.$apply();
 			},"json")
 		});
 	}
@@ -76,7 +68,6 @@ angular.module('app').factory('crud',
 			var arg={where:where,update:update}
 			ch(name,arg)
 			.then(function(res){
-				$rootScope.$apply();
 			})
 		}
 	}

@@ -26,13 +26,14 @@ angular.module('app').component("webTagType",{
 			promiseRecursive(function* (){
 				var res=yield crud.get('WebList');
 				if(res.status){
-					res.list.sort(sort)
 					$scope.cache.webList.list=res.list;
-					if(location.search.match(/wid=(\d+)/)){
-						$scope.cache.webList.select=RegExp.$1;
-					}
-					$scope.$apply();
+				}else{
+					$scope.cache.webList.list=[];
 				}
+				// if(location.search.match(/wid=(\d+)/)){
+					// $scope.cache.webList.select=RegExp.$1;
+				// }
+				$scope.$apply();
 			}())
 			promiseRecursive(function* (){
 				var res=yield crud.get('TagType');

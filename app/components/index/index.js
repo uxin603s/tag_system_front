@@ -78,7 +78,7 @@ function($scope,tagName,crud,idSearch){
 				postMessageHelper.send('tagSystem',{name:'getInsertList',value:send})
 			}
 			$scope.$apply();
-		},0)
+		},50)
 	}
 	$scope.$watch("cache.tagType.selects",watch_clickSearch,1)
 	$scope.$watch("cache.webList.select",watch_clickSearch,1)
