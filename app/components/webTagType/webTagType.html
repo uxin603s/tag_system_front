@@ -33,7 +33,7 @@
 			class="btn btn-sm"	
 			ng-right-click="del('TagType',cache.tagType.list,$index)"
 			ng-repeat="item in cache.tagType.list">
-			{{item.name}}
+			{{item.id}}:{{item.name}}
 			</button>
 		</div>
 		<div ng-if="cache.webTagType.list.length">
@@ -46,14 +46,14 @@
 			class="btn btn-sm btn-danger"	
 			
 			ng-repeat="item in list">
-			{{cache.tagType.name[item.tid]}}
+			{{item.tid}}:{{cache.tagType.name[item.tid]}}
 			</button><button
 			ng-click="relation(item.id)"
 			class="btn btn-sm btn-primary"	
 			ng-right-click="del('TagType',not_list,$index)"
 			ng-repeat="item in not_list"
 			>
-			{{item.name}}
+			{{item.id}}:{{item.name}}
 			</button>
 		</div>
 	</div>
