@@ -1,8 +1,10 @@
 <?php
+setcookie("go_to","",time()-3600);
 session_start();
 if(isset($_SESSION['rid'])){
 	
 }else{
+	setcookie("go_to",$_SERVER['REQUEST_URI']);
 	header("location:login.php");
 	exit;
 }

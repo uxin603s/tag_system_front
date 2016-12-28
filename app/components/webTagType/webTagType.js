@@ -4,7 +4,13 @@ angular.module('app').component("webTagType",{
 	controller:
 	["$scope","crud",
 	function($scope,crud){
-		
+		if(location.search.match(/wid=(\d+)/)){
+			$scope.web_hidden=true;
+			$scope.cache.webList.select=RegExp.$1;
+			console.log(RegExp.$1)
+		}else{
+			$scope.web_hidden=false;
+		}
 		$scope.cache.tagCount || ($scope.cache.tagCount={});
 		$scope.cache.levelList || ($scope.cache.levelList={});
 		$scope.cache.webList || ($scope.cache.webList={});
@@ -19,6 +25,7 @@ angular.module('app').component("webTagType",{
 		$scope.$watch("cache.webList.list",crud.sort.bind(this,'WebList','id'),1)
 		$scope.$watch("cache.tagType.list",crud.sort.bind(this,'TagType','id'),1)
 		$scope.$watch("list",crud.sort.bind(this,'WebTagType','tid'),1);
+		
 		var sort=function(a,b){
 			return a.sort_id-b.sort_id;
 		}
@@ -30,9 +37,7 @@ angular.module('app').component("webTagType",{
 				}else{
 					$scope.cache.webList.list=[];
 				}
-				// if(location.search.match(/wid=(\d+)/)){
-					// $scope.cache.webList.select=RegExp.$1;
-				// }
+				
 				$scope.$apply();
 			}())
 			promiseRecursive(function* (){
@@ -45,8 +50,11 @@ angular.module('app').component("webTagType",{
 						var data=res.list[i];
 						$scope.cache.tagType.name[data.id]=data.name;
 					}
-					$scope.$apply();
+					
+				}else{
+					$scope.cache.tagType.list=[];
 				}
+				$scope.$apply();
 			}())
 		}
 		$scope.$watch("cache.webList.select",function(wid){

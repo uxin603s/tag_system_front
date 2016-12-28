@@ -75,8 +75,8 @@ function($scope,tagName,crud,idSearch){
 						}
 					}
 				}
-				postMessageHelper.send('tagSystem',{name:'getInsertList',value:send})
 			}
+			postMessageHelper.send('tagSystem',{name:'getInsertList',value:send})
 			$scope.$apply();
 		},50)
 	}
