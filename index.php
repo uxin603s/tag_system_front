@@ -49,8 +49,11 @@ if(isset($_SESSION['rid'])){
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7.min.css?t=<?=time()?>" />
 	<link rel="stylesheet" type="text/css" href="css/index.css?t=<?=time()?>" />
 </head>
-<body ng-app="app"  style="overflow-y: scroll;" >
-
-	<index ng-if="!cache.not_finish_flag"></index>
+<body 
+ng-app="app"
+style="overflow-y: scroll;"
+>
+	<index 
+	ng-if="!cache.not_finish_flag"></index>
 </body>
 </html>

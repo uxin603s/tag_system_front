@@ -43,20 +43,20 @@ angular.module('app').factory('idSearch',
 			if(!tag.name){
 				return Promise.reject();
 			}
+			var list=yield tagName.nameToId(tag.name)
+			var tid=list[0].id;
 			
 			var index=result[id].findIndex(function(val){
-				return val==tag.name;
-			})
+				return val.tid==tid;
+			});
+			
 			if(index==-1){
-				var list=yield tagName.nameToId(tag.name)
-				var tid=list[0].id;
 				var arg={
 					tid:tid,
 					source_id:id,
 					wid:$rootScope.cache.webList.select,
 					sort_id:result[id].length,
 				}
-				
 				result[id].push(arg);
 				crud.add('WebRelation',arg)
 				$rootScope.cache.tagCount[tid] || ($rootScope.cache.tagCount[tid]=0);

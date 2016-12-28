@@ -1,3 +1,11 @@
-angular.module("app",["cache"]).config(['$compileProvider',function($compileProvider){
+angular.module("app",["cache"])
+.config(['$compileProvider',function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
+}])
+.run(["$rootScope",function($rootScope){
+	$rootScope.__proto__.confirm=window.confirm;			
+	$rootScope.__proto__.alert=window.alert;
+	$rootScope.__proto__.Math=window.Math;
+	$rootScope.__proto__.isNaN=window.isNaN;
+	$rootScope.__proto__.Date=window.isNaN;
 }])

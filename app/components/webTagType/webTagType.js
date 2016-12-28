@@ -7,7 +7,6 @@ angular.module('app').component("webTagType",{
 		if(location.search.match(/wid=(\d+)/)){
 			$scope.web_hidden=true;
 			$scope.cache.webList.select=RegExp.$1;
-			console.log(RegExp.$1)
 		}else{
 			$scope.web_hidden=false;
 		}
@@ -115,6 +114,7 @@ angular.module('app').component("webTagType",{
 				// return val.id;
 			// });
 			if(!$scope.cache.webTagType.list.length)return
+			if(!$scope.cache.tagType.list.length)return
 			
 			for(var i in $scope.cache.tagType.list){
 				var data=angular.copy($scope.cache.tagType.list[i]);
