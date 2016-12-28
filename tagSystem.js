@@ -108,8 +108,7 @@ controller:["$scope","tagSystem","$rootScope",function($scope,tagSystem,$rootSco
 		var wid=$scope.$ctrl.wid;
 		tagSystem.init("http://tag.cfd888.info/?wid="+wid+"&t="+Date.now());
 		$("tag-system>div").append(tagSystem.iframe);
-		$rootScope.__proto__.tagSystem=tagSystem.data;
+		$scope.tagSystem=tagSystem.data;
 	}
-	
 }],
 })
