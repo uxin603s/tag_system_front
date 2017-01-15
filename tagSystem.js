@@ -16,6 +16,8 @@ angular.module('tagSystem',[])
 	iframe.setAttribute("frameborder",0);
 	var source;
 	var timer={};
+	var post_id="post"+(Date.now()+Math.floor(Math.random()*999));
+	$rootScope[post_id]={}
 	var init=function(src){
 		var load=function(){
 			source=iframe.contentWindow;
@@ -40,7 +42,9 @@ angular.module('tagSystem',[])
 					if(res.name=="searchTagName"){
 						data.customInsertList=res.value;
 					}
-					
+					if(res.name=="post"){
+						$rootScope[post_id][res.value.id]=res.value.value;
+					}
 					$rootScope.$apply();
 				},0)
 			})
@@ -48,7 +52,19 @@ angular.module('tagSystem',[])
 		iframe.onload=load
 		iframe.src=src;
 	}
-	
+	var post=function(request,callback){
+		
+		var id="rand"+Date.now()+Math.floor(Math.random()*9999);
+		
+		postMessageHelper
+			.send("tagSystem",{name:'post',value:{request:request,id:id}})
+		var watch=$rootScope.$watch(post_id+"."+id,function(res){
+			if(res){
+				callback && callback(res);
+				watch();
+			}
+		},1);
+	}
 	var tagSearchId=function(value){//使用tag搜尋source_id
 		postMessageHelper
 			.send("tagSystem",{name:'tagSearchId',value:value})
@@ -86,6 +102,7 @@ angular.module('tagSystem',[])
 	}
 	
 	return {
+		post:post,
 		init:init,
 		iframe:iframe,
 		data:data,
@@ -101,14 +118,26 @@ angular.module('tagSystem',[])
 .component("tagSystem",{
 bindings:{
 	wid:"=",
+	accessToken:"=",
 },
 templateUrl:'app/module/tagSystem/tagSystem.html?t='+Date.now(),
 controller:["$scope","tagSystem","$rootScope",function($scope,tagSystem,$rootScope){
 	$scope.$ctrl.$onInit=function(){
-		var wid=$scope.$ctrl.wid;
-		tagSystem.init("http://tag.cfd888.info/?wid="+wid+"&t="+Date.now());
-		$("tag-system>div").append(tagSystem.iframe);
-		$scope.tagSystem=tagSystem.data;
+		
+		var url="http://tag.cfd888.info/?";
+		if($scope.$ctrl.wid){
+			var wid=$scope.$ctrl.wid;
+			url+="wid="+wid
+			if($scope.$ctrl.accessToken){
+				var access_token=$scope.$ctrl.accessToken;
+				url+="&access_token="+access_token;
+			}
+			url+="&t="+Date.now()
+			tagSystem.init(url);
+			$("tag-system>div").append(tagSystem.iframe);
+			$scope.tagSystem=tagSystem.data;
+		}
+		
 	}
 }],
 })
