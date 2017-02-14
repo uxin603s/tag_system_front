@@ -1,9 +1,12 @@
 <?php
 setcookie("go_to","",time()-3600);
 session_start();
+
+
 if(isset($_SESSION['rid'])){
 	
 }else{
+	setcookie("access_token",$_GET['access_token']);
 	setcookie("go_to",$_SERVER['REQUEST_URI']);
 	header("location:login.php");
 	exit;
@@ -48,6 +51,11 @@ if(isset($_SESSION['rid'])){
 	
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7.min.css?t=<?=time()?>" />
 	<link rel="stylesheet" type="text/css" href="css/index.css?t=<?=time()?>" />
+	<script>
+	if(window.location.hash){
+		window.location.href="http://"+window.location.hostname+window.location.pathname+window.location.search;
+	}
+	</script>
 </head>
 <body 
 ng-app="app"

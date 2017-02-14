@@ -130,6 +130,7 @@ angular.module('app').factory('idSearch',
 		}.bind(this,require,option,mode)());
 	}
 	var getCount=function(require){
+		return
 		// console.log(require)
 		return promiseRecursive(function* (require){
 			

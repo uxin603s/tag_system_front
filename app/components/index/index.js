@@ -46,6 +46,7 @@ function($scope,tagName,crud,idSearch){
 					var data=selectList[tid][selectList[tid].length-2];
 					if(data){
 						var select=data.select;
+						// console.log($scope.cache.levelList[tid][$scope.cache.levelList[tid].length-1])
 						if(select){
 							var level_id=$scope.cache.levelList[tid][$scope.cache.levelList[tid].length-1].id
 							var select_name=$scope.cache.tagName[select];
@@ -117,6 +118,8 @@ function($scope,tagName,crud,idSearch){
 						}
 					}
 				}
+				// console.log('clickSearch',$scope.cache.clickSearch)
+				// console.log('absoluteSearch',$scope.cache.absoluteSearch)
 				$scope.cache.clickSearch.map(process)
 				$scope.cache.absoluteSearch.map(process)
 				
@@ -140,7 +143,7 @@ function($scope,tagName,crud,idSearch){
 				}
 				idSearch.getCount(tmp)
 				// console.log(tmp)
-				// console.log(require,option)
+				// console.log(require,option,$scope.cache.mode)
 				return idSearch.getInter(require,option,$scope.cache.mode)
 				.then(function(ids){
 					// console.log(ids);
@@ -233,10 +236,19 @@ function($scope,tagName,crud,idSearch){
 						}
 					}
 					
+					
 					if(res.name=="setMode"){
 						$scope.cache.mode=res.value;						
 					}
-					
+					if(res.name=="post"){
+						var request=res.value.request;
+						var id=res.value.id;
+						$.post("ajax.php",request,function(res){
+							postMessageHelper
+								.send("tagSystem",{name:'post',value:{id:id,value:res}})
+
+						},"json")
+					}
 					$scope.$apply();
 				}
 			},0)

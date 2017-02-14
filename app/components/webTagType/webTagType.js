@@ -4,12 +4,7 @@ angular.module('app').component("webTagType",{
 	controller:
 	["$scope","crud",
 	function($scope,crud){
-		if(location.search.match(/wid=(\d+)/)){
-			$scope.web_hidden=true;
-			$scope.cache.webList.select=RegExp.$1;
-		}else{
-			$scope.web_hidden=false;
-		}
+		
 		$scope.cache.tagCount || ($scope.cache.tagCount={});
 		$scope.cache.levelList || ($scope.cache.levelList={});
 		$scope.cache.webList || ($scope.cache.webList={});
@@ -21,6 +16,14 @@ angular.module('app').component("webTagType",{
 		$scope.cache.tagType.selects || ($scope.cache.tagType.selects=[])
 		$scope.cache.relation || ($scope.cache.relation={})
 		$scope.cache.selectList || ($scope.cache.selectList={})
+		
+		if(location.search.match(/wid=(\d+)/)){
+			$scope.web_hidden=true;
+			$scope.cache.webList.select=RegExp.$1;
+		}else{
+			
+			$scope.web_hidden=false;
+		}
 		$scope.$watch("cache.webList.list",crud.sort.bind(this,'WebList','id'),1)
 		$scope.$watch("cache.tagType.list",crud.sort.bind(this,'TagType','id'),1)
 		$scope.$watch("list",crud.sort.bind(this,'WebTagType','tid'),1);
@@ -31,6 +34,7 @@ angular.module('app').component("webTagType",{
 		$scope.get=function(){
 			promiseRecursive(function* (){
 				var res=yield crud.get('WebList');
+				
 				if(res.status){
 					$scope.cache.webList.list=res.list;
 				}else{
@@ -113,6 +117,7 @@ angular.module('app').component("webTagType",{
 			// $scope.cache.tagType.selects=$scope.cache.tagType.list.map(function(val){
 				// return val.id;
 			// });
+			if(!$scope.cache.webTagType.list)return
 			if(!$scope.cache.webTagType.list.length)return
 			if(!$scope.cache.tagType.list.length)return
 			
