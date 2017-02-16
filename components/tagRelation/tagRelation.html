@@ -1,0 +1,12 @@
+<button 
+class="btn  btn-sm" 
+ng-repeat="tid in list[$ctrl.selects[$ctrl.index]]"
+ng-click="$ctrl.selects[$ctrl.index*1+1]==tid?
+$ctrl.selects[$ctrl.index*1+1]=undefined
+:
+$ctrl.selects[$ctrl.index*1+1]=tid
+"
+ng-class="$ctrl.selects[$ctrl.index*1+1]==tid?'btn-danger':'btn-primary'"
+>
+{{tagName[tid]}}
+</button>

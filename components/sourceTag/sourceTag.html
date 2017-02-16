@@ -1,0 +1,12 @@
+<button 
+ng-click="editTag($ctrl.id,$ctrl.name)"
+class="btn btn-primary btn-sm" 
+>編輯標籤</button>
+|
+<button 
+class="btn btn-sm btn-primary"
+ng-repeat="tid in list"
+ng-click="del(list,$index,id)"
+>
+{{tagName[tid]}}
+</button>
