@@ -1,12 +1,29 @@
-<button 
-class="btn  btn-sm" 
+<div 
+sortable="list[$ctrl.selects[$ctrl.index]]"
+index="$index"
+draggable="true"
+style="display:inline-block;border:#000000 3px solid; "
 ng-repeat="tid in list[$ctrl.selects[$ctrl.index]]"
-ng-click="$ctrl.selects[$ctrl.index*1+1]==tid?
-$ctrl.selects[$ctrl.index*1+1]=undefined
-:
-$ctrl.selects[$ctrl.index*1+1]=tid
-"
-ng-class="$ctrl.selects[$ctrl.index*1+1]==tid?'btn-danger':'btn-primary'"
 >
-{{tagName[tid]}}
-</button>
+	<button 
+	class="btn  btn-sm" 
+	ng-click="
+	$ctrl.selects[$ctrl.index*1+1]=tid;
+	"
+	ng-class="$ctrl.selects[$ctrl.index*1+1]==tid?'btn-danger':'btn-primary'"
+	>
+	{{tagName[tid]}}
+	</button><button
+	class="btn btn-sm btn-default"
+	ng-click="getTag(tid)"
+	>G</button><button
+	class="btn btn-sm btn-default"
+	ng-click="delTag($index,list[$ctrl.selects[$ctrl.index]])"
+	>D</button>
+</div>
+<input 
+type="text" 
+placeholder="enter後新增標籤"
+ng-model="tag_name"
+ng-enter="addTag(tag_name);tag_name=''"
+/>

@@ -3,10 +3,10 @@ angular.module('tagSystem')
 	var data={
 		tagName:{},
 		control:{
-			mode:0
+			mode:2,
 		},
-		
-		tagRelation:{},
+		levelTagRelation:{},
+		sourceIdRelationTag:{},
 		selects:[],
 	}
 	var iframe=document.createElement("iframe");
@@ -70,30 +70,49 @@ angular.module('tagSystem')
 		})
 	}
 	
-	
-	var addTag=function(list,tid,id){
-		if(list.indexOf(tid)!=-1)return
-		list.push(tid);
-		var wid=data.wid;
-		var post_data={
-			func_name:"WebRelation::insert",
-			arg:{
-				source_id:id,
-				wid:wid,
-				tid:tid,
-				sort_id:list.length,
+	var add_lock={};
+	var addTag=function(arg,list){
+		if(arg.tid){
+			list.push(arg.tid);
+		}else{
+			if(!arg.tag_name){
+				alert("請勿空白");
+				return 
 			}
 		}
+		if(add_lock[arg.source_id]){
+			alert("新增資料中，請稍等...");
+			return
+		}else{
+			add_lock[arg.source_id]=true;
+		}
+		
+		arg.wid=data.wid;
+		arg.sort_id=list.length;
+		
+		var post_data={
+			func_name:"WebRelation::insert",
+			arg:arg,
+		}
 		post(post_data,function(res){
-			console.log(res)
-			if(!res.status){
-				// var index=list.indexOf(tid);
-				// if(index!=-1){
-					// list.splice(index,1);
-				// }
+			if(arg.tag_name){
+				if(res.status){
+					var tid=res.insert.tid;
+					data.tagName[tid]=arg.tag_name
+					list.push(tid);
+					alert("新增成功")
+				}else{
+					alert("新增失敗")
+				}
 			}
+			delete add_lock[arg.source_id];
+			
 		});
 	}
+	
+	
+	
+	
 	var delTag=function(list,index,id){
 		if(!confirm("確認刪除?"))return;
 		var tid=list.splice(index,1).pop();
@@ -114,10 +133,31 @@ angular.module('tagSystem')
 			}
 		});
 	}
-	var searchTag=function(search,callback){	
-		data.control.search.data=search;
-		data.control.search.callback=callback;			
-		data.control.mode=2
+	var addSearch=function(tag_name){
+		var where_list=[];
+		where_list.push({field:'name',type:0,value:tag_name});
+		
+		var post_data={
+			func_name:"TagName::getList",
+			arg:{
+				where_list:where_list
+			}
+		}
+		post(post_data,function(res){
+			if(res.status){
+				var tid=res.list[0].id;
+				var name=res.list[0].name;
+				data.tagName[tid]=name;
+				var index=data.control.search.data.optional.indexOf(tid)
+				var index1=data.control.search.data.tmp.indexOf(tid)
+				var index2=data.control.search.data.required.indexOf(tid)
+				if(index==-1 && index1==-1 && index2==-1){
+					data.control.search.data.optional.push(tid);
+				}
+			}else{
+				alert("沒有這個標籤")
+			}
+		});
 	}
 	return {
 		init:init,
@@ -127,6 +167,7 @@ angular.module('tagSystem')
 		getTagName:getTagName,
 		delTag:delTag,
 		addTag:addTag,
-		searchTag:searchTag,
+		addSearch:addSearch,
+		
 	}
 }])

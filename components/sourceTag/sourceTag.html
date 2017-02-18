@@ -1,12 +1,24 @@
 <button 
-ng-click="editTag($ctrl.id,$ctrl.name)"
-class="btn btn-primary btn-sm" 
->編輯標籤</button>
-|
-<button 
 class="btn btn-sm btn-primary"
 ng-repeat="tid in list"
-ng-click="del(list,$index,id)"
+ng-click="delTag(list,$index,$ctrl.id)"
+sortable="list"
+index="$index"
+draggable="true"
 >
 {{tagName[tid]}}
 </button>
+
+
+
+<button 
+ng-click="editTag($ctrl.id,$ctrl.name)"
+class="btn btn-info btn-sm" 
+>編輯標籤</button>
+<input 
+type="text" 
+ng-enter="addTag({source_id:$ctrl.id,tag_name:tag_name,sort_id:list.length},list);tag_name=''"
+ng-model="tag_name"
+placeholder="新增自訂標籤"
+/>
+

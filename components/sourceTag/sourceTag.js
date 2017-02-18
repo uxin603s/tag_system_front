@@ -6,7 +6,22 @@ bindings:{
 templateUrl:'app/modules/tagSystem/components/sourceTag/sourceTag.html?t='+Date.now(),
 controller:["$scope","tagSystem",function($scope,tagSystem){
 	$scope.tagName=tagSystem.data.tagName;
+	$scope.delTag=tagSystem.delTag;
+	$scope.addTag=tagSystem.addTag;
 	
+	$scope.sourceIdRelationTag=tagSystem.data.sourceIdRelationTag;
+	
+	var updateWebRelation=function(arg){
+		arg.wid=tagSystem.data.wid;
+		var post_data={
+			func_name:"WebRelation::update",
+			arg:arg,
+		}
+		tagSystem.post(post_data,function(res){
+			console.log(res)
+		})
+	}
+	var watch_sort;
 	var getWebRelation=function(id){
 		return new Promise(function(resolve,reject){
 			var where_list=[];
@@ -21,22 +36,41 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 			tagSystem.post(post_data,function(res){
 				var tids=[];
 				if(res.status){
+					
 					$scope.list=res.list.sort(function(a,b){
 						return a.sort_id-b.sort_id;
 					}).map(function(val){
 						return val.tid;
 					})
+					// console.log(id,res.list,$scope.list)
 					resolve($scope.list);
 					
 				}else{
 					$scope.list=[];
 				}
-				tagSystem.data.tagRelation[id]=$scope.list;
+				$scope.sourceIdRelationTag[id]=$scope.list;
+				// console.log(res)
+				watch_sort && watch_sort();
+				watch_sort=$scope.$watch("list",function(nv,ov){
+					if(nv.length==ov.length){
+						for(var i in nv){
+							if(nv[i]!=ov[i]){
+								updateWebRelation({
+									update:{sort_id:i},
+									where:{
+										tid:nv[i],
+										source_id:$scope.$ctrl.id,
+									}
+								})
+							}
+						}
+					}
+				},1)
 			});
 		})
 		
 	}
-	$scope.del=tagSystem.delTag;
+	
 	
 	$scope.$ctrl.$onInit=function(){
 		getWebRelation($scope.$ctrl.id)
@@ -47,7 +81,7 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 	$scope.editTag=function(id,name){
 		tagSystem.data.control.edit.id=id;
 		tagSystem.data.control.edit.name=name;
-		tagSystem.data.control.edit.list=tagSystem.data.tagRelation[id];
+		tagSystem.data.control.edit.list=$scope.sourceIdRelationTag[id];
 		tagSystem.data.control.mode=1
 	}
 }],

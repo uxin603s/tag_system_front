@@ -1,8 +1,22 @@
+
+標籤種類:<button 
+class="btn  btn-sm btn-danger"
+sortable="select_arr"
+index="$index"
+draggable="true"
+ng-repeat="tid in select_arr"
+ng-click="delWebTagType($index,select_arr)"
+>{{primary_data[tid].name}}</button><button 
+class="btn  btn-sm btn-primary"
+ng-repeat="tid in not_select_arr"
+ng-click="addWebTagType({tid:tid},select_arr)"
+>{{primary_data[tid].name}}</button>
+
 <div 
 class="col-xs-12" 
 style="border:#000000 1px solid; "
-ng-repeat="tid in tids"
+ng-repeat="tid in select_arr"
 >
-{{tnames[tid]}}
+{{primary_data[tid].name}}
 <tag-level tid="tid" ></tag-level>
 </div>

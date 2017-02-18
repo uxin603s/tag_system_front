@@ -1,9 +1,9 @@
 <div
- 
 ng-repeat="lid in lids">
-	<tag-relation 
+	第{{$index+1}}層<tag-relation 
+	ng-if="1"
 	index="$index"
 	selects="selects"
-	lid="lid"
+	lids="lids"
 	></tag-relation>
 </div>
