@@ -33,7 +33,6 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 		$("tag-system>div").append(tagSystem.iframe);
 		tagSystem.data.wid=$scope.$ctrl.wid;	
 	}
-	// alert("getTag拆出來")
 	$scope.getTag=function(tid){
 		if($scope.control.mode==1){
 			var list=$scope.control.edit.list;

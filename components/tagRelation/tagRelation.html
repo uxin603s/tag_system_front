@@ -40,9 +40,10 @@
 	<div 
 	ng-if="$ctrl.show==1"
 	class="form-inline"
+	style="display:inline-block;"
 	>
-		|
 		<select
+		style="display:inline-block;width:auto;"
 		class="form-control"
 		ng-options="tid as tagName[tid] for tid in list"
 		ng-model="$ctrl.selects[$ctrl.index*1+1]"

@@ -21,16 +21,16 @@ angular.module('tagSystem')
 	iframe.setAttribute("style","display:none;");
 	var source;
 	var timer={};
-	var post_id="post"+(Date.now()+Math.floor(Math.random()*999));
-	$rootScope[post_id]={}
+	// var post_id="post"+(Date.now()+Math.floor(Math.random()*999));
+	var post_data={}
 	var init=function(src){
 		var load=function(){
 			source=iframe.contentWindow;
 			postMessageHelper.init("tagSystem",source)
-			postMessageHelper.send("tagSystem")
+			// postMessageHelper.send("tagSystem")
 			postMessageHelper.receive("tagSystem",function(res){
 				if(res.name=="post"){
-					$rootScope[post_id][res.value.id]=res.value.value;
+					post_data[res.value.id]=res.value.value;
 				}
 				$rootScope.$apply();
 			})
@@ -42,7 +42,12 @@ angular.module('tagSystem')
 		var id="rand"+Date.now()+Math.floor(Math.random()*9999);
 		postMessageHelper
 			.send("tagSystem",{name:'post',value:{request:request,id:id}})
-		var watch=$rootScope.$watch(post_id+"."+id,function(res){
+		var watch=$rootScope.$watch(
+		function(id){
+			return post_data[id];
+		}.bind(this,id)
+		,
+		function(res){
 			if(res){
 				callback && callback(res);
 				watch();
