@@ -7,8 +7,8 @@ width: 100%;
 height: 100%;
 overflow-y: auto;"
 >
-	<tag-type ></tag-type>
-	<div class="col-xs-12" >
+	
+	<div class="col-xs-12 bottom_line" >
 		<button 
 		class="btn btn-primary"
 		ng-click="control.mode=0"
@@ -17,80 +17,21 @@ overflow-y: auto;"
 			<div ng-if="control.mode==1">
 				{{control.edit.name}}
 				<div class="col-xs-12" >
-					<button 
-					sortable="control.edit.list"
-					index="$index"
-					draggable="true"
-					class="btn btn-primary btn-sm"
-					ng-repeat="tid in control.edit.list"
-					ng-click="delTag(control.edit.list,$index,control.edit.id)"
-					>
-					{{tagName[tid]}}
-					</button>
-					<input 
-					type="text" 
-					ng-enter="addTag({
-					source_id:control.edit.id,
-					tag_name:tag_name,
-					sort_id:control.edit.list.length,
-					},
-					control.edit.list
-					);tag_name=''"
-					ng-model="tag_name"
-					placeholder="新增自訂標籤"
-					/>
+					<insert-tag-element
+					id="control.edit.id"
+					list="control.edit.list"
+					></insert-tag-element>
 				</div>
 			</div>
 			<div ng-if="control.mode==2">
-			搜尋
-				<div 
-				style="display:inline-block;border:#000000 1px solid; "
-				ng-repeat="tid in control.search.data.required"
-				>
-					<button 
-					class="btn btn-primary btn-sm"
-					ng-click="control.search.data.tmp.unshift(control.search.data.required.splice($index,1).pop())"
-
-					>{{tagName[tid]}}
-					</button><button 
-					ng-click="control.search.data.optional.unshift(control.search.data.required.splice($index,1).pop())"
-					class="btn  btn-sm btn-danger"
-					>R</button>
-				</div><div 
-				style="display:inline-block;border:#000000 1px solid; "
-				ng-repeat="tid in control.search.data.optional"
-				>
-					<button 
-					class="btn btn-primary btn-sm"
-					ng-click="control.search.data.tmp.unshift(control.search.data.optional.splice($index,1).pop())"
-					>{{tagName[tid]}}
-					</button><button 
-					ng-click="control.search.data.required.push(control.search.data.optional.splice($index,1).pop())"
-
-					class="btn btn-primary btn-sm btn-primary"
-					>R</button>
-				</div><div 
-				style="display:inline-block;border:#000000 1px solid; "
-				ng-repeat="tid in control.search.data.tmp"
-				>
-					<button 
-					ng-click="control.search.data.tmp.splice($index,1).pop()"
-					class="btn btn-danger btn-sm btn-primary"
-					>D</button><button 
-					class="btn btn-default btn-sm"
-					ng-click="control.search.data.optional.push(control.search.data.tmp.splice($index,1).pop())"
-					
-					>{{tagName[tid]}}
-					</button>
-				</div>
-				<input 
-				placeholder="enter後新增搜尋條件"
-				type="text"
-				ng-enter="addSearch(tag_name);tag_name=undefined;"
-				ng-model="tag_name"
-				/>
-
+				<search-tag-element 
+				data="control.search.data"
+				></search-tag-element>
 			</div>
 		</div>
 	</div>
+	<div class="col-xs-12" >
+		<tag-type show="0" get-tag="getTag" ></tag-type>
+	</div>
+	
 </div>

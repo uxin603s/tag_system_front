@@ -1,51 +1,11 @@
-<button 
-class="btn btn-primary btn-sm"
-ng-click="searchTag($ctrl.callback)"
->以標籤搜尋粉絲團</button>
-
-<div 
-style="display:inline-block;border:#000000 1px solid; "
-ng-repeat="tid in $ctrl.data.required"
->
+<div class="col-xs-4">
 	<button 
-	class="btn btn-primary btn-sm"
-	ng-click="$ctrl.data.tmp.unshift($ctrl.data.required.splice($index,1).pop())"
-	>{{tagName[tid]}}
-	</button><button 
-	ng-click="$ctrl.data.optional.unshift($ctrl.data.required.splice($index,1).pop())"
-	class="btn  btn-sm btn-danger"
-	>R</button>
-</div><div 
-style="display:inline-block;border:#000000 1px solid; "
-ng-repeat="tid in $ctrl.data.optional"
->
-	<button 
-	class="btn btn-primary btn-sm"
-	ng-click="$ctrl.data.tmp.unshift($ctrl.data.optional.splice($index,1).pop())"
-	>{{tagName[tid]}}
-	</button><button 
-	ng-click="$ctrl.data.required.push($ctrl.data.optional.splice($index,1).pop())"
-
-	class="btn btn-primary btn-sm btn-primary"
-	>R</button>
-</div><div 
-style="display:inline-block;border:#000000 1px solid; "
-ng-repeat="tid in $ctrl.data.tmp"
->
-	<button 
-	ng-click="$ctrl.data.tmp.splice($index,1).pop()"
-	class="btn btn-danger btn-sm btn-primary"
-	>D</button><button 
-	class="btn btn-default btn-sm"
-	ng-click="$ctrl.data.optional.push($ctrl.data.tmp.splice($index,1).pop())"
+	class="btn btn-sm btn-info"
+	ng-click="searchTag($ctrl.callback)"
+	>搜尋條件→</button>
+	<search-tag-element data="$ctrl.data"></search-tag-element>
 	
-	>{{tagName[tid]}}
-	</button>
 </div>
-<input 
-placeholder="enter後新增搜尋條件"
-type="text"
-ng-enter="addSearch(tag_name);tag_name=undefined;"
-ng-model="tag_name"
-/>
-
+<div class="col-xs-8">
+	<tag-type show="1" get-tag="getTag" ></tag-type>
+</div>

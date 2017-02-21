@@ -1,9 +1,40 @@
+<button
+class="btn btn-sm btn-success"
+ng-click="tagSystem.tag_mode && add()"
+>
+{{primary_data[$ctrl.tid].name}}
+</button>
 <div
-ng-repeat="lid in lids">
-	第{{$index+1}}層<tag-relation 
-	ng-if="1"
+ng-if="$ctrl.show==0"
+style="display:block;"
+ng-repeat="lid in list"
+>
+	<button
+	class="btn btn-sm btn-primary"
+	ng-click="tagSystem.tag_mode && del($index)"
+	>
+	第{{$index+1}}層
+	</button>
+	<tag-relation 
 	index="$index"
 	selects="selects"
-	lids="lids"
+	lids="list"
+	show="$ctrl.show"
+	get-tag="$ctrl.getTag"
 	></tag-relation>
 </div>
+
+<div
+ng-if="$ctrl.show==1"
+style="display:inline-block;"
+ng-repeat="lid in list"
+>
+	<tag-relation 
+	index="$index"
+	selects="selects"
+	lids="list"
+	show="$ctrl.show"
+	get-tag="$ctrl.getTag"
+	></tag-relation>
+</div>
+

@@ -3,12 +3,15 @@ angular.module('tagSystem')
 	var data={
 		tagName:{},
 		control:{
-			mode:2,
+			mode:0,
+			edit:{},
+			search:{},
 		},
-		levelTagRelation:{},
 		sourceIdRelationTag:{},
 		selects:[],
+		tag_mode:0,
 	}
+	
 	var iframe=document.createElement("iframe");
 	iframe.style="width:100%;height:100%;"
 	iframe.setAttribute("marginwidth",0);
@@ -50,8 +53,12 @@ angular.module('tagSystem')
 	var getTagName=function(tids){
 		var where_list=[];
 		for(var i in tids){
-			if(!data.tagName[tids[i]])
-			where_list.push({field:'id',type:0,value:tids[i]})
+			if(!data.tagName[tids[i]]){
+				where_list.push({field:'id',type:0,value:tids[i]})
+			}
+		}
+		if(!where_list.length){
+			return;
 		}
 		var post_data={
 			func_name:"TagName::getList",
@@ -133,7 +140,20 @@ angular.module('tagSystem')
 			}
 		});
 	}
-	var addSearch=function(tag_name){
+	var addSearchTid=function(tid,type){
+		var type_arr=["optional","required","tmp"]
+		for(var i in type_arr){
+			var index=data.control.search.data[type_arr[i]].indexOf(tid)
+			if(index==-1){
+				
+			}else{
+				data.control.search.data[type_arr[i]].splice(index,1)
+			}
+		}
+		data.control.search.data[type_arr[type]].push(tid);
+	}
+	var searchTid=function(tag_name,callback){
+		
 		var where_list=[];
 		where_list.push({field:'name',type:0,value:tag_name});
 		
@@ -148,17 +168,14 @@ angular.module('tagSystem')
 				var tid=res.list[0].id;
 				var name=res.list[0].name;
 				data.tagName[tid]=name;
-				var index=data.control.search.data.optional.indexOf(tid)
-				var index1=data.control.search.data.tmp.indexOf(tid)
-				var index2=data.control.search.data.required.indexOf(tid)
-				if(index==-1 && index1==-1 && index2==-1){
-					data.control.search.data.optional.push(tid);
-				}
+				callback && callback(tid);
 			}else{
 				alert("沒有這個標籤")
 			}
 		});
 	}
+	
+	
 	return {
 		init:init,
 		iframe:iframe,
@@ -167,7 +184,7 @@ angular.module('tagSystem')
 		getTagName:getTagName,
 		delTag:delTag,
 		addTag:addTag,
-		addSearch:addSearch,
-		
+		searchTid:searchTid,
+		addSearchTid:addSearchTid,
 	}
 }])

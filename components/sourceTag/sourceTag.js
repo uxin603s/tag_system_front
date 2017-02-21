@@ -5,9 +5,7 @@ bindings:{
 },
 templateUrl:'app/modules/tagSystem/components/sourceTag/sourceTag.html?t='+Date.now(),
 controller:["$scope","tagSystem",function($scope,tagSystem){
-	$scope.tagName=tagSystem.data.tagName;
-	$scope.delTag=tagSystem.delTag;
-	$scope.addTag=tagSystem.addTag;
+	
 	
 	$scope.sourceIdRelationTag=tagSystem.data.sourceIdRelationTag;
 	
@@ -70,7 +68,16 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 		})
 		
 	}
+	$scope.getTag=function(tid){
+		var list=$scope.list;
+		var source_id=$scope.$ctrl.id;
 	
+		var add={
+			tid:tid,
+			source_id:source_id,
+		}
+		tagSystem.addTag(add,list);
+	}
 	
 	$scope.$ctrl.$onInit=function(){
 		getWebRelation($scope.$ctrl.id)
