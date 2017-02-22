@@ -1,0 +1,18 @@
+angular.module('tagSystem').component("searchTag",{
+bindings:{
+	data:"=",
+},
+templateUrl:'app/modules/tagSystem/components/searchTag/searchTag.html?t='+Date.now(),
+controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
+	$scope.$ctrl.$onInit=function(){
+		$scope.control=tagSystem.data.control
+		tagSystem.data.control.search.data=$scope.$ctrl.data;
+	}
+	$scope.searchTag=function(){	
+		tagSystem.data.control.mode=2
+	}
+	$scope.getTag=function(tid){
+		tagSystem.addSearchTid(tid,0);
+	}	
+}],
+})

@@ -1,0 +1,26 @@
+<div ng-if="$ctrl.show==0">
+	標籤種類:<button 
+	class="btn  btn-sm btn-danger"
+	sortable="tagType.select_arr"
+	index="$index"
+	draggable="true"
+	ng-repeat="tid in tagType.select_arr"
+	ng-click="tagSystem.tag_mode && delWebTagType($index,tagType.select_arr)"
+	>{{tagType.primary_data[tid].name}}</button><button 
+	class="btn  btn-sm btn-primary"
+	ng-if="tagSystem.tag_mode"
+	ng-repeat="tid in tagType.not_select_arr"
+	ng-click="addWebTagType({tid:tid},tagType.select_arr)"
+	>{{tagType.primary_data[tid].name}}</button>
+</div>
+<div 
+style="border:#000000 1px solid;{{$ctrl.show==0?'':'display:inline-block;'}}"
+ng-repeat="tid in tagType.select_arr"
+>
+	<tag-level 
+	tid="tid" 
+	show="$ctrl.show"
+	get-tag="$ctrl.getTag"
+	></tag-level>
+</div>
+
