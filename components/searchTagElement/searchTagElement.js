@@ -5,9 +5,9 @@ bindings:{
 templateUrl:'app/modules/tagSystem/components/searchTagElement/searchTagElement.html?t='+Date.now(),
 controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
 	
-	$scope.addSearch=function(tag_name,tid){
+	$scope.addSearch=function(tag_name){
 		tagSystem.searchTid(tag_name,function(tid){
-			tagSystem.addSearchTid(tid,type)
+			tagSystem.addSearchTid(tid,0)
 		})
 	};
 	var timer
