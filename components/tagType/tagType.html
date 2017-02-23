@@ -1,17 +1,85 @@
 <div ng-if="$ctrl.show==0">
-	標籤種類:<button 
-	class="btn  btn-sm btn-danger"
+	標籤種類:
+	<div 
 	sortable="tagType.select_arr"
 	index="$index"
 	draggable="true"
 	ng-repeat="tid in tagType.select_arr"
+	style="border:#000000 1px solid;display:inline-block;"
+	ng-init="control={}"
 	ng-click="tagSystem.tag_mode && delWebTagType($index,tagType.select_arr)"
-	>{{tagType.primary_data[tid].name}}</button><button 
-	class="btn  btn-sm btn-primary"
+	>
+		<div 
+		ng-if="!control.show"
+		>
+			<button 
+			class="btn  btn-sm btn-danger"
+			>{{tagType.primary_data[tid].name}}</button><button
+			ng-if="tagSystem.tag_mode"
+			ng-click="
+			control.show=!control.show;
+			control.where.id=tid;
+			control.update.name=tagType.primary_data[tid].name;
+			"
+			class="btn btn-info btn-sm"
+			>修改</button>
+		</div>
+		<div
+		ng-if="control.show"
+		>
+			<input 
+			ng-model="control.update.name"
+			type="text" 
+			style="display:inline-block;width:auto;"
+			class="form-control"
+			/><button
+			ng-click="ch(control,tagType.primary_data[tid])"
+			class="btn btn-info btn-sm"
+			>確認</button>
+			<button
+			ng-click="control.show=!control.show"
+			class="btn btn-info btn-sm"
+			>取消</button>
+		</div>
+	</div><div
+	style="border:#000000 1px solid;display:inline-block;"
 	ng-if="tagSystem.tag_mode"
 	ng-repeat="tid in tagType.not_select_arr"
 	ng-click="addWebTagType({tid:tid},tagType.select_arr)"
-	>{{tagType.primary_data[tid].name}}</button>
+	>
+		<div 
+		ng-if="!control.show"
+		>
+			<button 
+			class="btn  btn-sm btn-primary"
+			>{{tagType.primary_data[tid].name}}</button><button
+			ng-if="tagSystem.tag_mode"
+			ng-click="
+			control.show=!control.show;
+			control.where.id=tid;
+			control.update.name=tagType.primary_data[tid].name;
+			"
+			class="btn btn-info btn-sm"
+			>修改</button>
+		</div>
+		<div
+		ng-if="control.show"
+		>
+			<input 
+			ng-model="control.update.name"
+			type="text" 
+			style="display:inline-block;width:auto;"
+			class="form-control"
+			/><button
+			ng-click="ch(control,tagType.primary_data[tid])"
+			class="btn btn-info btn-sm"
+			>確認</button>
+			<button
+			ng-click="control.show=!control.show"
+			class="btn btn-info btn-sm"
+			>取消</button>
+		</div>
+	</div>
 </div>
 <div 
 style="border:#000000 1px solid;{{$ctrl.show==0?'':'display:inline-block;'}}"

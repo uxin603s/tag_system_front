@@ -79,7 +79,7 @@ angular.module('tagSystem')
 		$rootScope.$watch(function(){return data.select_arr},function(nv,ov){
 			if(nv.length==ov.length){
 				for(var i in nv){
-					if(nv[i]!=ov[i]){
+					if(nv[i].id!=ov[i].id){
 						var post_data={
 							func_name:"WebTagType::update",
 							arg:{

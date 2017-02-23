@@ -4,7 +4,7 @@ bindings:{
 	getTag:"=",
 },
 templateUrl:'app/modules/tagSystem/components/tagType/tagType.html?t='+Date.now(),
-controller:["$scope","tagSystem","tagType",function($scope,tagSystem,tagType){
+controller:["$scope","$http","tagSystem","tagType",function($scope,$http,tagSystem,tagType){
 	// console.log(tagType)
 	$scope.delWebTagType=function(index,list){
 		var arg={};
@@ -39,6 +39,25 @@ controller:["$scope","tagSystem","tagType",function($scope,tagSystem,tagType){
 		$scope.tagSystem=tagSystem.data;
 		$scope.tagType=tagType.data;
 	}
-	
+	$scope.ch=function(control,item){
+		// console.log(control,item)
+		// return
+		control.show=!control.show;
+		$http.post('ajax.php',{
+			func_name:"TagType::update",
+			arg:{
+				update:control.update,
+				where:control.where,
+			},
+		})
+		.success(function(res){
+			if(res.status){
+				for(var i in control.update){
+					item[i]=control.update[i]
+				}
+			}
+			console.log(res)
+		})
+	}
 }],
 });
