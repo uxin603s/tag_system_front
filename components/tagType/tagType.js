@@ -40,4 +40,4 @@ controller:["$scope","tagSystem","tagType",function($scope,tagSystem,tagType){
 	}
 	
 }],
-})
+});

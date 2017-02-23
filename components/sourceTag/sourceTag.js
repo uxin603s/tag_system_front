@@ -92,4 +92,4 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 		tagSystem.data.control.mode=1
 	}
 }],
-})
+});
