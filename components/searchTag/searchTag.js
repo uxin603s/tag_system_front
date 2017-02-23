@@ -15,4 +15,4 @@ controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
 		tagSystem.addSearchTid(tid,0);
 	}	
 }],
-})
+});

@@ -198,4 +198,4 @@ function($rootScope,tagSystem,$timeout,tagType,tagLevel){
 	return {
 		data:data,
 	}
-}])
+}]);

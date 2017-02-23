@@ -54,4 +54,4 @@ function($rootScope,tagSystem,$timeout,tagType){
 	return {
 		data:data,
 	}
-}])
+}]);

@@ -105,4 +105,4 @@ controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
 	}
 	
 }],
-})
+});

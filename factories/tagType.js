@@ -99,4 +99,4 @@ angular.module('tagSystem')
 	return {
 		data:data,
 	}
-}])
+}]);
