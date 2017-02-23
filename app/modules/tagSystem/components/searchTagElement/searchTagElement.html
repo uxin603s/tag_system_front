@@ -37,9 +37,18 @@ ng-repeat="tid in $ctrl.data.tmp track by $index"
 	>{{tagName[tid]}}
 	</button>
 </div>
-<input 
-placeholder="enter後新增搜尋條件"
-type="text"
-ng-enter="addSearch(tag_name);tag_name=undefined;"
-ng-model="tag_name"
-/>
+
+
+
+<div style="border:#000000 1px solid;display:inline-block;">
+	<input 
+	style="width: auto;display:inline-block;"
+	class="form-control"
+	placeholder="新增搜尋條件"
+	type="text"
+	ng-model="tag_name"
+	/><button 
+	class="btn btn-sm btn-primary"
+	ng-click="addSearch(tag_name);tag_name=undefined;"
+	>新增</button>
+</div>
