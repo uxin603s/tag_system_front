@@ -1,18 +1,80 @@
-<web-tag-type></web-tag-type>
-
-<tag-level
-ng-repeat="tid in cache.tagType.selects"
-tid="tid"
-></tag-level>
-
-
-<button 
-class="btn btn-sm btn-default"
-ng-repeat="item in cache.clickSearch"
->
-{{item.name}}({{item.type?'可選':'必選'}})
-</button>
-<button 
-class="btn btn-sm btn-default"
-style="opacity:0;"
->123</button>
+<div class="col-xs-12 bottom_line">
+	<div 
+	style="border:#000000 1px solid;display:inline-block;"
+	>
+		模式選擇:<button
+		ng-repeat="mode in mode_list"
+		ng-class="cache.mode==$index?'btn-danger':'btn-primary'"
+		class="btn btn-sm"
+		ng-click="cache.mode=$index"
+		>{{mode}}
+		</button>
+	</div>
+	<div 
+	ng-if="cache.mode==1"
+	style="border:#000000 1px solid;display:inline-block;"
+	>
+		<input 
+		type="text"
+		style="display:inline-block;width:auto;"
+		class="form-control"
+		placeholder="網站"
+		ng-model="insert.name"
+		/>
+		<button
+		ng-click="add(insert)"
+		class="btn btn-primary btn-sm"
+		>新增網站
+		</button>
+	</div>
+</div>
+<div class="col-xs-12 ">
+	<div 
+	style="border:#000000 1px solid;display:inline-block;"
+	ng-repeat="item in list"
+	ng-init="control={}"
+	>
+		<div 
+		ng-if="!control.show"
+		>
+			<button
+			class="btn btn-primary btn-sm"
+			>{{item.name}}
+			</button>
+			<button
+			ng-if="cache.mode"
+			ng-click="
+			control.show=!control.show;
+			control.where.id=item.id;
+			control.update.name=item.name;
+			"
+			class="btn btn-info btn-sm"
+			>修改</button>
+			<button
+			ng-if="cache.mode"
+			class="btn btn-info btn-sm"
+			>刪除</button>
+		</div>
+		<div
+		ng-if="control.show"
+		>
+			<input 
+			ng-model="control.update.name"
+			type="text" 
+			style="display:inline-block;width:auto;"
+			class="form-control"
+			/>
+			<button
+			ng-click="ch(control,item)"
+			class="btn btn-info btn-sm"
+			>確認</button>
+			<button
+			ng-click="control.show=!control.show"
+			class="btn btn-info btn-sm"
+			>取消</button>
+		</div>
+		
+		
+		
+	</div>
+</div>

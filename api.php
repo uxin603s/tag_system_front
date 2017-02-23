@@ -23,7 +23,7 @@ if(isset($_SESSION['rid'])){
 	<script src="js/promiseRecursive.js?t=<?=time()?>"></script>
 	
 	<script src="js/postMessageHelper/postMessageHelper.js?t=<?=time()?>"></script>
-	
+	<script src="app/modules/param/param.js?t=<?=time()?>"></script>
 	<script src="app/module/cache/cache.js?t=<?=time()?>"></script>
 	
 	<script src="app/app.js?t=<?=time()?>"></script>
