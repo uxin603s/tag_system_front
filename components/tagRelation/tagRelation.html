@@ -21,6 +21,7 @@
 			>
 			{{tagName[tid]}}
 			</button><button
+			ng-if="!tagSystem.tag_mode"
 			class="btn btn-sm btn-default"
 			ng-click="$ctrl.getTag(tid)"
 			>取得</button><button

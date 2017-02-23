@@ -8,6 +8,12 @@ bindings:{
 templateUrl:'app/modules/tagSystem/tagSystem.html?t='+Date.now(),
 controller:["$scope","tagSystem",function($scope,tagSystem){
 	$scope.$ctrl.$onInit=function(){
+		$scope.$watch("$ctrl.wid",function(wid){
+			tagSystem.data.wid=wid;	
+			// tagSystem.data.control.search.data.result=[];
+			
+		},1)
+		
 		$scope.tagSystem=tagSystem.data;
 		$scope.control=tagSystem.data.control;
 		var match=location.search.match(/\?([\d\D]+)/)
@@ -43,7 +49,7 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 				source_id:source_id,
 			}
 			tagSystem.addTag(add,list);
-		}else if($scope.control.mode==2){
+		}else if([2,3].indexOf($scope.control.mode)){
 			var index=$scope.control.search.data.optional.indexOf(tid)
 			var index1=$scope.control.search.data.tmp.indexOf(tid)
 			var index2=$scope.control.search.data.required.indexOf(tid)

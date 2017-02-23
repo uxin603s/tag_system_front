@@ -5,6 +5,7 @@ bindings:{
 },
 templateUrl:'app/modules/tagSystem/components/tagType/tagType.html?t='+Date.now(),
 controller:["$scope","tagSystem","tagType",function($scope,tagSystem,tagType){
+	// console.log(tagType)
 	$scope.delWebTagType=function(index,list){
 		var arg={};
 		arg.tid=list.splice(index,1).pop()

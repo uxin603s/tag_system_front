@@ -5,13 +5,15 @@ angular.module('tagSystem')
 		not_select_arr:[],
 		primary_data:{},
 	}
-	var getWebTagType=function(){
+	var getWebTagType=function(wid){
+		data.select_arr.length=0;
 		return new Promise(function(resolve,reject){
+			
 			var post_data={
 				func_name:"WebTagType::getList",
 				arg:{
 					where_list:[
-						{field:'wid',type:0,value:tagSystem.data.wid},
+						{field:'wid',type:0,value:wid},
 					],
 					order_list:[
 						{field:'sort_id',type:0},
@@ -20,8 +22,10 @@ angular.module('tagSystem')
 			}
 			tagSystem.post(post_data,function(res){
 				if(res.status){
-					data.select_arr=res.list.map(function(val){
-						return val.tid;
+					
+					res.list.map(function(val){
+						data.select_arr.push(val.tid)
+						// return val.tid;
 					})
 				}
 				resolve();
@@ -57,7 +61,7 @@ angular.module('tagSystem')
 	var process=function(){
 		$timeout.cancel(timer)
 		timer=$timeout(function(){
-			data.not_select_arr=[];
+			data.not_select_arr.length=0;
 			for(var id in data.primary_data){
 				id*=1
 				var index=data.select_arr.indexOf(id);
@@ -65,13 +69,10 @@ angular.module('tagSystem')
 					data.not_select_arr.push(id)
 				}
 			}
+			// console.log(data.not_select_arr)
 		},0)
 	}
-	
 	getTagType()
-	.then(function(){
-		return getWebTagType();
-	})
 	.then(function(){
 		$rootScope.$watch(function(){return data.primary_data},process,1)
 		$rootScope.$watch(function(){return data.select_arr},process,1)
@@ -94,9 +95,15 @@ angular.module('tagSystem')
 			}
 		},1)
 	})
-	
-	
+	$rootScope.$watch(function(){
+		return tagSystem.data.wid;
+	},function(wid){
+		if(wid){
+			getWebTagType(wid);
+		}
+	},1)
 	return {
 		data:data,
+		getWebTagType:getWebTagType,
 	}
 }]);
