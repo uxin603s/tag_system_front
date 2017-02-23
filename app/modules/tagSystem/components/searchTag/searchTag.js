@@ -13,6 +13,6 @@ controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
 	}
 	$scope.getTag=function(tid){
 		tagSystem.addSearchTid(tid,0);
-	}	
+	}
 }],
 });
