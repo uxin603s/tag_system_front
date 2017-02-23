@@ -8,4 +8,4 @@ angular.module("app",["param","cache"])
 	$rootScope.__proto__.Math=window.Math;
 	$rootScope.__proto__.isNaN=window.isNaN;
 	$rootScope.__proto__.Date=window.isNaN;
-}])
+}]);

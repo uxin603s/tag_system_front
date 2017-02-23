@@ -9,4 +9,4 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 	$scope.delTag=tagSystem.delTag;
 	$scope.addTag=tagSystem.addTag;
 }],
-})
+});

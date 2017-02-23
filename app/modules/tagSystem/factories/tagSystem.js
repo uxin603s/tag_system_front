@@ -192,4 +192,4 @@ angular.module('tagSystem')
 		searchTid:searchTid,
 		addSearchTid:addSearchTid,
 	}
-}])
+}]);
