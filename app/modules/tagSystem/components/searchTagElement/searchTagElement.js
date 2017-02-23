@@ -4,7 +4,16 @@ bindings:{
 },
 templateUrl:'app/modules/tagSystem/components/searchTagElement/searchTagElement.html?t='+Date.now(),
 controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
-	
+	$scope.$ctrl.$onInit=function(){
+		$scope.$watch("$ctrl.data",function(){
+			$scope.$ctrl.data.required || ($scope.$ctrl.data.required=[])
+			$scope.$ctrl.data.optional || ($scope.$ctrl.data.optional=[])
+			$scope.$ctrl.data.tmp || ($scope.$ctrl.data.tmp=[])
+			$scope.$ctrl.data.result || ($scope.$ctrl.data.result=[])
+			$scope.$watch("$ctrl.data.required",watch,1);
+			$scope.$watch("$ctrl.data.optional",watch,1);
+		},1)
+	}
 	$scope.addSearch=function(tag_name){
 		tagSystem.searchTid(tag_name,function(tid){
 			tagSystem.addSearchTid(tid,0)
@@ -50,9 +59,6 @@ controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
 			}
 		},50)
 	}
-	
-	$scope.$watch("$ctrl.data.required",watch,1);
-	$scope.$watch("$ctrl.data.optional",watch,1);
 	
 	
 	$scope.tagName=tagSystem.data.tagName;

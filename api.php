@@ -24,9 +24,21 @@ if(isset($_SESSION['rid'])){
 	
 	<script src="js/postMessageHelper/postMessageHelper.js?t=<?=time()?>"></script>
 	<script src="app/modules/param/param.js?t=<?=time()?>"></script>
-	<script src="app/module/cache/cache.js?t=<?=time()?>"></script>
-	
-	<script src="app/app.js?t=<?=time()?>"></script>
+	<script src="app/modules/cache/cache.js?t=<?=time()?>"></script>
+
+	<script>
+	angular.module("app",["param","cache"])
+	.config(['$compileProvider',function($compileProvider){
+		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
+	}])
+	.run(["$rootScope",function($rootScope){
+		$rootScope.__proto__.confirm=window.confirm.bind(window);			
+		$rootScope.__proto__.alert=window.alert.bind(window);
+		$rootScope.__proto__.isNaN=window.isNaN.bind(window);
+		$rootScope.__proto__.Date=window.Date;
+		$rootScope.__proto__.Math=window.Math;
+	}]);
+	</script>
 	<script src="app/components/api/api.js?t<?=time()?>"></script>
 </head>
 <body 

@@ -1,16 +1,31 @@
 angular.module('app').component("index",{
 bindings:{},
 templateUrl:'app/components/index/index.html?t='+Date.now(),
-controller:['$scope','$http',
-function($scope,$http){
-	
+controller:['$scope','$http','tagSystem','tagType',
+function($scope,$http,tagSystem,tagType){
+	// tagType.getWebTagType(1);
+	// tagSystem.data.tag_mode=1
+	$scope.cache.search || ($scope.cache.search={});
 	$scope.cache.mode || ($scope.cache.mode=0);
-	$scope.mode_list=["選擇","編輯"];
 	
+	tagSystem.data.control.mode=3
+	tagSystem.data.control.search.data=$scope.cache.search
+	
+	
+	$scope.$watch("cache.mode",function(mode){
+		tagSystem.data.tag_mode=mode;
+		tagSystem.data.control.search.data=$scope.cache.search
+	},1)
+	
+	$scope.mode_list=["選擇","編輯"];
+	var watch
 	$scope.get=function(){
+		watch && watch();
 		$http.post('ajax.php',{
 			func_name:"WebList::getList",
-			arg:{},
+			arg:{
+				order_list:[{field:'sort_id',type:0}],
+			},
 		})
 		.success(function(res){
 			if(res.status){
@@ -18,13 +33,24 @@ function($scope,$http){
 			}else{
 				$scope.list=[];
 			}
-			console.log(res)
+			// console.log(res)
+			watch=$scope.$watch("list",function(a,b){
+				if(a.length==b.length){
+					for(var i in a){
+						if(a[i]!=b[i]){
+							var control={
+								update:{sort_id:i},
+								where:{id:a[i].id}
+							}
+							
+							$scope.ch(control,a);
+						}
+					}
+				}
+			},1)
 		})
 	}
 	$scope.add=function(arg){
-		if(!confirm("確認新增?")){
-			return;
-		}
 		if(!arg.name){
 			alert("請勿空白");
 			return;
@@ -47,9 +73,7 @@ function($scope,$http){
 		})
 	}
 	$scope.ch=function(control,item){
-		if(!confirm("確認修改?")){
-			return;
-		}
+		
 		control.show=!control.show;
 		$http.post('ajax.php',{
 			func_name:"WebList::update",
@@ -60,13 +84,32 @@ function($scope,$http){
 		})
 		.success(function(res){
 			if(res.status){
-				item.name=control.update.name
+				for(var i in control.update){
+					item[i]=control.update[i]
+				}
 			}
 			console.log(res)
 		})
 	}
+	$scope.del=function(index){
+		var item=$scope.list.splice(index,1).pop();
+		
+		$http.post('ajax.php',{
+			func_name:"WebList::delete",
+			arg:{
+				id:item.id,
+			},
+		})
+		.success(function(res){
+			console.log(res)
+			if(!res.status){
+				$scope.list.splice(index,0,item);
+			}
+			
+		})
+	}
+	
 	$scope.get();
-
 }],
 })
 

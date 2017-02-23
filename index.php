@@ -25,28 +25,23 @@ if(isset($_SESSION['rid'])){
 	
 	<script src="app/modules/cache/cache.js?t=<?=time()?>"></script>
 	<script src="app/modules/param/param.js?t=<?=time()?>"></script>
-	<script src="app/modules/tagSystem/tagSystem.min.js?t=<?=time()?>"></script>
+	
+	<script src="app/modules/tagSystem/tagSystem.js?t=<?=time()?>"></script>
+	<script src="app/modules/tagSystem/components/searchTag/searchTag.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/components/searchTagElement/searchTagElement.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/components/sourceTag/sourceTag.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/components/tagLevel/tagLevel.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/components/tagType/tagType.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/components/tagRelation/tagRelation.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/components/insertTagElement/insertTagElement.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/factories/tagSystem.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/factories/tagType.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/factories/tagLevel.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/factories/tagRelation.js?t=<?=time();?>"></script>
 	
 	<script src="app/app.js?t=<?=time()?>"></script>
 	
-	<script src="app/factories/tagName.js?t=<?=time()?>"></script>
-	
-	<script src="app/factories/crud.js?t=<?=time()?>"></script>
-	<script src="app/factories/idSearch.js?t=<?=time()?>"></script>
-	
 	<script src="app/components/index/index.js?t<?=time()?>"></script>
-	
-	<script src="app/components/webTagType/webTagType.js?t<?=time()?>"></script>
-	<script src="app/components/tagLevel/tagLevel.js?t<?=time()?>"></script>
-	
-	
-	<script src="app/components/tagRecusion/tagRecusion.js?t<?=time()?>"></script>
-	
-	<script src="app/components/idSearch/idSearch.js?t<?=time()?>"></script>
-	<script src="app/components/tagSearch/tagSearch.js?t<?=time()?>"></script>
-	
-	<script src="app/components/idRelation/idRelation.js?t<?=time()?>"></script>
-	
 	
 	<script src="app/directives/ngRightClick/ngRightClick.js?t<?=time()?>"></script>
 	<script src="app/directives/ngEnter/ngEnter.js?t<?=time()?>"></script>

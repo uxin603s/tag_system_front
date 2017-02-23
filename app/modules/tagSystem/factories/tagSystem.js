@@ -5,7 +5,9 @@ angular.module('tagSystem')
 		control:{
 			mode:0,
 			edit:{},
-			search:{},
+			search:{
+				data:{},
+			},
 		},
 		sourceIdRelationTag:{},
 		selects:[],
@@ -21,7 +23,6 @@ angular.module('tagSystem')
 	iframe.setAttribute("style","display:none;");
 	var source;
 	var timer={};
-	// var post_id="post"+(Date.now()+Math.floor(Math.random()*999));
 	var post_data={}
 	var init=function(src){
 		var load=function(){
