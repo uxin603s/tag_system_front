@@ -1,0 +1,17 @@
+<button 
+class="btn btn-sm btn-primary"
+ng-repeat="tid in $ctrl.list"
+ng-click="delTag($ctrl.list,$index,$ctrl.id)"
+sortable="$ctrl.list"
+index="$index"
+draggable="true"
+>
+{{tagName[tid]}}
+</button>
+
+<input 
+type="text" 
+ng-enter="addTag({source_id:$ctrl.id,tag_name:tag_name,sort_id:$ctrl.list.length},$ctrl.list);tag_name=''"
+ng-model="tag_name"
+placeholder="新增自訂標籤"
+/>
