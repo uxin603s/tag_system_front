@@ -7,13 +7,13 @@ height: 100%;
 position:fixed;top:0;left:0;z-index:80;background: #aaa;
 overflow-y: auto;'}}
 "
->	
-		
+>			
 	<div 
+	ng-if="!control.mode==3"
 	class="col-xs-12 bottom_line"
 	>
 		<button 
-		ng-if="!control.mode==3"
+		
 		class="btn btn-primary"
 		ng-click="control.mode=0"
 		>關閉</button>
