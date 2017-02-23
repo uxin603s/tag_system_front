@@ -7,8 +7,10 @@ ng-click="tagSystem.tag_mode && add()"
 <div
 ng-if="$ctrl.show==0"
 style="display:block;"
+
 ng-repeat="lid in list"
 >
+	<div class="bottom_line"></div>
 	<button
 	class="btn btn-sm btn-primary"
 	ng-click="tagSystem.tag_mode && del($index)"

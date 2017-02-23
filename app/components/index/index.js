@@ -37,7 +37,7 @@ function($scope,$http,tagSystem,tagType){
 			watch=$scope.$watch("list",function(a,b){
 				if(a.length==b.length){
 					for(var i in a){
-						if(a[i]!=b[i]){
+						if(a[i].id!=b[i].id){
 							var control={
 								update:{sort_id:i},
 								where:{id:a[i].id}

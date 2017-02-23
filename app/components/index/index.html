@@ -22,14 +22,14 @@
 		ng-model="insert.name"
 		/>
 		<button
-		ng-click="confirm('確認新增?') && add(insert)"
+		ng-click=" add(insert)"
 		class="btn btn-primary btn-sm"
 		>新增網站
 		</button>
 	</div>
 </div>
-<div class="col-xs-12 ">
-	<div 
+<div class="col-xs-12 bottom_line">
+	網站:<div 
 	style="border:#000000 1px solid;display:inline-block;"
 	ng-repeat="item in list"
 	sortable="list"
@@ -45,8 +45,7 @@
 			ng-class="cache.select==item.id?'btn-danger':'btn-primary'"
 			class="btn  btn-sm"
 			>{{item.id}}:{{item.name}}
-			</button>
-			<button
+			</button><button
 			ng-if="cache.mode"
 			ng-click="
 			control.show=!control.show;
@@ -54,8 +53,7 @@
 			control.update.name=item.name;
 			"
 			class="btn btn-info btn-sm"
-			>修改</button>
-			<button
+			>修改</button><button
 			ng-click="confirm('確認刪除?') && del($index)"
 			ng-if="cache.mode"
 			class="btn btn-info btn-sm"
@@ -71,7 +69,7 @@
 			class="form-control"
 			/>
 			<button
-			ng-click="confirm('確認修改?') && ch(control,item)"
+			ng-click=" ch(control,item)"
 			class="btn btn-info btn-sm"
 			>確認</button>
 			<button
