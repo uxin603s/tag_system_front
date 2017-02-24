@@ -27,6 +27,23 @@
 		>新增網站
 		</button>
 	</div>
+	<div 
+	ng-if="cache.mode==1"
+	style="border:#000000 1px solid;display:inline-block;"
+	>
+		<input 
+		type="text"
+		style="display:inline-block;width:auto;"
+		class="form-control"
+		placeholder="標籤種類"
+		ng-model="insert.name"
+		/>
+		<button
+		ng-click=" addTagType(insert)"
+		class="btn btn-primary btn-sm"
+		>新增標籤種類
+		</button>
+	</div>
 </div>
 <div class="col-xs-12 bottom_line">
 	網站:<div 

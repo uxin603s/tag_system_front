@@ -5,6 +5,25 @@ controller:['$scope','$http','tagSystem','tagType',
 function($scope,$http,tagSystem,tagType){
 	// tagType.getWebTagType(1);
 	// tagSystem.data.tag_mode=1
+	$scope.addTagType=function(arg){
+		if(!arg.name){
+			alert("請勿空白");
+			return;
+		}
+		if(!$scope.list){
+			alert("讀取資料中...")
+			return
+		}
+		arg.sort_id=$scope.list.length
+		$http.post('ajax.php',{
+			func_name:"TagType::insert",
+			arg:arg,
+		})
+		.success(function(res){
+			tagType.getTagType();
+			console.log(res)
+		})
+	}
 	$scope.cache.search || ($scope.cache.search={});
 	$scope.cache.mode || ($scope.cache.mode=0);
 	

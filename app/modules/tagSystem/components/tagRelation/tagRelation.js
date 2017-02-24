@@ -7,12 +7,8 @@ bindings:{
 	getTag:"=",
 },
 templateUrl:'app/modules/tagSystem/components/tagRelation/tagRelation.html?t='+Date.now(),
-controller:["$scope","tagSystem","tagRelation",function($scope,tagSystem,tagRelation){
+controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 	$scope.tagName=tagSystem.data.tagName;
-
-	// $scope.getTag=function(tid){
-		// tagSystem.data.selects.push(tid);
-	// }
 	
 	$scope.delTag=function(index){
 		if(!confirm("確認刪除?")){
@@ -22,8 +18,8 @@ controller:["$scope","tagSystem","tagRelation",function($scope,tagSystem,tagRela
 		var id=$scope.id;
 		var child_id=$scope.list.splice(index,1).pop();
 		var level_id=$scope.lid;
-		
-		if($scope.check_delete && $scope.check_delete[child_id] && $scope.check_delete[child_id].length){
+		var check_delete=tagLevel.data.TagLevelRelation[$scope.$ctrl.lids[$scope.$ctrl.index+1]];
+		if(check_delete && check_delete[child_id] && check_delete[child_id].length){
 			alert("下層有資料無法刪除")
 			$scope.list.splice(index,0,child_id);//還原
 			return
@@ -62,6 +58,7 @@ controller:["$scope","tagSystem","tagRelation",function($scope,tagSystem,tagRela
 			}
 		}
 		tagSystem.post(post_data,function(res){
+			console.log(res)
 			if(res.status){
 				
 				$scope.list.push(res.insert.child_id);
@@ -74,20 +71,53 @@ controller:["$scope","tagSystem","tagRelation",function($scope,tagSystem,tagRela
 	
 	
 	$scope.$ctrl.$onInit=function(){
+		// console.log($scope.$ctrl.selects[$scope.$ctrl.index])
 		$scope.tagSystem=tagSystem.data;
+		var watch;
 		$scope.$watch("$ctrl.selects["+$scope.$ctrl.index+"]",function(id){
+			// console.log(id)
+			watch && watch();
 			if(!isNaN(id)){
-				$scope.show=true;
 				$scope.id=id;
 				$scope.lid=$scope.$ctrl.lids[$scope.$ctrl.index];
-				$scope.list=tagRelation.data.TagLevelRelation[$scope.lid][id];
-				$scope.check_delete=tagRelation.data.TagLevelRelation[$scope.$ctrl.lids[$scope.$ctrl.index+1]];
+				if(!tagLevel.data.TagLevelRelation[$scope.lid][id]){
+					tagLevel.data.TagLevelRelation[$scope.lid][id]=[];
+				}
+				$scope.list=tagLevel.data.TagLevelRelation[$scope.lid][id];
+				watch=$scope.$watch("list",sort_update.bind(this,$scope.lid,id),1);
+				$scope.show=true;
 			}else{
+				$scope.list=[]
 				$scope.show=false;
 			}
-			
-		},1)
-		
+			// console.log($scope.list)
+		},1)		
 	}
+	var sort_update=function(level_id,id,nv,ov){
+		
+		if(nv.length==ov.length){
+			for(var i in nv){
+				if(nv[i]!=ov[i]){
+					var post_data={
+						func_name:"TagRelation::update",
+						arg:{
+							update:{
+								sort_id:i
+							},
+							where:{
+								level_id:level_id,
+								id:id,
+								child_id:nv[i],
+							},
+						}
+					}
+					tagSystem.post(post_data,function(res){
+						console.log(res)
+					})
+				}
+			}
+		}
+	}
+	
 }],
 });
