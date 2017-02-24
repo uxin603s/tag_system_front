@@ -20,7 +20,11 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 		tagSystem.post(post_data,function(res){
 			if(res.status){
 				$scope.list.push(res.insert.id);
-				$scope.TagLevelRelation[res.insert.id]={};
+				tagLevel.data.TagLevelRelation[res.insert.id]={};
+				if($scope.list.length==1){
+					$scope.selects[0]=0
+				}
+				// console.log($scope.TagLevelRelation[res.insert.id]);
 			}
 		})
 	}
@@ -31,12 +35,21 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 		
 		var id=$scope.list.splice(index,1).pop();
 		var tid=$scope.$ctrl.tid;
-		//gg
-		if($scope.TagLevelRelation[id] && Object.keys($scope.TagLevelRelation[id]).length){
+		
+		// var ggwp=tagLevel.data.TagLevelRelation[id].reduce(function(a,b){
+			// return a+b.length
+		// },0)
+		var check_have=0;
+		for(var i in tagLevel.data.TagLevelRelation[id]){
+			check_have+=tagLevel.data.TagLevelRelation[id][i].length
+		}
+		
+		if(check_have){
 			alert("該階層有標籤無法刪除!!!")
 			$scope.list.splice(index,0,id)
 			return
 		}
+		
 		var post_data={
 			func_name:"TagLevel::delete",
 			arg:{
@@ -46,7 +59,11 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 		}
 		tagSystem.post(post_data,function(res){
 			console.log(res)
-			delete $scope.TagLevelRelation[res.where.id];
+			if(res.status){
+				delete tagLevel.data.TagLevelRelation[res.where.id];
+			}else{
+				$scope.list.splice(index,0,id)
+			}
 		})
 		// console.log(lid,tid);
 	}
@@ -54,12 +71,9 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 	$scope.$ctrl.$onInit=function(){
 		$scope.tagSystem=tagSystem.data
 		$scope.tagLevel=tagLevel.data
-		$scope.tagRelation=tagRelation.data
+		$scope.tagRelation=tagLevel.data
 		
 		
-		$scope.$watch("tagRelation.TagLevelRelation",function(TagLevelRelation){
-			$scope.TagLevelRelation=TagLevelRelation;
-		},1)
 		$scope.$watch("tagLevel.selects["+$scope.$ctrl.tid+"]",function(selects){
 			$scope.selects=selects;
 		},1)

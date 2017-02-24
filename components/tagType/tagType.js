@@ -59,5 +59,20 @@ controller:["$scope","$http","tagSystem","tagType",function($scope,$http,tagSyst
 			console.log(res)
 		})
 	}
+	// $scope.$watch(function(){
+		// return tagType.select_arr;
+	// },function(a,b){
+		
+		// if(a.length==b.length){
+			// var post_data={
+				// func_name:"WebTagType::insert",
+				// arg:arg
+			// }
+			// tagSystem.post(post_data,function(res){
+				// console.log(res)
+			// });
+		// }
+		
+	// })
 }],
 });

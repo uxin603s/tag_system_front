@@ -7,13 +7,14 @@
 	ng-repeat="tid in tagType.select_arr"
 	style="border:#000000 1px solid;display:inline-block;"
 	ng-init="control={}"
-	ng-click="tagSystem.tag_mode && delWebTagType($index,tagType.select_arr)"
+	
 	>
 		<div 
 		ng-if="!control.show"
 		>
 			<button 
 			class="btn  btn-sm btn-danger"
+			ng-click="tagSystem.tag_mode && delWebTagType($index,tagType.select_arr)"
 			>{{tagType.primary_data[tid].name}}</button><button
 			ng-if="tagSystem.tag_mode"
 			ng-click="
