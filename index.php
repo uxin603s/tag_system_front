@@ -26,18 +26,7 @@ if(isset($_SESSION['rid'])){
 	<script src="app/modules/cache/cache.js?t=<?=time()?>"></script>
 	<script src="app/modules/param/param.js?t=<?=time()?>"></script>
 	
-	<script src="app/modules/tagSystem/tagSystem.js?t=<?=time()?>"></script>
-	<script src="app/modules/tagSystem/components/searchTag/searchTag.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/components/searchTagElement/searchTagElement.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/components/sourceTag/sourceTag.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/components/tagLevel/tagLevel.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/components/tagType/tagType.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/components/tagRelation/tagRelation.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/components/insertTagElement/insertTagElement.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/factories/tagSystem.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/factories/tagType.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/factories/tagLevel.js?t=<?=time();?>"></script>
-	<script src="app/modules/tagSystem/factories/tagRelation.js?t=<?=time();?>"></script>
+	<script src="app/modules/tagSystem/tagSystem.min.js?t=<?=time()?>"></script>
 	
 	<script src="app/app.js?t=<?=time()?>"></script>
 	
