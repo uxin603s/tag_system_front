@@ -1,0 +1,75 @@
+<div 
+	ng-if="!$ctrl.hide"
+	style="
+	z-index:{{dataWH || dataXY?'2':'1'}};
+	position:absolute;
+	left:{{$ctrl.data.x}}px;
+	top:{{$ctrl.data.y}}px;
+	width:{{$ctrl.data.w}}px;
+	height:{{$ctrl.data.h}}px;
+	transform: rotate({{$ctrl.data.rotate||0}}deg);
+	
+	background:rgba(255,255,255,0);
+	font-size:50px;
+	color:#ff0000;
+	
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	
+	"
+	
+	draggable="false"
+	
+>
+	<div 
+	style="
+	overflow:hidden;
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	"
+	ng-transclude
+	></div>
+	<div
+	draggable="false"
+	style="
+	border:#{{dataWH || dataXY?'F00':'000'}} 10px solid; 
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	"
+	ng-click="selectXY($event)"	
+	>
+	</div>
+	
+	<div 
+		draggable="false"
+		ng-repeat="pointer in pointer_list" 
+		ng-click="selectWH($event,pointer)" 
+		style="
+		width:{{$parent.position_control_flag}}px;
+		height:{{$parent.position_control_flag}}px;
+		left:{{floor(pointer/3)*($ctrl.data.w/2)-($parent.position_control_flag/2)}}px;
+		top:{{(pointer % 3)*($ctrl.data.h/2)-($parent.position_control_flag/2)}}px;
+		position:absolute;
+		background:rgba(255,255,255,0);
+		"
+	>
+		<div
+		draggable="false"
+		style="
+		border:#000000 6px solid; 
+		position:absolute;
+		width:100%;
+		height:100%;
+		top:0;
+		left:0;
+		"
+		></div>
+	</div>
+	
+</div>
