@@ -1,5 +1,4 @@
 <div 
-	ng-if="!$ctrl.hide"
 	style="
 	z-index:{{dataWH || dataXY?'2':'1'}};
 	position:absolute;
@@ -19,8 +18,11 @@
 	"
 	
 	draggable="false"
-	
+	ng-mouseover="show=true"
+	ng-mouseleave="show=false"
 >
+	
+	
 	<div 
 	style="
 	overflow:hidden;
@@ -32,7 +34,20 @@
 	"
 	ng-transclude
 	></div>
+	<div 
+	ng-if="dataWH"
+	style="
+	position:absolute;
+	width:300%;
+	height:300%;
+	left:-100%;
+	top:-100%;
+	background:rgba(255,255,255,0);
+	"
+	></div>
 	<div
+	ng-if="dataWH || dataXY || show || $ctrl.selected"
+	
 	draggable="false"
 	style="
 	border:#{{dataWH || dataXY?'F00':'000'}} 10px solid; 
@@ -47,6 +62,7 @@
 	</div>
 	
 	<div 
+		ng-if="dataWH || dataXY || show || $ctrl.selected"
 		draggable="false"
 		ng-repeat="pointer in pointer_list" 
 		ng-click="selectWH($event,pointer)" 
@@ -59,6 +75,7 @@
 		background:rgba(255,255,255,0);
 		"
 	>
+	
 		<div
 		draggable="false"
 		style="

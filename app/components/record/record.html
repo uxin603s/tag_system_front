@@ -1,0 +1,30 @@
+<div class="col-xs-12" >
+	<button 
+	style="
+	vertical-align: top;
+	"
+	ng-click="record.length=0"
+	class="btn btn-sm btn-primary">清除</button>
+	<div 
+	class="record"
+	style="
+	display:inline-block;
+	white-space:nowrap;
+	overflow-x:scroll;
+	width:calc(100% - 60px);
+	width:-moz-calc(100% - 60px);
+	width:-webkit-calc(100% - 60px);
+	">
+		<button
+		ng-class="record_pointer==$index?'btn-danger':'btn-primary'"
+		class="btn btn-sm record_item"
+		ng-click="$parent.record_pointer=$index;back_record();"
+		ng-repeat="item in record"
+		>{{item.time_int| date:'HH:mm:ss'}}</button>
+		<div style="
+		display:inline-block;
+		width:50%;
+		heigth:100%;
+		"></div>
+	</div>
+</div>

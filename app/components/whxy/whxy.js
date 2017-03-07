@@ -2,34 +2,22 @@ angular.module('app').component("whxy",{
 	bindings:{
 		data:"=",
 		scale:"=",
-		hide:"=",	
+		lockScale:"=",	
+		selected:"=",	
 	},
 	transclude: true,
 	templateUrl:'app/components/whxy/whxy.html?t='+Date.now(),
-	controller:['$scope','$timeout',function($scope,$timeout){
+	controller:['$scope','$timeout','$element',function($scope,$timeout,$element){
 		$scope.floor=window.Math.floor;
 		$scope.pointer_list=[0,1,2,3,5,6,7,8];
 		$scope.position_control_flag=34;
 		$scope.fix_count=1;
-		// $scope.$watch("data",function(data){
-			// if(data.w>data.h){
-				// $scope.position_control_flag=data.w/10;
-			// }else{
-				// $scope.position_control_flag=data.h/10;
-			// }
-		// },1)
 		
-		$scope.$watch("$ctrl.scale",function(scale){
-			if(scale){
-				$scope.lock_scale=$scope.$ctrl.data.w/$scope.$ctrl.data.h;
-			}
-		},1)
 		var moveXY=function(x,y){
-			$scope.$ctrl.data.x=Math.floor(x);
-			$scope.$ctrl.data.y=Math.floor(y);
+			$scope.$ctrl.data.x=(x);
+			$scope.$ctrl.data.y=(y);
 			$scope.$apply();
 		}
-		
 		
 		var moveWH=function(newX,newY){
 			var pointer=$scope.dataWH.index;
@@ -39,8 +27,6 @@ angular.module('app').component("whxy",{
 			var h=$scope.$ctrl.data.h;
 			var x=$scope.$ctrl.data.x;
 			var y=$scope.$ctrl.data.y;
-			
-			
 			
 			if(pointer_x==0){
 				w=$scope.$ctrl.data.w*1-newX;
@@ -58,30 +44,22 @@ angular.module('app').component("whxy",{
 				h=$scope.$ctrl.data.h*1+newY;
 			}
 			
-			if($scope.$ctrl.scale){
-				console.log($scope.lock_scale)
-				// console.log('pointer',pointer_x,pointer_y)
+			if($scope.$ctrl.lockScale){
 				if(pointer_x==1 || pointer_y==1){
-					tmp_w=h*$scope.lock_scale;
-					tmp_h=w/$scope.lock_scale;
+					tmp_w=h*$scope.$ctrl.lockScale;
+					tmp_h=w/$scope.$ctrl.lockScale;
 					
 					if([0,2].indexOf(pointer_y)!=-1){
 						x-=(tmp_w-w)/2;
 						w=tmp_w;
-						console.log(1)
 					}
 					if([0,2].indexOf(pointer_x)!=-1){
 						y-=(tmp_h-h)/2;
 						h=tmp_h;
-						console.log(2)
 					}
-					
-					// console.log(w,h,newX,newY)
-					// console.log(pointer_x,pointer_y)
-					// return {w:w,h:h};
 				}else{
-					tmp_w=h/$scope.lock_scale;
-					tmp_h=w/$scope.lock_scale;
+					tmp_w=h/$scope.$ctrl.lockScale;
+					tmp_h=w/$scope.$ctrl.lockScale;
 					if(tmp_w>tmp_h){
 						if(pointer_x==0){
 							x-=tmp_w-w;
@@ -94,7 +72,6 @@ angular.module('app').component("whxy",{
 						h=tmp_h;
 					}
 				}
-				
 			}
 			
 			if(w>0){
@@ -108,74 +85,90 @@ angular.module('app').component("whxy",{
 			$scope.$apply();
 			return {w:w,h:h}
 		}
+		
+		var add_xy_handler=function(e){
+			if(!$scope.dataXY)return
+			
+			var newX=(e.clientX-$scope.dataXY.x);
+			var newY=(e.clientY-$scope.dataXY.y);
+			
+			if($scope.$ctrl.scale){
+				newX/=$scope.$ctrl.scale;
+				newY/=$scope.$ctrl.scale;
+			}
+			var x=newX+$scope.$ctrl.data.x*1;
+			var y=newY+$scope.$ctrl.data.y*1;
+			moveXY(x,y);
+			$scope.dataXY.x=e.clientX;
+			$scope.dataXY.y=e.clientY;
+			$scope.$apply();
+		}
+		var del_xy_handler=function(e){
+			if($scope.dataXY){
+				delete $scope.dataXY;
+				$(document).off("mousemove",add_xy_handler);
+				$(document).off("click",del_xy_handler);
+				if(e){
+					$scope.$apply()
+				}
+			}
+		}
 		$scope.selectXY=function(e){
 			if($scope.dataXY){
-				// console.log("endXY")
-				delete $scope.dataXY;
-				$(document).off("mousemove");
-				return
+				del_xy_handler();
 			}else{
 				if($scope.dataWH)return
-				// console.log("startXY")
 				$scope.dataXY={
 					x:e.clientX,
 					y:e.clientY,
 				};
 
-				$(document).on("mousemove",function(e){
-					if(!$scope.dataXY)return
-					var newX=(e.clientX-$scope.dataXY.x);
-					var newY=(e.clientY-$scope.dataXY.y);
-					var x=newX+$scope.$ctrl.data.x*1;
-					var y=newY+$scope.$ctrl.data.y*1;
-					moveXY(x,y);
-					$scope.dataXY.x=e.clientX;
-					$scope.dataXY.y=e.clientY;
-					$scope.$apply();
-				})
+				$(document).on("mousemove",add_xy_handler);
+				
+				$timeout(function(){
+					$(document).on("click",del_xy_handler);
+				},0)
 			}
 		}
-		
-		$scope.selectWH=function(e,index){
+		var add_wh_handler=function(e){
+			if(!$scope.dataWH)return
+			var cut_w=(e.clientX-$scope.dataWH.x);	
+			var cut_h=(e.clientY-$scope.dataWH.y);
+			
+			if($scope.$ctrl.scale){
+				cut_w/=$scope.$ctrl.scale;
+				cut_h/=$scope.$ctrl.scale;
+			}
+			var result=moveWH(cut_w,cut_h);
+			$scope.dataWH.x=e.clientX;
+			$scope.dataWH.y=e.clientY;
+			$scope.$apply();
+		}
+		var del_wh_handler=function(e){
 			if($scope.dataWH){
 				delete $scope.dataWH;
-				$(document).off("mousemove");
-				$(document).off("click");
+				$(document).off("mousemove",add_wh_handler);
+				$(document).off("click",del_wh_handler);
+				if(e){
+					$scope.$apply()
+				}
+			}
+		}
+		$scope.selectWH=function(e,index){
+			if($scope.dataWH){
+				del_wh_handler();
 			}else{
-				// console.log("startWH")
 				$scope.dataWH={
 					x:e.clientX,
 					y:e.clientY,
 					index:index,
 				};
-				$(document).on("mousemove",function(e){
-					if(!$scope.dataWH)return
-					var cut_w=Math.floor(e.clientX-$scope.dataWH.x);	
-					var cut_h=Math.floor(e.clientY-$scope.dataWH.y);
-					// var fix_w=0;
-					// var fix_h=0;
-					
-					
-					var result=moveWH(cut_w,cut_h);
-					// if(result.w>0){
-						$scope.dataWH.x=e.clientX;
-					// }
-					// if(result.h>0){
-						$scope.dataWH.y=e.clientY;
-					// }
-					$scope.$apply();
-				})
-				$timeout(function(){
-					$(document).on("click",function(e){
-						if($scope.dataWH){
-							delete $scope.dataWH;
-							$(document).off("mousemove");
-							$(document).off("click");
-							$scope.$apply()
-						}
-					});
-				},0)
 				
+				$(document).on("mousemove",add_wh_handler);
+				
+				$timeout(function(){
+					$(document).on("click",del_wh_handler);
+				},0)
 			}
 		}
 		
@@ -186,7 +179,7 @@ angular.module('app').component("whxy",{
 			},50);
 			
 			$scope.fix_count*=1.05;
-			var fix_count=Math.floor($scope.fix_count);
+			var fix_count=$scope.fix_count;
 			if($scope.dataXY){
 				switch(e.keyCode){
 					case 97:
@@ -226,19 +219,17 @@ angular.module('app').component("whxy",{
 						break;
 				}
 			}
-			
-			
 			$scope.$apply();
 		});
-		
+		var point_after=Math.pow(10,1);//取小數點後幾位
 		$scope.$watch("$ctrl.data",function(data){
 			$timeout.cancel($scope.floor_timer);
 			$scope.floor_timer=$timeout(function(data){
-				// console.log(data)
-				data.x=Math.round(data.x);
-				data.y=Math.round(data.y);
-				data.w=Math.round(data.w);
-				data.h=Math.round(data.h);
+				
+				data.x=Math.round(data.x*point_after)/point_after;
+				data.y=Math.round(data.y*point_after)/point_after;
+				data.w=Math.round(data.w*point_after)/point_after;
+				data.h=Math.round(data.h*point_after)/point_after;
 			}.bind(this,data),500)
 			
 		},1)

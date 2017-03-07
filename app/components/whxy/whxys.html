@@ -1,0 +1,117 @@
+<div class="col-xs-12">
+	
+	<record
+	data="$ctrl.whxys"
+	callback="saveCallback"
+	switch="recordSwitch"
+	cache="$ctrl.cache"
+	></record>
+	
+	<div class="col-xs-12" style="white-space:nowrap;overflow-x:scroll;">
+		<button 
+		ng-click="$parent.select_whxy==$index?$parent.select_whxy=undefined:$parent.select_whxy=$index"
+		ng-class="select_whxy==$index?'btn-danger':'btn-primary'"
+		ng-repeat="item in $ctrl.whxys"
+		class="btn btn-sm"
+		>圖層{{$index+1}}<img 
+		style="height:50px;" 
+		ng-src="{{item.image_src}}" 
+		/></button>
+	</div>
+	<div class="col-xs-12" ng-if="$ctrl.whxys[select_whxy]">
+		<button 
+		class="btn btn-sm btn-info"
+		ng-click="swap_whxys(-1)"
+		>↑</button>
+		<button 
+		class="btn btn-sm btn-info"
+		ng-click="swap_whxys(1)"
+		>↓</button>
+		
+		<input 
+		ng-repeat="item in ['x','y','w','h']"
+		type="text" 
+		class="form-control" 
+		style="width:50px;display:inline-block;" 
+		ng-model="$ctrl.whxys[select_whxy][item]" />
+		
+		
+		<button 
+		class="btn btn-sm btn-info" 
+		ng-click="backWH(select_whxy,0)"
+		><i class="fa fa-reply" aria-hidden="true"></i> 大小
+		</button><button 
+		class="btn btn-sm btn-info" 
+		ng-click="backWH(select_whxy,1)"
+		><i class="fa fa-reply" aria-hidden="true"></i> 比例
+		</button><button 
+		ng-click="lockScale[select_whxy]?(lockScale[select_whxy]=undefined):(lockScale[select_whxy]=$ctrl.whxys[select_whxy].w/$ctrl.whxys[select_whxy].h)"
+		ng-class="lockScale[select_whxy]?'btn-danger':'btn-primary'"
+		class="btn btn-sm"
+		
+		><i class="fa fa-lock" aria-hidden="true"></i> 比例
+			<span ng-if="0">{{lockScale[select_whxy]}}<span>
+		</button><button 
+		ng-click="hide[select_whxy]=!hide[select_whxy]"
+		ng-class="hide[select_whxy]?'btn-danger':'btn-primary'"
+		class="btn btn-sm" 
+		>隱藏</button>
+	</div>
+	
+</div>
+
+<div class="col-xs-12" style="overflow:hidden;">
+	<div 
+	class="whxys"
+	draggable="false"
+	style="
+	position:relative;
+	overflow:hidden;
+	width:1200px;
+	height:630px;
+	transform-origin: 0px 0px;
+	transform:scale({{scale}});
+	font-size:100px;
+	" 
+	>
+		<div
+		draggable="false"
+		style="
+		border:#000000 6px solid; 
+		position:absolute;
+		width:100%;
+		height:100%;
+		top:0;
+		left:0;
+		
+		"
+		></div>
+		
+		<whxy
+		ng-if="!hide[whxys.length-$index-1]"
+		ng-repeat="item in whxys"
+		ng-click="$parent.$parent.select_whxy=(whxys.length-$index-1)"
+		
+		data="item"
+		
+		
+		lock-scale="lockScale[whxys.length-$index-1]"
+		selected="$parent.$parent.select_whxy==(whxys.length-$index-1)"
+		scale="scale"
+		
+		
+		>
+		
+			<img 
+			style="
+			top:0;
+			left:0;
+			position: absolute;
+			width:100%;
+			height:100%;
+			"
+			
+			ng-src="{{item.image_src}}" />
+		</whxy>
+	</div>
+</div>
