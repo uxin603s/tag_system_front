@@ -27,10 +27,9 @@ angular.module('app').component("record",{
 					var w=item.width();
 					var scroll_x=$($element).find(".record").scrollLeft();
 					var result=x+scroll_x-w*5;
-					console.log(x,scroll_x,w,result)
+					// console.log(x,scroll_x,w,result)
 					$($element).find(".record").scrollLeft(result)
 				}else{
-					
 					$timeout.cancel(selfcall);
 					selfcall=$timeout(function(){
 						set_scroll(record_pointer)
@@ -40,7 +39,6 @@ angular.module('app').component("record",{
 			$scope.$watch("record_pointer",function(record_pointer){
 				$scope.$ctrl.cache.record_pointer=record_pointer;
 				set_scroll(record_pointer);
-				
 			},1)
 			
 			
