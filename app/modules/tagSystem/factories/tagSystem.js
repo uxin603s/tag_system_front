@@ -60,11 +60,11 @@ angular.module('tagSystem')
 		var tids=angular.copy(tids);
 		var where_list=[];
 		while(tids.length){
-			if(!data.tagName[tids[i]]){
-				var id=tids.pop();
-				where_list.push({field:'id',type:0,value:});
+			var id=tids.pop();
+			if(!data.tagName[id]){
+				where_list.push({field:'id',type:0,value:id});
 			}
-			if(where_list.length>=100){
+			if(where_list.length >= 100){
 				// getTagName(tids);
 				break;
 			}
