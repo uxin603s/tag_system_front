@@ -99,9 +99,10 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 		$scope.tagSystem=tagSystem.data;
 		$scope.$watch("tag_name",function(tag_name){
 			if(!(tag_name=="")){
-				tagSystem.searchTid("%"+tag_name+"%",function(tid){
-					$scope.child_ids=tid;
-					get(tid)
+				tagSystem.searchTid("%"+tag_name+"%",function(tids){
+					console.log(tids)
+					$scope.child_ids=tids;
+					get(tids)
 				})
 			}
 		},1)
