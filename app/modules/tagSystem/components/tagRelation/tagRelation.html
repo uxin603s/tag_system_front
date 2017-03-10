@@ -3,8 +3,8 @@
 	<div 
 	ng-if="$ctrl.show==0"
 	>
-		<div ng-if="limit.total_page>1" style="display:inline-block;" >
-			<div style="display:inline-block;">
+		<div  style="display:inline-block;" >
+			<div  style="display:inline-block;">
 				<input 
 				ng-model="tag_name"
 				placeholder="搜尋標籤"
@@ -15,7 +15,7 @@
 				ng-click="search(tag_name)"
 				>搜尋</button>
 			</div>
-			<div style="display:inline-block;">
+			<div ng-if="limit.total_page>1" style="display:inline-block;">
 				<pagnation data="limit" callback="get"></pagnation>
 			</div>
 		</div>
