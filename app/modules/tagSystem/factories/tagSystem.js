@@ -65,7 +65,7 @@ angular.module('tagSystem')
 				where_list.push({field:'id',type:0,value:});
 			}
 			if(where_list.length>=100){
-				getTagName(tids);
+				// getTagName(tids);
 				break;
 			}
 		}
