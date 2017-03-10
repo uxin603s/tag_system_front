@@ -25,6 +25,7 @@ if(isset($_SESSION['rid'])){
 	
 	<script src="app/modules/cache/cache.js?t=<?=time()?>"></script>
 	<script src="app/modules/param/param.js?t=<?=time()?>"></script>
+	
 	<!--
 	<script src="app/modules/tagSystem/tagSystem.min.js?t=<?=time()?>"></script>
 	-->
@@ -49,6 +50,12 @@ if(isset($_SESSION['rid'])){
 	<script src="app/directives/ngEnter/ngEnter.js?t<?=time()?>"></script>
 	<script src="app/directives/sortable/sortable.js?t<?=time()?>"></script>
 	
+	
+
+	<script src="app/directives/pagnation/pagnation.js?t<?=time()?>"></script>
+	
+	
+
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7.min.css?t=<?=time()?>" />
 	<link rel="stylesheet" type="text/css" href="css/index.css?t=<?=time()?>" />
 	<script>
@@ -61,6 +68,9 @@ if(isset($_SESSION['rid'])){
 ng-app="app"
 style="overflow-y: scroll;"
 >
+	<script type="text/ng-template" id="pagnation.html" >
+		<div ng-include="'app/directives/pagnation/pagnation.html?t<?=time()?>'"></div>
+	</script>
 	<index 
 	ng-if="!cache.not_finish_flag"></index>
 </body>

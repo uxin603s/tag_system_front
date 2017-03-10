@@ -68,34 +68,64 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 			}
 		})
 	}
-	
-	
+	var watch;
+	var get=function(child_ids){
+		var where_list=[];
+		if(!child_ids){
+			child_ids=$scope.child_ids;
+		}
+		for(var i in child_ids){
+			where_list.push({field:'child_id',type:0,value:child_ids[i]})
+		}
+		
+		tagLevel.getTagRelation($scope.lid,$scope.id,$scope.limit,where_list,function(list){
+			$scope.list=list;
+			$scope.show=true;
+			if(list[0]){
+				$scope.$ctrl.selects[$scope.$ctrl.index+1]=list[0];
+			}
+			watch=$scope.$watch("list",sort_update.bind(this,$scope.lid,$scope.id),1);
+		})
+	}
+	$scope.search=function(tag_name){
+		$scope.tag_name=tag_name
+	}
 	$scope.$ctrl.$onInit=function(){
+		$scope.tag_name="";
+		$scope.limit={page:0,count:50,total_count:0};
 		$scope.tagSystem=tagSystem.data;
-		var watch;
+		$scope.$watch("tag_name",function(tag_name){
+			if(!(tag_name=="")){
+				tagSystem.searchTid("%"+tag_name+"%",function(tid){
+					$scope.child_ids=tid;
+					get(tid)
+				})
+			}
+		},1)
+		$scope.$watch("limit",function(limit){
+			if(tagLevel.data.TagLevelRelation[$scope.lid])
+			if(tagLevel.data.TagLevelRelation[$scope.lid][$scope.id])
+			delete tagLevel.data.TagLevelRelation[$scope.lid][$scope.id]
+		},1)
+		
 		$scope.$watch("$ctrl.selects["+$scope.$ctrl.index+"]",function(id){
 			watch && watch();
 			if(!isNaN(id)){
 				$scope.id=id;
 				$scope.lid=$scope.$ctrl.lids[$scope.$ctrl.index];
-				tagLevel.getTagRelation($scope.lid,id,function(list){
-					$scope.list=list;
-					$scope.show=true;
-					if(list[0]){
-						$scope.$ctrl.selects[$scope.$ctrl.index+1]=list[0];
-					}
-					watch=$scope.$watch("list",sort_update.bind(this,$scope.lid,id),1);
-				})
-				
+				get();
+				$scope.get=get
 			}else{
 				if($scope.$ctrl.index==0){
 					$scope.$ctrl.selects[$scope.$ctrl.index]=0;
 				}
 				$scope.list=[]
 				$scope.show=false;
+				delete $scope.get;
 			}
 			// console.log($scope.list)
-		},1)		
+		},1)
+		
 	}
 	var sort_update=function(level_id,id,nv,ov){
 		

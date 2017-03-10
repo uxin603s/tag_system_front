@@ -24,8 +24,10 @@ controller:["$scope","tagSystem",function($scope,tagSystem){
 			result[tmp[0]]=tmp[1];
 		}	
 		if(result.search){
-			tagSystem.searchTid(result.search,function(tid){
-				tagSystem.addSearchTid(tid,1)
+			tagSystem.searchTid(result.search,function(tids){
+				for(var i in tids){
+					tagSystem.addSearchTid(tids[i],1)
+				}
 			})
 		}
 		

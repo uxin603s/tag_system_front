@@ -1,7 +1,24 @@
+
 <div style="display:inline-block;">
 	<div 
 	ng-if="$ctrl.show==0"
 	>
+		<div ng-if="1 || limit.total_page>1" style="display:inline-block;" >
+			<div style="display:inline-block;">
+				<input 
+				ng-model="tag_name"
+				placeholder="搜尋標籤"
+				type="text" 
+				/>
+				<button
+				class="btn btn-sm btn-primary"
+				ng-click="search(tag_name)"
+				>搜尋</button>
+			</div>
+			<div style="display:inline-block;">
+				<pagnation data="limit" callback="get"></pagnation>
+			</div>
+		</div>
 		<div 
 		sortable="list"
 		index="$index"
@@ -69,4 +86,3 @@
 		
 	</div>
 </div>
-

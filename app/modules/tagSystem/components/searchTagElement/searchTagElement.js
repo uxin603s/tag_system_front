@@ -15,8 +15,10 @@ controller:["$scope","tagSystem","$timeout",function($scope,tagSystem,$timeout){
 		},1)
 	}
 	$scope.addSearch=function(tag_name){
-		tagSystem.searchTid(tag_name,function(tid){
-			tagSystem.addSearchTid(tid,0)
+		tagSystem.searchTid(tag_name,function(tids){
+			for(var i in tids){
+				tagSystem.addSearchTid(tids[i],0)
+			}
 		})
 	};
 	var timer

@@ -54,7 +54,7 @@ function($rootScope,tagSystem,$timeout,tagType){
 		getTagLevel(tids);
 	},1)
 	
-	var getTagRelation=function(level_id,id,callback){		
+	var getTagRelation=function(level_id,id,limit,where_list,callback){		
 		
 		if(!data.TagLevelRelation[level_id]){
 			data.TagLevelRelation[level_id]={};
@@ -67,7 +67,6 @@ function($rootScope,tagSystem,$timeout,tagType){
 			callback && callback(data.TagLevelRelation[level_id][id])
 			return
 		}
-		var where_list=[]
 		where_list.push({field:'id',type:0,value:id});
 		where_list.push({field:'level_id',type:0,value:level_id});
 		if(!where_list.length){
@@ -81,15 +80,23 @@ function($rootScope,tagSystem,$timeout,tagType){
 					{field:'id',type:0},
 					{field:'sort_id',type:0},
 				],
-				limit:{page:0,count:100},
+				limit:limit,
 			}
 		}
 		tagSystem.post(post_data,function(res){
 			if(res.status){
 				var tids=res.list.map(function(val){return val.child_id});
+				
+				limit.total_count=res.total_count
+				limit.total_page=res.total_page
+				
+				data.TagLevelRelation[level_id][id]=tids;
 				callback && callback(tids)
 				tagSystem.getTagName(tids);
-				data.TagLevelRelation[level_id][id]=tids;
+			}else{
+				limit.total_count=0;
+				limit.total_page=0;
+				
 			}
 		});		
 	}
