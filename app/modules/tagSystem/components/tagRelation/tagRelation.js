@@ -80,8 +80,8 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 		}
 		
 		tagLevel.getTagRelation($scope.lid,$scope.id,$scope.limit,where_list,function(list){
-			console.log(list)
-			console.log($scope.limit)
+			// console.log(list)
+			// console.log($scope.limit)
 			$scope.list=list;
 			$scope.show=true;
 			if(list[0]){
@@ -93,7 +93,10 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 		})
 	}
 	$scope.search=function(tag_name){
-		$scope.tag_name=tag_name
+		$scope.tag_name=tag_name;
+		if(tagLevel.data.TagLevelRelation[$scope.lid])
+		if(tagLevel.data.TagLevelRelation[$scope.lid][$scope.id])
+		delete tagLevel.data.TagLevelRelation[$scope.lid][$scope.id]
 	}
 	$scope.$ctrl.$onInit=function(){
 		$scope.tag_name="";
