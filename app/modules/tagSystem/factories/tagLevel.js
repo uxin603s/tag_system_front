@@ -82,12 +82,14 @@ function($rootScope,tagSystem,$timeout,tagType){
 			arg:{
 				where_list:where_list,
 				order_list:[
+					{field:'id',type:0},
 					{field:'sort_id',type:0},
-				]
+				],
+				limit:{page:0,count:10},
 			}
 		}
 		tagSystem.post(post_data,function(res){
-			
+			console.log(res)
 			if(res.status){
 				// res.list.map(function(val){console.log(val.sort_id)})
 				var tids=[];
