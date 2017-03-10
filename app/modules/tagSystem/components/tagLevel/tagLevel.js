@@ -24,7 +24,6 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 				if($scope.list.length==1){
 					$scope.selects[0]=0
 				}
-				// console.log($scope.TagLevelRelation[res.insert.id]);
 			}
 		})
 	}
@@ -36,9 +35,6 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 		var id=$scope.list.splice(index,1).pop();
 		var tid=$scope.$ctrl.tid;
 		
-		// var ggwp=tagLevel.data.TagLevelRelation[id].reduce(function(a,b){
-			// return a+b.length
-		// },0)
 		var check_have=0;
 		for(var i in tagLevel.data.TagLevelRelation[id]){
 			check_have+=tagLevel.data.TagLevelRelation[id][i].length
@@ -71,8 +67,6 @@ controller:["$scope","tagSystem","tagLevel","tagType","tagRelation",function($sc
 	$scope.$ctrl.$onInit=function(){
 		$scope.tagSystem=tagSystem.data
 		$scope.tagLevel=tagLevel.data
-		$scope.tagRelation=tagLevel.data
-		
 		
 		$scope.$watch("tagLevel.selects["+$scope.$ctrl.tid+"]",function(selects){
 			$scope.selects=selects;

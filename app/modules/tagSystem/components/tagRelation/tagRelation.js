@@ -71,22 +71,26 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 	
 	
 	$scope.$ctrl.$onInit=function(){
-		// console.log($scope.$ctrl.selects[$scope.$ctrl.index])
 		$scope.tagSystem=tagSystem.data;
 		var watch;
 		$scope.$watch("$ctrl.selects["+$scope.$ctrl.index+"]",function(id){
-			// console.log(id)
 			watch && watch();
 			if(!isNaN(id)){
 				$scope.id=id;
 				$scope.lid=$scope.$ctrl.lids[$scope.$ctrl.index];
-				if(!tagLevel.data.TagLevelRelation[$scope.lid][id]){
-					tagLevel.data.TagLevelRelation[$scope.lid][id]=[];
-				}
-				$scope.list=tagLevel.data.TagLevelRelation[$scope.lid][id];
-				watch=$scope.$watch("list",sort_update.bind(this,$scope.lid,id),1);
-				$scope.show=true;
+				tagLevel.getTagRelation($scope.lid,id,function(list){
+					$scope.list=list;
+					$scope.show=true;
+					if(list[0]){
+						$scope.$ctrl.selects[$scope.$ctrl.index+1]=list[0];
+					}
+					watch=$scope.$watch("list",sort_update.bind(this,$scope.lid,id),1);
+				})
+				
 			}else{
+				if($scope.$ctrl.index==0){
+					$scope.$ctrl.selects[$scope.$ctrl.index]=0;
+				}
 				$scope.list=[]
 				$scope.show=false;
 			}
