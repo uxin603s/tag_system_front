@@ -81,6 +81,7 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 		
 		tagLevel.getTagRelation($scope.lid,$scope.id,$scope.limit,where_list,function(list){
 			console.log(list)
+			console.log(limit)
 			$scope.list=list;
 			$scope.show=true;
 			if(list[0]){
