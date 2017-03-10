@@ -57,9 +57,8 @@ angular.module('tagSystem')
 		
 	}
 	var getTagName=function(tids){
-		var tids=angular.copy(tids);
+		console.log(tids)
 		var where_list=[];
-		var count=0;
 		for(var i in tids){
 			if(!data.tagName[tids[i]]){
 				where_list.push({field:'id',type:0,value:tids[i]})
