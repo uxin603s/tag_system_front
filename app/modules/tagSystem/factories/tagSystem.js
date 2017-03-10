@@ -57,12 +57,19 @@ angular.module('tagSystem')
 		
 	}
 	var getTagName=function(tids){
+		var tids=angular.copy(tids);
 		var where_list=[];
-		for(var i in tids){
+		while(tids.length){
 			if(!data.tagName[tids[i]]){
-				where_list.push({field:'id',type:0,value:tids[i]})
+				var id=tids.pop();
+				where_list.push({field:'id',type:0,value:});
+			}
+			if(where_list.length>=100){
+				getTagName(tids);
+				break;
 			}
 		}
+		
 		if(!where_list.length){
 			return;
 		}
