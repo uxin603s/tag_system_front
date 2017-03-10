@@ -84,7 +84,7 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 			if(list[0]){
 				$scope.$ctrl.selects[$scope.$ctrl.index+1]=list[0];
 			}
-			if($scope.limit.total_page>1){
+			if($scope.limit.total_page<=1){
 				watch=$scope.$watch("list",sort_update.bind(this,$scope.lid,$scope.id),1);
 			}
 		})
