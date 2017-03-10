@@ -83,7 +83,9 @@ function($rootScope,tagSystem,$timeout,tagType){
 				limit:limit,
 			}
 		}
+		console.log(where_list)
 		tagSystem.post(post_data,function(res){
+			console.log(res)
 			if(res.status){
 				var tids=res.list.map(function(val){return val.child_id});
 				

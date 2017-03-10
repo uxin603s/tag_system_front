@@ -78,7 +78,7 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 		for(var i in child_ids){
 			where_list.push({field:'child_id',type:0,value:child_ids[i]})
 		}
-		console.log(where_list)
+		
 		tagLevel.getTagRelation($scope.lid,$scope.id,$scope.limit,where_list,function(list){
 			$scope.list=list;
 			$scope.show=true;
