@@ -1,4 +1,6 @@
-
+<div ng-if="$ctrl.show==0 && limit.total_page>1" style="border:#000000 1px solid;display:inline-block;">
+	<pagnation data="limit" callback="get"></pagnation>
+</div>
 <div style="display:inline-block;">
 	<div 
 	ng-if="$ctrl.show==0"
@@ -34,9 +36,7 @@
 		</div>
 		
 		
-		<div ng-if="limit.total_page>1" style="border:#000000 1px solid;display:inline-block;">
-			<pagnation data="limit" callback="get"></pagnation>
-		</div>
+		
 		
 		<div 
 		sortable="list"
