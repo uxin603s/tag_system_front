@@ -5,40 +5,38 @@
 	<div 
 	ng-if="$ctrl.show==0"
 	>
-		<div  
-		style="border:#000000 1px solid;display:inline-block;"
-		>
-			<input 
-			style="width: auto;display:inline-block;"
-			class="form-control"
-			ng-model="tag_name"
-			placeholder="搜尋標籤"
-			type="text" 
-			/>
-			<button
-			class="btn btn-sm btn-primary"
-			ng-click="search(tag_name)"
-			>搜尋</button>
+		<div ng-if="tagSystem.tag_mode && show" style="display:inline-block;" >
+			<div  
+			style="border:#000000 1px solid;display:inline-block;"
+			>
+				<input 
+				style="width: auto;display:inline-block;"
+				class="form-control"
+				ng-model="tag_name"
+				placeholder="搜尋標籤"
+				type="text" 
+				/>
+				<button
+				class="btn btn-sm btn-primary"
+				ng-click="search(tag_name)"
+				>搜尋</button>
+			</div>
+			<div 
+			style="border:#000000 1px solid;display:inline-block;"
+			>
+				<input 
+				style="width: auto;display:inline-block;"
+				class="form-control"
+				type="text" 
+				placeholder="新增標籤"
+				ng-model="tag_name"
+				/><button 
+				
+				class="btn btn-sm btn-primary"
+				ng-click="addTag(tag_name);tag_name=''"
+				>新增</button>
+			</div>
 		</div>
-		<div 
-		ng-if="tagSystem.tag_mode && show"
-		style="border:#000000 1px solid;display:inline-block;"
-		>
-			<input 
-			style="width: auto;display:inline-block;"
-			class="form-control"
-			type="text" 
-			placeholder="新增標籤"
-			ng-model="tag_name"
-			/><button 
-			
-			class="btn btn-sm btn-primary"
-			ng-click="addTag(tag_name);tag_name=''"
-			>新增</button>
-		</div>
-		
-		
-		
 		
 		<div 
 		sortable="list"
