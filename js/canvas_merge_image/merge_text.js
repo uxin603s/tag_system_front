@@ -234,7 +234,7 @@ function merge_text(item){
 	function make_text(text,item,w,h){
 		var c=init_canvas(w,h);
 		c.fillStyle=item.text_color;
-		c.font=item.text_size+"px 微軟正黑體";
+		c.font=item.text_size+"px '微軟正黑體'";
 		c.textBaseline="middle";
 		if(item.useFontBg && item.FontBgSize){
 			c.lineWidth = item.FontBgSize;
@@ -309,13 +309,12 @@ function merge_text(item){
 			})
 		}
 		user_arr.list.reverse();
-		
 	}
 	
 	area_scale_w_h(item);
 	
 	c.fillStyle=item.text_color;
-	c.font=item.text_size+"px 微軟正黑體";
+	c.font=item.text_size+"px '微軟正黑體'";
 	c.textBaseline="middle";
 	
 	if(item.useFontBg && item.FontBgSize){
@@ -324,7 +323,7 @@ function merge_text(item){
 	}
 	if(item.text_size<20){
 		item.text_size=20;
-		c.font=item.text_size+"px 微軟正黑體";
+		c.font=item.text_size+"px '微軟正黑體'";
 	}
 	if(item.text_type==0 && !item.text_content.match(/[^a-zA-Z0-9\.]+/)){
 		item.text_type=1;
@@ -336,6 +335,7 @@ function merge_text(item){
 		item.text_content=item.text_content.replace(/###user_name###/g,"").replace(/###space###/g," ")
 		var text=item.text_content;
 		var width=Math.ceil(c.measureText(text).width);
+		
 		var result_arr=[
 			{
 				text:text,

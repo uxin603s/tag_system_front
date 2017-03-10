@@ -57,13 +57,24 @@ angular.module('tagSystem')
 		
 	}
 	var getTagName=function(tids){
-		console.log(tids)
 		var where_list=[];
-		for(var i in tids){
-			if(!data.tagName[tids[i]]){
-				where_list.push({field:'id',type:0,value:tids[i]})
+		// for(var i in tids){
+			// if(!data.tagName[tids[i]]){
+				// where_list.push({field:'id',type:0,value:tids[i]})
+			// }
+		// }
+		var tids=angular.copy(tids);
+		while(tids.length){
+			var id=tids.pop();
+			if(!data.tagName[id]){
+				where_list.push({field:'id',type:0,value:id});
+			}
+			if(where_list.length >= 100){
+				getTagName(tids);
+				break;
 			}
 		}
+		
 		if(!where_list.length){
 			return;
 		}
