@@ -70,6 +70,7 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 	}
 	var watch;
 	var get=function(child_ids){
+		watch && watch();
 		var where_list=[];
 		if(!child_ids){
 			child_ids=$scope.child_ids;
@@ -111,7 +112,7 @@ controller:["$scope","tagSystem","tagLevel",function($scope,tagSystem,tagLevel){
 		},1)
 		
 		$scope.$watch("$ctrl.selects["+$scope.$ctrl.index+"]",function(id){
-			watch && watch();
+			
 			if(!isNaN(id)){
 				$scope.id=id;
 				$scope.lid=$scope.$ctrl.lids[$scope.$ctrl.index];
